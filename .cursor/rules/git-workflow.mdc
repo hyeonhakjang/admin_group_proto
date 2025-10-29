@@ -1,0 +1,72 @@
+---
+alwaysApply: true
+description: Git workflow and automatic commit guidelines
+---
+
+# 🔄 Git Workflow Rules
+
+## 📝 Automatic Commit Guidelines
+- **Always commit changes**: After making any code changes, automatically create appropriate commits
+- **Commit messages**: Use conventional commit format with descriptive messages
+- **Change detection**: Check `git status` before committing to see all changes
+- **Staging**: Use `git add .` to stage all changes unless specific files need to be excluded
+
+## 🎯 Commit Message Format
+```bash
+# Feature additions
+feat: Add new feature description
+
+# Bug fixes  
+fix: Fix issue description
+
+# Documentation updates
+docs: Update documentation description
+
+# Style changes
+style: Update styling description
+
+# Refactoring
+refactor: Refactor code description
+
+# Performance improvements
+perf: Improve performance description
+```
+
+## 📋 Commit Process
+1. **Check status**: `git status` to see current changes
+2. **Stage changes**: `git add .` to stage all changes
+3. **Create commit**: Use descriptive commit message
+4. **Push changes**: `git push origin dev` to push to remote
+
+## 🔍 Change Detection
+- **File modifications**: Track changes to existing files
+- **New files**: Include new files in commits
+- **Deleted files**: Handle file deletions appropriately
+- **Untracked files**: Add new files to version control
+
+## 📊 Commit Examples
+```bash
+# Component updates
+git commit -m "feat: Update HomeScreen component with responsive design"
+
+# Styling changes
+git commit -m "style: Improve mobile navigation spacing and layout"
+
+# Bug fixes
+git commit -m "fix: Resolve icon alignment issues in bottom tab bar"
+
+# Documentation
+git commit -m "docs: Add comprehensive Cursor rules for project"
+```
+
+## 🚀 Workflow Integration
+- **Automatic process**: Always follow this workflow after code changes
+- **Consistent messages**: Use consistent commit message format
+- **Branch management**: Work on feature branches, merge to main
+- **Remote sync**: Keep local and remote repositories in sync
+
+## ⚠️ Important Notes
+- **Always commit**: Never leave changes uncommitted
+- **Descriptive messages**: Write clear, descriptive commit messages
+- **Korean support**: Include Korean text in commit messages when appropriate
+- **Conventional format**: Follow conventional commit standards
