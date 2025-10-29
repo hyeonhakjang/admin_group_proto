@@ -639,7 +639,8 @@ const MyClubScreen: React.FC = () => {
                         </h4>
                         <div className="schedule-event-info">
                           <span className="schedule-event-group">
-                            {selectedEvent.group} · {selectedEvent.participants}명
+                            {selectedEvent.group} · {selectedEvent.participants}
+                            명
                           </span>
                           <div className="schedule-event-participants">
                             <div className="participant-avatar">👤</div>
@@ -655,13 +656,18 @@ const MyClubScreen: React.FC = () => {
                         </div>
                       </div>
                     ) : (
-                      <div className="schedule-event-detail-card">
-                        <button
-                          className="event-back-btn"
+                      <>
+                        <div
+                          className="event-detail-overlay"
                           onClick={() => setShowEventDetail(false)}
-                        >
-                          ← 뒤로가기
-                        </button>
+                        ></div>
+                        <div className="schedule-event-detail-card">
+                          <button
+                            className="event-back-btn"
+                            onClick={() => setShowEventDetail(false)}
+                          >
+                            ← 뒤로가기
+                          </button>
                         <h4 className="event-detail-title">
                           {selectedEvent.title}
                         </h4>
@@ -689,12 +695,15 @@ const MyClubScreen: React.FC = () => {
                           <div className="event-detail-row">
                             <span className="event-detail-label">참가자:</span>
                             <span className="event-detail-value">
-                              {selectedEvent.group} · {selectedEvent.participants}명
+                              {selectedEvent.group} ·{" "}
+                              {selectedEvent.participants}명
                             </span>
                           </div>
                         </div>
                         <div className="event-detail-description">
-                          <h5 className="event-detail-section-title">상세 내용</h5>
+                          <h5 className="event-detail-section-title">
+                            상세 내용
+                          </h5>
                           <p>{selectedEvent.description}</p>
                         </div>
                         <div className="event-detail-agenda">
@@ -706,6 +715,7 @@ const MyClubScreen: React.FC = () => {
                           </ul>
                         </div>
                       </div>
+                      </>
                     )}
                   </>
                 ) : (
