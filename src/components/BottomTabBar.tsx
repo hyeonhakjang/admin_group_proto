@@ -30,9 +30,7 @@ const BottomTabBar: React.FC = () => {
             <img alt="Home Icon" className="icon" src={imgIcon} />
           </div>
           <p
-            className={`tab-label ${
-              location.pathname === "/" ? "active" : ""
-            }`}
+            className={`tab-label ${location.pathname === "/" ? "active" : ""}`}
             data-node-id="9:605"
           >
             홈
@@ -106,4 +104,3 @@ const BottomTabBar: React.FC = () => {
 };
 
 export default BottomTabBar;
-

@@ -17,6 +17,37 @@ const MyClubScreen: React.FC = () => {
     "posts" | "statistics" | "schedule" | "members" | "archive"
   >("posts");
 
+  // 동아리 선택 모달 상태
+  const [selectedClub, setSelectedClub] = useState("HICC");
+  const [showClubModal, setShowClubModal] = useState(false);
+
+  // 가입된 동아리 목록 (샘플 데이터)
+  const clubs = [
+    {
+      id: 1,
+      name: "HICC",
+      avatar: "/club1-image.png",
+      role: "회장",
+    },
+    {
+      id: 2,
+      name: "브레인스워즈",
+      avatar: "/club2-image.png",
+      role: "동아리원",
+    },
+    {
+      id: 3,
+      name: "VOERA",
+      avatar: "/club3-image.png",
+      role: "부회장",
+    },
+  ];
+
+  const handleClubSelect = (club: typeof clubs[0]) => {
+    setSelectedClub(club.name);
+    setShowClubModal(false);
+  };
+
   // 공지글만 보기 토글 상태
   const [showNoticeOnly, setShowNoticeOnly] = useState(false);
 
@@ -264,8 +295,13 @@ const MyClubScreen: React.FC = () => {
           data-name="Navigation Bar"
           data-node-id="12:3017"
         >
-          <p className="nav-title" data-node-id="12:3019">
-            HICC ▼
+          <p
+            className="nav-title"
+            data-node-id="12:3019"
+            onClick={() => setShowClubModal(true)}
+            style={{ cursor: "pointer" }}
+          >
+            {selectedClub} ▼
           </p>
           <div
             className="trailing-icons"
@@ -995,6 +1031,42 @@ const MyClubScreen: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* 동아리 선택 모달 */}
+      {showClubModal && (
+        <>
+          <div
+            className="club-modal-overlay"
+            onClick={() => setShowClubModal(false)}
+          ></div>
+          <div className="club-modal">
+            <div className="club-modal-header">
+              <h2 className="club-modal-title">동아리 선택</h2>
+              <button
+                className="club-modal-close"
+                onClick={() => setShowClubModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="club-list">
+              {clubs.map((club) => (
+                <div
+                  key={club.id}
+                  className="club-modal-item"
+                  onClick={() => handleClubSelect(club)}
+                >
+                  <div className="club-modal-avatar">
+                    <img src={club.avatar} alt={club.name} />
+                  </div>
+                  <div className="club-modal-name">{club.name}</div>
+                  <div className="club-modal-role">{club.role}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
