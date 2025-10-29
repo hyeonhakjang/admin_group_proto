@@ -20,6 +20,55 @@ const MyClubScreen: React.FC = () => {
   // 공지글만 보기 토글 상태
   const [showNoticeOnly, setShowNoticeOnly] = useState(false);
 
+  // 멤버 검색 상태
+  const [memberSearchQuery, setMemberSearchQuery] = useState("");
+
+  // 멤버 데이터
+  const members = [
+    {
+      id: 1,
+      name: "Karthi Rajasekar",
+      email: "karthirajasekar23@gmail.com",
+      role: "Owner",
+      isOwner: true,
+    },
+    {
+      id: 2,
+      name: "Jane Cooper",
+      email: "jane@gmail.com",
+      role: "Edit",
+      isOwner: false,
+    },
+    {
+      id: 3,
+      name: "Robert Fox",
+      email: "robertfox@gmail.com",
+      role: "Can View",
+      isOwner: false,
+    },
+    {
+      id: 4,
+      name: "Darrell",
+      email: "darrell@gmail.com",
+      role: "Can View",
+      isOwner: false,
+    },
+    {
+      id: 5,
+      name: "Calvin",
+      email: "calvin@gmail.com",
+      role: "Can View",
+      isOwner: false,
+    },
+  ];
+
+  // 검색 필터링된 멤버
+  const filteredMembers = members.filter(
+    (member) =>
+      member.name.toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
+      member.email.toLowerCase().includes(memberSearchQuery.toLowerCase())
+  );
+
   // 달력 관련 상태
   const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 7)); // 2024년 9월 7일
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -600,8 +649,48 @@ const MyClubScreen: React.FC = () => {
         )}
         {activeTab === "members" && (
           <div className="members-content">
-            <h2>멤버</h2>
-            <p>멤버 콘텐츠가 여기에 표시됩니다.</p>
+            {/* 멤버 헤더 */}
+            <div className="members-header">
+              <h2 className="members-title">멤버</h2>
+              <button className="invite-btn">+ Invite</button>
+            </div>
+
+            {/* 검색 필드 */}
+            <div className="members-search-container">
+              <div className="search-icon">🔍</div>
+              <input
+                type="text"
+                className="members-search-input"
+                placeholder="Search"
+                value={memberSearchQuery}
+                onChange={(e) => setMemberSearchQuery(e.target.value)}
+              />
+            </div>
+
+            {/* 멤버 리스트 */}
+            <div className="members-list">
+              {filteredMembers.map((member) => (
+                <div key={member.id} className="member-item">
+                  <div className="member-info">
+                    <div className="member-avatar">
+                      <img src="/profile-icon.png" alt={member.name} />
+                    </div>
+                    <div className="member-details">
+                      <div className="member-name">{member.name}</div>
+                      <div className="member-email">{member.email}</div>
+                    </div>
+                  </div>
+                  <button
+                    className={`member-role-btn ${member.isOwner ? "owner-role" : ""}`}
+                  >
+                    {member.role}
+                    {!member.isOwner && (
+                      <span className="dropdown-icon">▼</span>
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         )}
         {activeTab === "archive" && (
