@@ -18,7 +18,9 @@ interface CommunityScreenProps {
 const CommunityScreen: React.FC<CommunityScreenProps> = ({
   onScreenChange,
 }) => {
-  const [activeTab, setActiveTab] = useState<"find-clubs" | "community-board">("find-clubs");
+  const [activeTab, setActiveTab] = useState<"find-clubs" | "community-board">(
+    "find-clubs"
+  );
 
   const handleTabClick = (tab: "find-clubs" | "community-board") => {
     setActiveTab(tab);
@@ -99,36 +101,52 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
         >
           <div className="tabs-wrapper">
             {/* Find Clubs Tab */}
-            <div 
-              className={`tab ${activeTab === "find-clubs" ? "active" : ""}`} 
-              data-name="Tab" 
+            <div
+              className={`tab ${activeTab === "find-clubs" ? "active" : ""}`}
+              data-name="Tab"
               data-node-id="11:3345"
               onClick={() => handleTabClick("find-clubs")}
             >
               <div
-                className={`tab-underline ${activeTab === "find-clubs" ? "active" : ""}`}
+                className={`tab-underline ${
+                  activeTab === "find-clubs" ? "active" : ""
+                }`}
                 data-name="Underline"
                 data-node-id="11:3347"
               >
-                <p className={`tab-text ${activeTab === "find-clubs" ? "active" : ""}`} data-node-id="11:3348">
+                <p
+                  className={`tab-text ${
+                    activeTab === "find-clubs" ? "active" : ""
+                  }`}
+                  data-node-id="11:3348"
+                >
                   동아리 찾기
                 </p>
               </div>
             </div>
 
             {/* Community Board Tab */}
-            <div 
-              className={`tab ${activeTab === "community-board" ? "active" : ""}`} 
-              data-name="Tab" 
+            <div
+              className={`tab ${
+                activeTab === "community-board" ? "active" : ""
+              }`}
+              data-name="Tab"
               data-node-id="11:3328"
               onClick={() => handleTabClick("community-board")}
             >
               <div
-                className={`tab-underline ${activeTab === "community-board" ? "active" : ""}`}
+                className={`tab-underline ${
+                  activeTab === "community-board" ? "active" : ""
+                }`}
                 data-name="Underline"
                 data-node-id="11:3330"
               >
-                <p className={`tab-text ${activeTab === "community-board" ? "active" : ""}`} data-node-id="11:3331">
+                <p
+                  className={`tab-text ${
+                    activeTab === "community-board" ? "active" : ""
+                  }`}
+                  data-node-id="11:3331"
+                >
                   게시판
                 </p>
               </div>
@@ -145,8 +163,70 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
       >
         {activeTab === "find-clubs" && (
           <div className="find-clubs-content">
-            <h2>동아리 찾기</h2>
-            <p>동아리 찾기 콘텐츠가 여기에 표시됩니다.</p>
+            {/* 교내 동아리 찾기 섹션 */}
+            <div className="clubs-section">
+              {/* 헤더 */}
+              <div className="section-header">
+                <h2 className="section-title">교내 동아리 찾기</h2>
+                <button className="view-all-btn">교내 동아리 찾기 페이지로 이동 ></button>
+              </div>
+
+              {/* 동아리 리스트 */}
+              <div className="clubs-list">
+                {/* 동아리 1 */}
+                <div className="club-item">
+                  <div className="club-image">
+                    <img src="/club1-image.png" alt="크레스티드 게코 동아리" />
+                  </div>
+                  <div className="club-info">
+                    <h3 className="club-name">크레스티드 게코 키우는 사람~ 👋 입문환영</h3>
+                    <p className="club-description">안녕하세요! 크레스티드 게코를 키우는 분들과 함께 소통하고 정보를 공유하는 공간입니다.</p>
+                    <div className="club-details">
+                      <span className="club-location">●서울시·온라인</span>
+                      <span className="club-field">·새 게시글 4</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 동아리 2 */}
+                <div className="club-item">
+                  <div className="club-image">
+                    <img src="/club2-image.png" alt="집꼭챙 동아리" />
+                  </div>
+                  <div className="club-info">
+                    <h3 className="club-name">🥄 집꼭챙! - 집에서 꼭 챙겨먹자! 🥄</h3>
+                    <p className="club-description">외식이 잦아 집에서 챙겨먹고 싶으신 분들! 건강한 식습관을 함께 만들어가요.</p>
+                    <div className="club-details">
+                      <span className="club-location">●서울시·온라인</span>
+                      <span className="club-field">·새 게시글 4</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 동아리 3 */}
+                <div className="club-item">
+                  <div className="club-image">
+                    <img src="/club3-image.png" alt="앱테크 모임" />
+                  </div>
+                  <div className="club-info">
+                    <h3 className="club-name">💛 앱테크 모임 💛 (토스, 케이뱅크, 틱톡)</h3>
+                    <p className="club-description">다양한 앱을 활용한 테크 정보를 공유하고 함께 배워가는 모임입니다.</p>
+                    <div className="club-details">
+                      <span className="club-location">●서울시·온라인</span>
+                      <span className="club-field">·새 게시글 3</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 더보기 버튼 */}
+              <div className="load-more-section">
+                <button className="load-more-btn">
+                  <span className="refresh-icon">🔄</span>
+                  새로운 동아리 더보기 1/5
+                </button>
+              </div>
+            </div>
           </div>
         )}
         {activeTab === "community-board" && (
