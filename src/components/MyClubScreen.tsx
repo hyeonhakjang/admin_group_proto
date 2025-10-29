@@ -73,6 +73,39 @@ const MyClubScreen: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 7)); // 2024년 9월 7일
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showEventDetail, setShowEventDetail] = useState(false);
+  
+  // 댓글 상태
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState([
+    {
+      id: 1,
+      author: "김홍익",
+      avatar: "/profile-icon.png",
+      content: "참여하겠습니다!",
+      time: "오늘 18:30",
+    },
+    {
+      id: 2,
+      author: "이동아리",
+      avatar: "/profile-icon.png",
+      content: "노트북 필수인가요?",
+      time: "오늘 18:25",
+    },
+  ]);
+
+  const handleAddComment = () => {
+    if (newComment.trim()) {
+      const comment = {
+        id: comments.length + 1,
+        author: "홍익대 HICC",
+        avatar: "/profile-icon.png",
+        content: newComment,
+        time: "방금 전",
+      };
+      setComments([comment, ...comments]);
+      setNewComment("");
+    }
+  };
 
   // 일정이 있는 날짜들 (샘플 데이터)
   const eventsDates = [
@@ -674,7 +707,9 @@ const MyClubScreen: React.FC = () => {
                             </h4>
                             <div className="event-detail-info">
                               <div className="event-detail-row">
-                                <span className="event-detail-label">날짜:</span>
+                                <span className="event-detail-label">
+                                  날짜:
+                                </span>
                                 <span className="event-detail-value">
                                   {selectedEvent.date.getFullYear()}년{" "}
                                   {selectedEvent.date.getMonth() + 1}월{" "}
@@ -682,13 +717,17 @@ const MyClubScreen: React.FC = () => {
                                 </span>
                               </div>
                               <div className="event-detail-row">
-                                <span className="event-detail-label">시간:</span>
+                                <span className="event-detail-label">
+                                  시간:
+                                </span>
                                 <span className="event-detail-value">
                                   {selectedEvent.time}
                                 </span>
                               </div>
                               <div className="event-detail-row">
-                                <span className="event-detail-label">장소:</span>
+                                <span className="event-detail-label">
+                                  장소:
+                                </span>
                                 <span className="event-detail-value">
                                   {selectedEvent.location}
                                 </span>
@@ -718,6 +757,59 @@ const MyClubScreen: React.FC = () => {
                                   <li key={index}>{item}</li>
                                 ))}
                               </ul>
+                            </div>
+
+                            {/* 댓글 섹션 */}
+                            <div className="event-comments-section">
+                              <h5 className="event-detail-section-title">
+                                댓글 ({comments.length})
+                              </h5>
+                              
+                              {/* 댓글 입력 */}
+                              <div className="comment-input-container">
+                                <div className="comment-input-avatar">
+                                  <img src="/profile-icon.png" alt="프로필" />
+                                </div>
+                                <div className="comment-input-wrapper">
+                                  <input
+                                    type="text"
+                                    className="comment-input"
+                                    placeholder="댓글을 입력하세요..."
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    onKeyPress={(e) => {
+                                      if (e.key === "Enter") {
+                                        handleAddComment();
+                                      }
+                                    }}
+                                  />
+                                  <button
+                                    className="comment-submit-btn"
+                                    onClick={handleAddComment}
+                                    disabled={!newComment.trim()}
+                                  >
+                                    등록
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* 댓글 리스트 */}
+                              <div className="comments-list">
+                                {comments.map((comment) => (
+                                  <div key={comment.id} className="comment-item">
+                                    <div className="comment-avatar">
+                                      <img src={comment.avatar} alt={comment.author} />
+                                    </div>
+                                    <div className="comment-content-wrapper">
+                                      <div className="comment-header">
+                                        <span className="comment-author">{comment.author}</span>
+                                        <span className="comment-time">{comment.time}</span>
+                                      </div>
+                                      <p className="comment-text">{comment.content}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           </div>
                         </div>
