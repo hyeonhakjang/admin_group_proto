@@ -1142,7 +1142,13 @@ const MyClubScreen: React.FC = () => {
                 ✕
               </button>
             </div>
-            <div className="club-list">
+            <div 
+              className="club-list"
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
               {clubs.map((club, index) => (
                 <div
                   key={club.id}
@@ -1157,6 +1163,15 @@ const MyClubScreen: React.FC = () => {
                     e.stopPropagation();
                     handleDragOver(e, index);
                   }}
+                  onDragEnter={(e) => {
+                    e.preventDefault();
+                    if (draggedIndex !== null && draggedIndex !== index) {
+                      setDragOverIndex(index);
+                    }
+                  }}
+                  onDragLeave={() => {
+                    setDragOverIndex(null);
+                  }}
                   onDrop={(e) => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
                   onTouchStart={(e) => handleTouchStart(index, e)}
@@ -1168,7 +1183,7 @@ const MyClubScreen: React.FC = () => {
                     }
                   }}
                   style={{
-                    cursor: isDragging ? "grabbing" : "grab",
+                    cursor: isDragging && draggedIndex === index ? "grabbing" : "grab",
                   }}
                 >
                   <div className="club-modal-avatar">
