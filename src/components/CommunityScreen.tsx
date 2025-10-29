@@ -393,7 +393,9 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
               <div className="popular-posts-list">
                 {/* 글 1 */}
                 <div className="post-card">
-                  <div className="post-badge">HOT</div>
+                  <div className="post-author-avatar">
+                    <img src="/profile-icon.png" alt="작성자 프로필" />
+                  </div>
                   <div className="post-content">
                     <h3 className="post-title">
                       IT 창업을 6개월 안에 경험하는 연합 IT...
@@ -411,7 +413,9 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
 
                 {/* 글 2 */}
                 <div className="post-card">
-                  <div className="post-badge">HOT</div>
+                  <div className="post-author-avatar">
+                    <img src="/profile-icon.png" alt="작성자 프로필" />
+                  </div>
                   <div className="post-content">
                     <h3 className="post-title">
                       새로운 프로젝트 팀원 모집합니다!
@@ -429,7 +433,9 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
 
                 {/* 글 3 */}
                 <div className="post-card">
-                  <div className="post-badge">HOT</div>
+                  <div className="post-author-avatar">
+                    <img src="/profile-icon.png" alt="작성자 프로필" />
+                  </div>
                   <div className="post-content">
                     <h3 className="post-title">
                       이번 주말 오프라인 모임 일정 공지
