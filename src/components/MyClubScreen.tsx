@@ -1142,7 +1142,7 @@ const MyClubScreen: React.FC = () => {
                 ✕
               </button>
             </div>
-            <div 
+            <div
               className="club-list"
               onDragOver={(e) => {
                 e.preventDefault();
@@ -1183,7 +1183,10 @@ const MyClubScreen: React.FC = () => {
                     }
                   }}
                   style={{
-                    cursor: isDragging && draggedIndex === index ? "grabbing" : "grab",
+                    cursor:
+                      isDragging && draggedIndex === index
+                        ? "grabbing"
+                        : "grab",
                   }}
                 >
                   <div className="club-modal-avatar">
