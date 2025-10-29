@@ -744,7 +744,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: clamp(16px, 4vw, 20px);
-  padding-bottom: clamp(24px, 6vw, 32px);
+  padding-bottom: clamp(40px, 10vw, 60px);
   display: flex;
   flex-direction: column;
   gap: clamp(16px, 4vw, 20px);
@@ -868,6 +868,7 @@
   flex-direction: column;
   gap: clamp(12px, 3vw, 16px);
   padding-top: clamp(12px, 3vw, 16px);
+  padding-bottom: clamp(20px, 5vw, 30px);
   border-top: 1px solid #e0e0e0;
 }
 
