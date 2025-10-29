@@ -1100,6 +1100,11 @@
   transition: background-color 0.2s ease, transform 0.2s ease;
   border-bottom: 1px solid #f0f0f0;
   user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  touch-action: none;
+  position: relative;
 }
 
 .club-modal-item:hover {
@@ -1108,11 +1113,27 @@
 
 .club-modal-item:active {
   cursor: grabbing;
-  background-color: #eeeeee;
 }
 
 .club-modal-item.dragging {
   opacity: 0.5;
+  transform: scale(0.95);
+  z-index: 1000;
+}
+
+.club-modal-item.drag-over {
+  border-top: 2px solid #c34e00;
+  background-color: #fff5f0;
+}
+
+.club-modal-item.drag-over::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #c34e00;
 }
 
 .club-modal-avatar {

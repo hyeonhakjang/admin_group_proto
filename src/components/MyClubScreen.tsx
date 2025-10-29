@@ -21,6 +21,9 @@ const MyClubScreen: React.FC = () => {
   const [selectedClub, setSelectedClub] = useState("HICC");
   const [showClubModal, setShowClubModal] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   // 가입된 동아리 목록 (샘플 데이터)
   const [clubs, setClubs] = useState([
@@ -45,31 +48,103 @@ const MyClubScreen: React.FC = () => {
   ]);
 
   const handleClubSelect = (club: (typeof clubs)[0]) => {
-    setSelectedClub(club.name);
-    setShowClubModal(false);
+    if (!isDragging) {
+      setSelectedClub(club.name);
+      setShowClubModal(false);
+    }
   };
 
+  // 마우스 드래그 핸들러
+  const handleMouseDown = (index: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    setDraggedIndex(index);
+    setIsDragging(true);
+  };
+
+  const handleMouseMove = (index: number, e: React.MouseEvent) => {
+    if (draggedIndex === null || draggedIndex === index) return;
+    e.preventDefault();
+    setDragOverIndex(index);
+  };
+
+  const handleMouseUp = (dropIndex: number) => {
+    if (draggedIndex !== null && draggedIndex !== dropIndex) {
+      const newClubs = [...clubs];
+      const draggedItem = newClubs[draggedIndex];
+      newClubs.splice(draggedIndex, 1);
+      newClubs.splice(dropIndex, 0, draggedItem);
+      setClubs(newClubs);
+    }
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+    setIsDragging(false);
+  };
+
+  // 터치 드래그 핸들러
+  const handleTouchStart = (index: number, e: React.TouchEvent) => {
+    setDraggedIndex(index);
+    setTouchStartY(e.touches[0].clientY);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (index: number, e: React.TouchEvent) => {
+    if (draggedIndex === null || touchStartY === null) return;
+    const currentY = e.touches[0].clientY;
+    const deltaY = currentY - touchStartY;
+
+    // 최소 이동 거리 체크
+    if (Math.abs(deltaY) > 10) {
+      setDragOverIndex(index);
+    }
+  };
+
+  const handleTouchEnd = (dropIndex: number) => {
+    if (draggedIndex !== null && draggedIndex !== dropIndex) {
+      const newClubs = [...clubs];
+      const draggedItem = newClubs[draggedIndex];
+      newClubs.splice(draggedIndex, 1);
+      newClubs.splice(dropIndex, 0, draggedItem);
+      setClubs(newClubs);
+    }
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+    setTouchStartY(null);
+    setIsDragging(false);
+  };
+
+  // HTML5 Drag API 핸들러 (데스크톱)
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
+    setIsDragging(true);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
+    e.stopPropagation();
+    if (draggedIndex !== null && draggedIndex !== index) {
+      setDragOverIndex(index);
+    }
   };
 
-  const handleDrop = (dropIndex: number) => {
-    if (draggedIndex === null) return;
-
-    const newClubs = [...clubs];
-    const draggedItem = newClubs[draggedIndex];
-    newClubs.splice(draggedIndex, 1);
-    newClubs.splice(dropIndex, 0, draggedItem);
-    setClubs(newClubs);
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (draggedIndex !== null && draggedIndex !== dropIndex) {
+      const newClubs = [...clubs];
+      const draggedItem = newClubs[draggedIndex];
+      newClubs.splice(draggedIndex, 1);
+      newClubs.splice(dropIndex, 0, draggedItem);
+      setClubs(newClubs);
+    }
     setDraggedIndex(null);
+    setDragOverIndex(null);
+    setIsDragging(false);
   };
 
   const handleDragEnd = () => {
     setDraggedIndex(null);
+    setDragOverIndex(null);
+    setIsDragging(false);
   };
 
   // 공지글만 보기 토글 상태
@@ -1077,16 +1152,23 @@ const MyClubScreen: React.FC = () => {
               {clubs.map((club, index) => (
                 <div
                   key={club.id}
-                  className="club-modal-item"
+                  className={`club-modal-item ${
+                    draggedIndex === index ? "dragging" : ""
+                  } ${dragOverIndex === index ? "drag-over" : ""}`}
                   draggable
                   onDragStart={() => handleDragStart(index)}
-                  onDragOver={handleDragOver}
-                  onDrop={() => handleDrop(index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDrop={(e) => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
+                  onMouseDown={(e) => handleMouseDown(index, e)}
+                  onMouseMove={(e) => handleMouseMove(index, e)}
+                  onMouseUp={() => handleMouseUp(index)}
+                  onTouchStart={(e) => handleTouchStart(index, e)}
+                  onTouchMove={(e) => handleTouchMove(index, e)}
+                  onTouchEnd={() => handleTouchEnd(index)}
                   onClick={() => handleClubSelect(club)}
                   style={{
-                    opacity: draggedIndex === index ? 0.5 : 1,
-                    cursor: "grab",
+                    cursor: isDragging ? "grabbing" : "grab",
                   }}
                 >
                   <div className="club-modal-avatar">
