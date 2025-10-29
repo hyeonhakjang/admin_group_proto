@@ -176,7 +176,7 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                 {/* 동아리 1 */}
                 <div className="club-item">
                   <div className="club-image">
-                    <img src="/club1-image.png" alt="크레스티드 게코 동아리" />
+                    <img src="/club1-image.png" alt="HICC LOGO" />
                   </div>
                   <div className="club-info">
                     <h3 className="club-name">HICC</h3>
@@ -193,7 +193,7 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                 {/* 동아리 2 */}
                 <div className="club-item">
                   <div className="club-image">
-                    <img src="/club2-image.png" alt="집꼭챙 동아리" />
+                    <img src="/club2-image.png" alt="브레인스워즈 로고" />
                   </div>
                   <div className="club-info">
                     <h3 className="club-name">브레인스워즈</h3>
@@ -210,30 +210,61 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                 {/* 동아리 3 */}
                 <div className="club-item">
                   <div className="club-image">
-                    <img src="/club3-image.png" alt="앱테크 모임" />
+                    <img src="/club3-image.png" alt="VOERA 로고" />
                   </div>
                   <div className="club-info">
-                    <h3 className="club-name">
-                      💛 앱테크 모임 💛 (토스, 케이뱅크, 틱톡)
-                    </h3>
+                    <h3 className="club-name">VOERA</h3>
                     <p className="club-description">
-                      다양한 앱을 활용한 테크 정보를 공유하고 함께 배워가는
-                      모임입니다.
+                      홍익대학교 금융 학회 동아리 VOERA입니다.
                     </p>
                     <div className="club-details">
-                      <span className="club-location">●서울시·온라인</span>
-                      <span className="club-field">·새 게시글 3</span>
+                      <span className="club-location">● 동아리</span>
+                      <span className="club-field">학술술</span>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* 더보기 버튼 */}
-              <div className="load-more-section">
-                <button className="load-more-btn">
-                  <span className="refresh-icon">🔄</span>
-                  새로운 동아리 더보기 1/5
-                </button>
+            {/* 교내 동아리 랭킹 섹션 */}
+            <div className="ranking-section">
+              {/* 헤더 */}
+              <div className="section-header">
+                <h3 className="ranking-title">교내 동아리 랭킹</h3>
+                <button className="view-all-btn">더보기 &gt;</button>
+              </div>
+
+              {/* 랭킹 리스트 */}
+              <div className="ranking-list">
+                {/* 1위 */}
+                <div className="ranking-item">
+                  <span className="ranking-number">1</span>
+                  <div className="ranking-club-info">
+                    <div className="ranking-club-name">HICC</div>
+                    <div className="ranking-club-field">학술</div>
+                  </div>
+                  <span className="ranking-points">1,234점</span>
+                </div>
+
+                {/* 2위 */}
+                <div className="ranking-item">
+                  <span className="ranking-number">2</span>
+                  <div className="ranking-club-info">
+                    <div className="ranking-club-name">브레인스워즈</div>
+                    <div className="ranking-club-field">공연</div>
+                  </div>
+                  <span className="ranking-points">987점</span>
+                </div>
+
+                {/* 3위 */}
+                <div className="ranking-item">
+                  <span className="ranking-number">3</span>
+                  <div className="ranking-club-info">
+                    <div className="ranking-club-name">VOERA</div>
+                    <div className="ranking-club-field">학술</div>
+                  </div>
+                  <span className="ranking-points">876점</span>
+                </div>
               </div>
             </div>
           </div>
