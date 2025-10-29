@@ -1,0 +1,86 @@
+---
+globs: *.tsx,*.ts,*.css,*.json
+description: Development workflow and build process guidelines
+---
+
+# 🚀 Development Workflow Rules
+
+## 📦 Package Management
+
+- **Dependencies**: Use npm for package management
+- **Version control**: Keep package-lock.json in version control
+- **Updates**: Regularly update dependencies for security
+- **Scripts**: Use standard npm scripts (start, build, test)
+
+## 🔧 Build Configuration
+
+- **Create React App**: Use CRA for build configuration
+- **TypeScript**: Enable strict mode for type safety
+- **ESLint**: Use react-app ESLint configuration
+- **Browserslist**: Configure for modern browser support
+
+## 📁 File Organization
+
+- **Source code**: Keep all source in [src/](mdc:src/) directory
+- **Public assets**: Store static assets in [public/](mdc:public/)
+- **Components**: Organize components in [src/components/](mdc:src/components/)
+- **Styles**: Keep CSS files alongside components
+
+## 🎯 Development Scripts
+
+```bash
+# Development
+npm start          # Start development server
+npm run build      # Create production build
+npm test           # Run test suite
+npm run eject      # Eject from CRA (not recommended)
+```
+
+## 📱 Mobile Development
+
+- **Device testing**: Test on actual mobile devices
+- **Responsive design**: Use browser dev tools for testing
+- **Touch interactions**: Ensure touch-friendly interfaces
+- **Performance**: Monitor mobile performance metrics
+
+## 🔍 Code Quality
+
+- **TypeScript**: Use strict type checking
+- **ESLint**: Follow ESLint rules and warnings
+- **Code formatting**: Use consistent formatting
+- **Comments**: Include Korean comments for business logic
+
+## 📊 Asset Management
+
+- **Images**: Optimize images for web
+- **Icons**: Use PNG format for UI icons
+- **Fonts**: Load fonts efficiently
+- **Performance**: Minimize asset sizes
+
+## 🎨 Design Integration
+
+- **Figma**: Maintain design-to-code traceability
+- **Data attributes**: Include Figma node IDs
+- **Design system**: Follow established design patterns
+- **Consistency**: Maintain visual consistency
+
+## 🔄 Version Control
+
+- **Git**: Use Git for version control
+- **Commits**: Write descriptive commit messages
+- **Branches**: Use feature branches for development
+- **Pull requests**: Review code before merging
+
+## 📋 Testing Strategy
+
+- **Unit tests**: Test individual components
+- **Integration tests**: Test component interactions
+- **E2E tests**: Test complete user flows
+- **Mobile testing**: Test on various devices
+
+## 🚀 Deployment
+
+- **Build process**: Use `npm run build` for production
+- **Static hosting**: Deploy to static hosting services
+- **CDN**: Use CDN for asset delivery
+- **Performance**: Monitor production performance

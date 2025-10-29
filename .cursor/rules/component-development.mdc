@@ -1,0 +1,91 @@
+---
+globs: *.tsx,*.ts
+description: Component development and best practices
+---
+
+# 🧩 Component Development Rules
+
+## 🎯 Component Structure
+
+- **Single responsibility**: One component, one purpose
+- **Props interface**: Define TypeScript interfaces for props
+- **Default exports**: Use default exports for main components
+- **File organization**: Keep components in [src/components/](mdc:src/components/)
+
+## 📝 Component Template
+
+```typescript
+import React from "react";
+import "./ComponentName.css";
+
+// Image constants at top
+const imgIcon = "/icon.png";
+
+// Props interface
+interface ComponentProps {
+  title: string;
+  isActive?: boolean;
+}
+
+const ComponentName: React.FC<ComponentProps> = ({
+  title,
+  isActive = false,
+}) => {
+  return (
+    <div className="component-name" data-name="Component Name">
+      {/* Component content */}
+    </div>
+  );
+};
+
+export default ComponentName;
+```
+
+## 🎨 Styling Integration
+
+- **CSS modules**: Use component-specific CSS files
+- **Class naming**: Use semantic, descriptive class names
+- **Responsive design**: Include mobile-first responsive styles
+- **Design system**: Follow established color and spacing patterns
+
+## 🔧 Data Attributes
+
+- **Figma integration**: Include `data-name` and `data-node-id`
+- **Semantic meaning**: Use descriptive data attributes
+- **Consistency**: Follow established naming patterns
+- **Traceability**: Maintain design-to-code traceability
+
+## 📱 Mobile Considerations
+
+- **Touch targets**: Minimum 44px for interactive elements
+- **Responsive layout**: Use flexbox for flexible layouts
+- **Performance**: Optimize for mobile performance
+- **Accessibility**: Include proper ARIA attributes
+
+## 🎯 Icon Integration
+
+- **Image constants**: Define icon paths as constants
+- **Alt text**: Provide descriptive alt attributes
+- **Consistent sizing**: Use responsive sizing with `clamp()`
+- **Asset management**: Store icons in [public/](mdc:public/) directory
+
+## 🔄 State Management
+
+- **Local state**: Use React hooks for component state
+- **Props drilling**: Pass data through props when needed
+- **Event handling**: Use descriptive event handler names
+- **Side effects**: Use `useEffect` for lifecycle management
+
+## 📋 Component Examples
+
+- **Navigation components**: Header, bottom tabs
+- **Content components**: Main content areas
+- **Icon components**: Reusable icon elements
+- **Layout components**: Container and wrapper components
+
+## 🎨 Visual Consistency
+
+- **Color scheme**: Use established color palette
+- **Typography**: Follow font and sizing guidelines
+- **Spacing**: Use consistent spacing patterns
+- **Interactions**: Include hover and focus states

@@ -1,0 +1,82 @@
+---
+globs: *.tsx,*.ts
+description: TypeScript and React coding conventions
+---
+
+# 💻 TypeScript & React Conventions
+
+## 🔧 TypeScript Rules
+
+- **Strict mode**: Always use strict TypeScript configuration
+- **Type annotations**: Use explicit types for component props
+- **Interface naming**: Use PascalCase for interfaces (`ComponentProps`)
+- **Import style**: Use ES6 imports with explicit paths
+
+## ⚛️ React Component Patterns
+
+```typescript
+// Component definition
+const ComponentName: React.FC = () => {
+  return <div className="component-name">{/* JSX content */}</div>;
+};
+
+export default ComponentName;
+```
+
+## 📝 Code Organization
+
+- **Constants**: Define image paths and constants at component top
+- **Comments**: Use Korean comments for business logic
+- **JSX structure**: Use semantic HTML with proper nesting
+- **Data attributes**: Include Figma node IDs for design traceability
+
+## 🎯 Naming Conventions
+
+- **Components**: PascalCase (`HomeScreen`, `NavigationBar`)
+- **Files**: PascalCase for components (`HomeScreen.tsx`)
+- **CSS classes**: kebab-case (`.home-screen`, `.nav-bar`)
+- **Variables**: camelCase (`imgTrailingIcon`, `navTitle`)
+
+## 📦 Import/Export Patterns
+
+```typescript
+// React imports
+import React from "react";
+
+// Component imports
+import ComponentName from "./ComponentName";
+
+// CSS imports
+import "./ComponentName.css";
+
+// Constants
+const CONSTANT_NAME = "value";
+```
+
+## 🎨 JSX Structure Rules
+
+- **Semantic HTML**: Use appropriate HTML elements
+- **Accessibility**: Include `alt` attributes for images
+- **Data attributes**: Preserve Figma design IDs
+- **Class names**: Use descriptive, semantic class names
+
+## 🔄 State Management
+
+- **Hooks**: Use React hooks for local state
+- **Props**: Pass data down through props
+- **Event handlers**: Use descriptive function names
+- **Side effects**: Use `useEffect` for lifecycle management
+
+## 📱 Mobile-Specific Patterns
+
+- **Touch events**: Consider touch-friendly interactions
+- **Responsive images**: Use appropriate `src` attributes
+- **Viewport meta**: Ensure proper mobile viewport
+- **Performance**: Optimize for mobile performance
+
+## 🎯 Error Handling
+
+- **Type safety**: Use TypeScript strict mode
+- **Null checks**: Handle potential undefined values
+- **Fallbacks**: Provide fallback content for missing data
+- **Validation**: Validate props and data structures

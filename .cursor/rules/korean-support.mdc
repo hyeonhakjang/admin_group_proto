@@ -1,0 +1,66 @@
+---
+globs: *.tsx,*.ts,*.css
+description: Korean language support and internationalization guidelines
+---
+
+# 🇰🇷 Korean Language Support Rules
+
+## 🔤 Typography & Fonts
+
+- **Primary fonts**: "Inter", "Noto Sans KR", sans-serif
+- **Korean support**: Always include "Noto Sans KR" for Korean text
+- **Font fallbacks**: Provide comprehensive font stack
+- **Letter spacing**: Use negative values for Korean text (-0.34px)
+
+## 📝 Content Guidelines
+
+- **Korean text**: Use proper Korean characters (한글)
+- **Mixed content**: Support Korean + English text combinations
+- **Text alignment**: Use `text-align: left` for Korean text
+- **Line height**: Use appropriate line heights for Korean typography
+
+## 🎨 Visual Considerations
+
+- **Text rendering**: Use `-webkit-font-smoothing: antialiased`
+- **Font weights**: 500 (medium) and 700 (bold) work well with Korean
+- **Character spacing**: Adjust letter-spacing for readability
+- **Text overflow**: Use `text-overflow: ellipsis` for long Korean text
+
+## 📱 Responsive Text
+
+- **Font sizing**: Use `clamp()` for responsive Korean text
+- **Minimum sizes**: Ensure Korean text is readable on small screens
+- **Breakpoints**: Adjust font sizes for different screen sizes
+- **Accessibility**: Maintain good contrast ratios
+
+## 🔧 Implementation Examples
+
+```css
+/* Korean-friendly typography */
+.korean-text {
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.34px;
+  line-height: 1.35;
+}
+
+/* Responsive Korean text */
+.responsive-korean {
+  font-size: clamp(14px, 4vw, 17px);
+  font-family: "Noto Sans KR", sans-serif;
+}
+```
+
+## 📋 Content Structure
+
+- **Navigation**: Use Korean labels (홈, 커뮤니티, 내 동아리)
+- **UI elements**: Provide Korean alternatives for all text
+- **Error messages**: Use Korean for user-facing messages
+- **Comments**: Use Korean for business logic comments
+
+## 🎯 Best Practices
+
+- **Consistency**: Use consistent Korean terminology
+- **Readability**: Ensure Korean text is properly spaced
+- **Performance**: Load Korean fonts efficiently
+- **Accessibility**: Maintain proper contrast and sizing

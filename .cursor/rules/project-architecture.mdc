@@ -1,0 +1,48 @@
+---
+alwaysApply: true
+description: Project architecture and structure guidelines
+---
+
+# 🏗️ Project Architecture Rules
+
+## 📁 Directory Structure
+
+- **Components**: Store all React components in [src/components/](mdc:src/components/)
+- **Styles**: Keep component-specific CSS files alongside their TSX files
+- **Assets**: Place all static assets in [public/](mdc:public/) directory
+- **Icons**: Store UI icons directly in [public/](mdc:public/) root, not in subdirectories
+
+## 🎯 Component Architecture
+
+- Use **functional components** with TypeScript (`React.FC`)
+- Follow **single responsibility principle** - one component, one purpose
+- Keep components focused and modular
+- Use **data attributes** for Figma traceability (`data-name`, `data-node-id`)
+
+## 📱 Mobile-First Design
+
+- **Primary target**: Mobile devices (320px - 480px)
+- **Progressive enhancement**: Desktop as secondary
+- **Touch-friendly**: Minimum 44px touch targets
+- **Responsive breakpoints**: 480px, 360px, 320px, 240px
+
+## 🔧 Technology Stack
+
+- **Framework**: React 19.2.0 with TypeScript 4.9.5
+- **Build Tool**: Create React App (react-scripts)
+- **Styling**: Pure CSS (no CSS frameworks)
+- **State Management**: None currently (use React hooks when needed)
+
+## 📦 Asset Management
+
+- **Image constants**: Define at component top level
+- **File naming**: Use descriptive names (e.g., `search-icon.png`)
+- **Public folder**: Reference assets with `/filename.png` paths
+- **Icon organization**: Keep all UI icons in [public/](mdc:public/) root
+
+## 🎨 Design System Integration
+
+- **Color palette**: `#c34e00` (primary), `#fffcfa` (background), `#28201b` (text)
+- **Typography**: "Inter", "Noto Sans KR" for Korean support
+- **Consistent spacing**: Use `clamp()` for responsive values
+- **Figma integration**: Preserve design node IDs in data attributes

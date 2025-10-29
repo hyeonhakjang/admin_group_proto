@@ -1,0 +1,87 @@
+---
+globs: *.css
+description: CSS styling conventions and responsive design patterns
+---
+
+# 🎨 CSS Styling Rules
+
+## 📱 Mobile-First Responsive Design
+
+- **Base styles**: Write for mobile first (320px+)
+- **Media queries**: Use `@media (max-width: breakpoint)` for larger screens
+- **Fluid sizing**: Use `clamp(min, preferred, max)` for responsive values
+- **Viewport units**: Use `100vh`, `100vw` for full-screen layouts
+
+## 🎯 Layout Patterns
+
+- **Flexbox**: Use `display: flex` for component layouts
+- **Box model**: Always use `box-sizing: border-box`
+- **Z-index**: Use semantic z-index values (1, 2, 3 for layering)
+- **Overflow**: Use `overflow-x: hidden` to prevent horizontal scroll
+
+## 🎨 Design System Colors
+
+```css
+/* Primary Colors */
+--primary-orange: #c34e00;
+--background-cream: #fffcfa;
+--text-dark: #28201b;
+--text-muted: rgba(46, 30, 20, 0.62);
+```
+
+## 📏 Responsive Sizing Patterns
+
+- **Font sizes**: `clamp(14px, 4vw, 17px)` for titles
+- **Icon sizes**: `clamp(28px, 7vw, 32px)` for header icons
+- **Spacing**: `clamp(16px, 4vw, 32px)` for gaps
+- **Heights**: Use `min-height` with `clamp()` for flexible heights
+
+## 🔤 Typography Rules
+
+- **Font families**: "Inter", "Noto Sans KR", sans-serif
+- **Font weights**: 500 (medium), 700 (bold)
+- **Line heights**: Use `normal` or specific ratios (1.35)
+- **Letter spacing**: Use negative values for Korean text (-0.34px)
+
+## 🎯 Component-Specific Styles
+
+- **Header**: 64px min-height, 20px horizontal padding
+- **Tabs**: 80px min-height, 8px internal padding
+- **Icons**: Consistent sizing with 4px padding for touch targets
+- **Main content**: `calc(100vh - 160px)` for flexible height
+
+## 📱 Breakpoint Strategy
+
+```css
+/* Mobile First - Base styles for 320px+ */
+.component {
+  /* mobile styles */
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  /* adjustments */
+}
+
+/* Very small mobile */
+@media (max-width: 360px) {
+  /* tighter spacing */
+}
+
+/* Tiny screens */
+@media (max-width: 320px) {
+  /* minimal spacing */
+}
+
+/* Ultra small */
+@media (max-width: 240px) {
+  /* compact layout */
+}
+```
+
+## 🎨 Visual Effects
+
+- **Transitions**: Use `transition: all 0.2s ease` for smooth interactions
+- **Hover effects**: `transform: scale(1.05)` for subtle feedback
+- **Filters**: Use CSS filters for icon color changes
+- **Object-fit**: Use `contain` to preserve aspect ratios
