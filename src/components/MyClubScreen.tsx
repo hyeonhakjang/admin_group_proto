@@ -17,6 +17,9 @@ const MyClubScreen: React.FC = () => {
     "posts" | "statistics" | "schedule" | "members" | "archive"
   >("posts");
 
+  // 공지글만 보기 토글 상태
+  const [showNoticeOnly, setShowNoticeOnly] = useState(false);
+
   // 달력 관련 상태
   const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 7)); // 2024년 9월 7일
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -352,9 +355,22 @@ const MyClubScreen: React.FC = () => {
       >
         {activeTab === "posts" && (
           <div className="posts-content">
+            {/* 공지글만 보기 토글 */}
+            <div className="posts-filter-bar">
+              <label className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={showNoticeOnly}
+                  onChange={(e) => setShowNoticeOnly(e.target.checked)}
+                />
+                <span className="toggle-slider"></span>
+                <span className="toggle-label">공지글만</span>
+              </label>
+            </div>
             {/* 게시글 리스트 */}
             <div className="posts-list">
-              {/* 게시글 1 */}
+              {/* 게시글 1 - 공지글 */}
+              {(!showNoticeOnly || true) && (
               <div className="club-post-card">
                 <div className="post-header">
                   <div className="post-author-section">
@@ -391,8 +407,10 @@ const MyClubScreen: React.FC = () => {
                   <span className="engagement-views">👁 5,321</span>
                 </div>
               </div>
+              )}
 
-              {/* 게시글 2 */}
+              {/* 게시글 2 - 공지글 */}
+              {(!showNoticeOnly || true) && (
               <div className="club-post-card">
                 <div className="post-header">
                   <div className="post-author-section">
@@ -423,8 +441,10 @@ const MyClubScreen: React.FC = () => {
                   <span className="engagement-views">👁 2,156</span>
                 </div>
               </div>
+              )}
 
-              {/* 게시글 3 */}
+              {/* 게시글 3 - 일반글 */}
+              {(!showNoticeOnly || false) && (
               <div className="club-post-card">
                 <div className="post-header">
                   <div className="post-author-section">
@@ -456,6 +476,7 @@ const MyClubScreen: React.FC = () => {
                   <span className="engagement-views">👁 1,234</span>
                 </div>
               </div>
+              )}
             </div>
           </div>
         )}
