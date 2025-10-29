@@ -55,6 +55,17 @@ const CommunityScreen: React.FC = () => {
                 src={imgTrailingIcon1}
               />
             </div>
+            <div
+              className="profile-icon"
+              data-name="profileIcon"
+              data-node-id="9:641"
+            >
+              <img
+                alt="Profile Icon"
+                className="icon"
+                src="/profile-icon.png"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -112,7 +123,7 @@ const CommunityScreen: React.FC = () => {
               <img alt="Home Icon" className="icon" src={imgIcon} />
             </div>
             <p className="tab-label" data-node-id="11:3052">
-              Home
+              홈
             </p>
           </div>
 
@@ -122,7 +133,7 @@ const CommunityScreen: React.FC = () => {
               <img alt="Community Icon" className="icon" src={imgIcon1} />
             </div>
             <p className="tab-label active" data-node-id="11:3070">
-              Community
+              커뮤니티
             </p>
           </div>
 
@@ -132,7 +143,7 @@ const CommunityScreen: React.FC = () => {
               <img alt="My Club Icon" className="icon" src={imgIcon2} />
             </div>
             <p className="tab-label" data-node-id="11:3080">
-              My Club
+              내 동아리
             </p>
           </div>
 
@@ -142,7 +153,7 @@ const CommunityScreen: React.FC = () => {
               <img alt="Booking Icon" className="icon" src={imgIcon3} />
             </div>
             <p className="tab-label" data-node-id="11:3089">
-              Booking / Purchase
+              예약/구매
             </p>
           </div>
 
@@ -152,22 +163,9 @@ const CommunityScreen: React.FC = () => {
               <img alt="Chat Icon" className="icon" src={imgIcon4} />
             </div>
             <p className="tab-label" data-node-id="11:3096">
-              Chat
+              채팅
             </p>
           </div>
-        </div>
-
-        {/* Gesture Indicator Bar */}
-        <div
-          className="gesture-indicator"
-          data-name="Gesture Indicator Bar"
-          data-node-id="11:3097"
-        >
-          <div
-            className="indicator-bar"
-            data-name="Rectangle"
-            data-node-id="11:3098"
-          />
         </div>
       </div>
     </div>
