@@ -73,7 +73,7 @@ const MyClubScreen: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 7)); // 2024년 9월 7일
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showEventDetail, setShowEventDetail] = useState(false);
-  
+
   // 댓글 상태
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState([
@@ -764,7 +764,7 @@ const MyClubScreen: React.FC = () => {
                               <h5 className="event-detail-section-title">
                                 댓글 ({comments.length})
                               </h5>
-                              
+
                               {/* 댓글 입력 */}
                               <div className="comment-input-container">
                                 <div className="comment-input-avatar">
@@ -776,7 +776,9 @@ const MyClubScreen: React.FC = () => {
                                     className="comment-input"
                                     placeholder="댓글을 입력하세요..."
                                     value={newComment}
-                                    onChange={(e) => setNewComment(e.target.value)}
+                                    onChange={(e) =>
+                                      setNewComment(e.target.value)
+                                    }
                                     onKeyPress={(e) => {
                                       if (e.key === "Enter") {
                                         handleAddComment();
@@ -796,16 +798,28 @@ const MyClubScreen: React.FC = () => {
                               {/* 댓글 리스트 */}
                               <div className="comments-list">
                                 {comments.map((comment) => (
-                                  <div key={comment.id} className="comment-item">
+                                  <div
+                                    key={comment.id}
+                                    className="comment-item"
+                                  >
                                     <div className="comment-avatar">
-                                      <img src={comment.avatar} alt={comment.author} />
+                                      <img
+                                        src={comment.avatar}
+                                        alt={comment.author}
+                                      />
                                     </div>
                                     <div className="comment-content-wrapper">
                                       <div className="comment-header">
-                                        <span className="comment-author">{comment.author}</span>
-                                        <span className="comment-time">{comment.time}</span>
+                                        <span className="comment-author">
+                                          {comment.author}
+                                        </span>
+                                        <span className="comment-time">
+                                          {comment.time}
+                                        </span>
                                       </div>
-                                      <p className="comment-text">{comment.content}</p>
+                                      <p className="comment-text">
+                                        {comment.content}
+                                      </p>
                                     </div>
                                   </div>
                                 ))}

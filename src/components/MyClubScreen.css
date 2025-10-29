@@ -746,8 +746,10 @@
   padding: clamp(16px, 4vw, 20px);
   overflow-y: auto;
   overflow-x: hidden;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
 .event-back-btn {
