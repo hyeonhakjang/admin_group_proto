@@ -744,12 +744,14 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: clamp(16px, 4vw, 20px);
+  padding-bottom: clamp(24px, 6vw, 32px);
   display: flex;
   flex-direction: column;
   gap: clamp(16px, 4vw, 20px);
   min-height: 0;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
+  box-sizing: border-box;
 }
 
 .event-back-btn {
