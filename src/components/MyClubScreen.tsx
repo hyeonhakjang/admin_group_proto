@@ -54,62 +54,13 @@ const MyClubScreen: React.FC = () => {
     }
   };
 
-  // 마우스 드래그 핸들러
-  const handleMouseDown = (index: number, e: React.MouseEvent) => {
-    e.preventDefault();
-    setDraggedIndex(index);
-    setIsDragging(true);
-  };
-
-  const handleMouseMove = (index: number, e: React.MouseEvent) => {
-    if (draggedIndex === null || draggedIndex === index) return;
-    e.preventDefault();
-    setDragOverIndex(index);
-  };
-
-  const handleMouseUp = (dropIndex: number) => {
-    if (draggedIndex !== null && draggedIndex !== dropIndex) {
-      const newClubs = [...clubs];
-      const draggedItem = newClubs[draggedIndex];
-      newClubs.splice(draggedIndex, 1);
-      newClubs.splice(dropIndex, 0, draggedItem);
-      setClubs(newClubs);
-    }
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-    setIsDragging(false);
-  };
-
-  // 터치 드래그 핸들러
-  const handleTouchStart = (index: number, e: React.TouchEvent) => {
-    setDraggedIndex(index);
-    setTouchStartY(e.touches[0].clientY);
-    setIsDragging(true);
-  };
-
-  const handleTouchMove = (index: number, e: React.TouchEvent) => {
-    if (draggedIndex === null || touchStartY === null) return;
-    const currentY = e.touches[0].clientY;
-    const deltaY = currentY - touchStartY;
-
-    // 최소 이동 거리 체크
-    if (Math.abs(deltaY) > 10) {
-      setDragOverIndex(index);
-    }
-  };
-
-  const handleTouchEnd = (dropIndex: number) => {
-    if (draggedIndex !== null && draggedIndex !== dropIndex) {
-      const newClubs = [...clubs];
-      const draggedItem = newClubs[draggedIndex];
-      newClubs.splice(draggedIndex, 1);
-      newClubs.splice(dropIndex, 0, draggedItem);
-      setClubs(newClubs);
-    }
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-    setTouchStartY(null);
-    setIsDragging(false);
+  // 드래그 드롭 재정렬 함수
+  const reorderClubs = (startIndex: number, endIndex: number) => {
+    if (startIndex === endIndex) return;
+    const newClubs = [...clubs];
+    const [removed] = newClubs.splice(startIndex, 1);
+    newClubs.splice(endIndex, 0, removed);
+    setClubs(newClubs);
   };
 
   // HTML5 Drag API 핸들러 (데스크톱)
@@ -121,8 +72,18 @@ const MyClubScreen: React.FC = () => {
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     e.stopPropagation();
+    if (draggedIndex === null || draggedIndex === index) return;
+    
+    setDragOverIndex(index);
+    
+    // 즉시 순서 변경 (드래그 중 실시간 업데이트)
     if (draggedIndex !== null && draggedIndex !== index) {
-      setDragOverIndex(index);
+      const dragDirection = draggedIndex < index ? 1 : -1;
+      const newIndex = draggedIndex + dragDirection;
+      if (newIndex !== draggedIndex && newIndex >= 0 && newIndex < clubs.length) {
+        reorderClubs(draggedIndex, newIndex);
+        setDraggedIndex(newIndex);
+      }
     }
   };
 
@@ -130,11 +91,7 @@ const MyClubScreen: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
     if (draggedIndex !== null && draggedIndex !== dropIndex) {
-      const newClubs = [...clubs];
-      const draggedItem = newClubs[draggedIndex];
-      newClubs.splice(draggedIndex, 1);
-      newClubs.splice(dropIndex, 0, draggedItem);
-      setClubs(newClubs);
+      reorderClubs(draggedIndex, dropIndex);
     }
     setDraggedIndex(null);
     setDragOverIndex(null);
@@ -144,6 +101,40 @@ const MyClubScreen: React.FC = () => {
   const handleDragEnd = () => {
     setDraggedIndex(null);
     setDragOverIndex(null);
+    setIsDragging(false);
+  };
+
+  // 터치 이벤트 핸들러
+  const handleTouchStart = (index: number, e: React.TouchEvent) => {
+    setDraggedIndex(index);
+    setTouchStartY(e.touches[0].clientY);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (draggedIndex === null || touchStartY === null) return;
+    e.preventDefault();
+    const currentY = e.touches[0].clientY;
+    const deltaY = currentY - touchStartY;
+    
+    // 현재 터치 위치에 있는 항목 찾기
+    const elements = document.elementsFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+    const targetItem = elements.find(el => el.classList.contains('club-modal-item'));
+    
+    if (targetItem) {
+      const targetIndex = parseInt(targetItem.getAttribute('data-index') || '-1');
+      if (targetIndex >= 0 && targetIndex !== draggedIndex && Math.abs(deltaY) > 20) {
+        reorderClubs(draggedIndex, targetIndex);
+        setDraggedIndex(targetIndex);
+        setTouchStartY(currentY);
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+    setTouchStartY(null);
     setIsDragging(false);
   };
 
@@ -1152,21 +1143,31 @@ const MyClubScreen: React.FC = () => {
               {clubs.map((club, index) => (
                 <div
                   key={club.id}
+                  data-index={index}
                   className={`club-modal-item ${
                     draggedIndex === index ? "dragging" : ""
                   } ${dragOverIndex === index ? "drag-over" : ""}`}
-                  draggable
-                  onDragStart={() => handleDragStart(index)}
-                  onDragOver={(e) => handleDragOver(e, index)}
+                  draggable={true}
+                  onDragStart={(e) => {
+                    handleDragStart(index);
+                    e.dataTransfer.effectAllowed = "move";
+                    e.dataTransfer.setData("text/html", e.currentTarget.outerHTML);
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDragOver(e, index);
+                  }}
                   onDrop={(e) => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
-                  onMouseDown={(e) => handleMouseDown(index, e)}
-                  onMouseMove={(e) => handleMouseMove(index, e)}
-                  onMouseUp={() => handleMouseUp(index)}
                   onTouchStart={(e) => handleTouchStart(index, e)}
-                  onTouchMove={(e) => handleTouchMove(index, e)}
-                  onTouchEnd={() => handleTouchEnd(index)}
-                  onClick={() => handleClubSelect(club)}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  onClick={() => {
+                    if (!isDragging) {
+                      handleClubSelect(club);
+                    }
+                  }}
                   style={{
                     cursor: isDragging ? "grabbing" : "grab",
                   }}
