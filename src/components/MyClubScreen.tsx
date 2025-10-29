@@ -363,119 +363,119 @@ const MyClubScreen: React.FC = () => {
                   checked={showNoticeOnly}
                   onChange={(e) => setShowNoticeOnly(e.target.checked)}
                 />
-                <span className="toggle-slider"></span>
                 <span className="toggle-label">공지글만</span>
+                <span className="toggle-slider"></span>
               </label>
             </div>
             {/* 게시글 리스트 */}
             <div className="posts-list">
               {/* 게시글 1 - 공지글 */}
               {(!showNoticeOnly || true) && (
-              <div className="club-post-card">
-                <div className="post-header">
-                  <div className="post-author-section">
-                    <div className="post-author-avatar">
-                      <img src="/profile-icon.png" alt="작성자 프로필" />
-                    </div>
-                    <div className="post-author-info">
-                      <div className="author-name-row">
-                        <span className="author-name">홍익대 HICC</span>
-                        <span className="verified-badge">✓</span>
+                <div className="club-post-card">
+                  <div className="post-header">
+                    <div className="post-author-section">
+                      <div className="post-author-avatar">
+                        <img src="/profile-icon.png" alt="작성자 프로필" />
                       </div>
-                      <span className="post-time">오늘 18:41</span>
+                      <div className="post-author-info">
+                        <div className="author-name-row">
+                          <span className="author-name">홍익대 HICC</span>
+                          <span className="verified-badge">✓</span>
+                        </div>
+                        <span className="post-time">오늘 18:41</span>
+                      </div>
+                    </div>
+                    <button className="post-more-btn">⋯</button>
+                  </div>
+                  <div className="post-title-section">
+                    <div className="post-topic-icons">
+                      <span className="topic-icon">📊</span>
+                      <span className="topic-icon">💡</span>
+                    </div>
+                    <h3 className="post-title">
+                      HICC 정기 세션 안내 및 참여 신청
+                    </h3>
+                    <div className="post-topic-icons-right">
+                      <span className="topic-icon">📈</span>
+                      <span className="topic-icon">💰</span>
                     </div>
                   </div>
-                  <button className="post-more-btn">⋯</button>
-                </div>
-                <div className="post-title-section">
-                  <div className="post-topic-icons">
-                    <span className="topic-icon">📊</span>
-                    <span className="topic-icon">💡</span>
-                  </div>
-                  <h3 className="post-title">
-                    HICC 정기 세션 안내 및 참여 신청
-                  </h3>
-                  <div className="post-topic-icons-right">
-                    <span className="topic-icon">📈</span>
-                    <span className="topic-icon">💰</span>
+                  <div className="post-engagement-section">
+                    <button className="engagement-btn">👍 2,321</button>
+                    <button className="engagement-btn">💬 5,321</button>
+                    <button className="engagement-btn">🔗</button>
+                    <span className="engagement-views">👁 5,321</span>
                   </div>
                 </div>
-                <div className="post-engagement-section">
-                  <button className="engagement-btn">👍 2,321</button>
-                  <button className="engagement-btn">💬 5,321</button>
-                  <button className="engagement-btn">🔗</button>
-                  <span className="engagement-views">👁 5,321</span>
-                </div>
-              </div>
               )}
 
               {/* 게시글 2 - 공지글 */}
               {(!showNoticeOnly || true) && (
-              <div className="club-post-card">
-                <div className="post-header">
-                  <div className="post-author-section">
-                    <div className="post-author-avatar">
-                      <img src="/profile-icon.png" alt="작성자 프로필" />
-                    </div>
-                    <div className="post-author-info">
-                      <div className="author-name-row">
-                        <span className="author-name">홍익대 HICC</span>
-                        <span className="verified-badge">✓</span>
+                <div className="club-post-card">
+                  <div className="post-header">
+                    <div className="post-author-section">
+                      <div className="post-author-avatar">
+                        <img src="/profile-icon.png" alt="작성자 프로필" />
                       </div>
-                      <span className="post-time">오늘 18:41</span>
+                      <div className="post-author-info">
+                        <div className="author-name-row">
+                          <span className="author-name">홍익대 HICC</span>
+                          <span className="verified-badge">✓</span>
+                        </div>
+                        <span className="post-time">오늘 18:41</span>
+                      </div>
+                    </div>
+                    <button className="post-more-btn">⋯</button>
+                  </div>
+                  <div className="post-title-section">
+                    <h3 className="post-title">이번 달 회비 납부 관련 안내</h3>
+                    <div className="post-topic-icons-right">
+                      <span className="topic-icon">🏢</span>
+                      <span className="topic-icon">📈</span>
                     </div>
                   </div>
-                  <button className="post-more-btn">⋯</button>
-                </div>
-                <div className="post-title-section">
-                  <h3 className="post-title">이번 달 회비 납부 관련 안내</h3>
-                  <div className="post-topic-icons-right">
-                    <span className="topic-icon">🏢</span>
-                    <span className="topic-icon">📈</span>
+                  <div className="post-engagement-section">
+                    <button className="engagement-btn">👍 1,856</button>
+                    <button className="engagement-btn">💬 342</button>
+                    <button className="engagement-btn">🔗</button>
+                    <span className="engagement-views">👁 2,156</span>
                   </div>
                 </div>
-                <div className="post-engagement-section">
-                  <button className="engagement-btn">👍 1,856</button>
-                  <button className="engagement-btn">💬 342</button>
-                  <button className="engagement-btn">🔗</button>
-                  <span className="engagement-views">👁 2,156</span>
-                </div>
-              </div>
               )}
 
               {/* 게시글 3 - 일반글 */}
               {(!showNoticeOnly || false) && (
-              <div className="club-post-card">
-                <div className="post-header">
-                  <div className="post-author-section">
-                    <div className="post-author-avatar">
-                      <img src="/profile-icon.png" alt="작성자 프로필" />
-                    </div>
-                    <div className="post-author-info">
-                      <div className="author-name-row">
-                        <span className="author-name">홍익대 HICC</span>
-                        <span className="verified-badge">✓</span>
-                        <span className="post-time">어제 15:30</span>
+                <div className="club-post-card">
+                  <div className="post-header">
+                    <div className="post-author-section">
+                      <div className="post-author-avatar">
+                        <img src="/profile-icon.png" alt="작성자 프로필" />
+                      </div>
+                      <div className="post-author-info">
+                        <div className="author-name-row">
+                          <span className="author-name">홍익대 HICC</span>
+                          <span className="verified-badge">✓</span>
+                          <span className="post-time">어제 15:30</span>
+                        </div>
                       </div>
                     </div>
+                    <button className="post-more-btn">⋯</button>
                   </div>
-                  <button className="post-more-btn">⋯</button>
-                </div>
-                <div className="post-title-section">
-                  <div className="post-topic-icons">
-                    <span className="topic-icon">📋</span>
+                  <div className="post-title-section">
+                    <div className="post-topic-icons">
+                      <span className="topic-icon">📋</span>
+                    </div>
+                    <h3 className="post-title">
+                      프로젝트 팀 구성 및 역할 배정 투표
+                    </h3>
                   </div>
-                  <h3 className="post-title">
-                    프로젝트 팀 구성 및 역할 배정 투표
-                  </h3>
+                  <div className="post-engagement-section">
+                    <button className="engagement-btn">👍 892</button>
+                    <button className="engagement-btn">💬 156</button>
+                    <button className="engagement-btn">🔗</button>
+                    <span className="engagement-views">👁 1,234</span>
+                  </div>
                 </div>
-                <div className="post-engagement-section">
-                  <button className="engagement-btn">👍 892</button>
-                  <button className="engagement-btn">💬 156</button>
-                  <button className="engagement-btn">🔗</button>
-                  <span className="engagement-views">👁 1,234</span>
-                </div>
-              </div>
               )}
             </div>
           </div>
