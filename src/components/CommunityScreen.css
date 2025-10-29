@@ -648,10 +648,12 @@
   margin: 0;
   line-height: 1.5;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-top: clamp(6px, 1.5vw, 8px);
+  margin-top: clamp(4px, 1vw, 6px);
+  height: clamp(36px, 9vw, 42px);
+  max-height: clamp(36px, 9vw, 42px);
 }
 
 .post-meta {
