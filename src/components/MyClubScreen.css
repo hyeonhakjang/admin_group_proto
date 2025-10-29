@@ -766,7 +766,7 @@
 
 .posts-filter-bar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: clamp(12px, 3vw, 16px);
 }
@@ -806,11 +806,11 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.toggle-switch input:checked + .toggle-slider {
+.toggle-switch input:checked ~ .toggle-slider {
   background: #c34e00;
 }
 
-.toggle-switch input:checked + .toggle-slider::before {
+.toggle-switch input:checked ~ .toggle-slider::before {
   transform: translate(calc(100% + clamp(2px, 0.5vw, 4px)), -50%);
 }
 
