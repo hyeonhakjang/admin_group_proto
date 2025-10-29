@@ -168,7 +168,7 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
               {/* 헤더 */}
               <div className="section-header">
                 <h2 className="section-title">교내 동아리 찾기</h2>
-                <button className="view-all-btn">교내 동아리 찾기 페이지로 이동 &gt;</button>
+                <button className="view-all-btn">더보기 &gt;</button>
               </div>
 
               {/* 동아리 리스트 */}
@@ -179,11 +179,13 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                     <img src="/club1-image.png" alt="크레스티드 게코 동아리" />
                   </div>
                   <div className="club-info">
-                    <h3 className="club-name">크레스티드 게코 키우는 사람~ 👋 입문환영</h3>
-                    <p className="club-description">안녕하세요! 크레스티드 게코를 키우는 분들과 함께 소통하고 정보를 공유하는 공간입니다.</p>
+                    <h3 className="club-name">HICC</h3>
+                    <p className="club-description">
+                      홍익대학교 컴퓨터동아리 HICC입니다.
+                    </p>
                     <div className="club-details">
-                      <span className="club-location">●서울시·온라인</span>
-                      <span className="club-field">·새 게시글 4</span>
+                      <span className="club-location">● 동아리</span>
+                      <span className="club-field">학술</span>
                     </div>
                   </div>
                 </div>
@@ -194,11 +196,13 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                     <img src="/club2-image.png" alt="집꼭챙 동아리" />
                   </div>
                   <div className="club-info">
-                    <h3 className="club-name">🥄 집꼭챙! - 집에서 꼭 챙겨먹자! 🥄</h3>
-                    <p className="club-description">외식이 잦아 집에서 챙겨먹고 싶으신 분들! 건강한 식습관을 함께 만들어가요.</p>
+                    <h3 className="club-name">브레인스워즈</h3>
+                    <p className="club-description">
+                      홍익대학교 힙합 동아리 브레인스워즈입니다.
+                    </p>
                     <div className="club-details">
-                      <span className="club-location">●서울시·온라인</span>
-                      <span className="club-field">·새 게시글 4</span>
+                      <span className="club-location">● 동아리</span>
+                      <span className="club-field">공연</span>
                     </div>
                   </div>
                 </div>
@@ -209,8 +213,13 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                     <img src="/club3-image.png" alt="앱테크 모임" />
                   </div>
                   <div className="club-info">
-                    <h3 className="club-name">💛 앱테크 모임 💛 (토스, 케이뱅크, 틱톡)</h3>
-                    <p className="club-description">다양한 앱을 활용한 테크 정보를 공유하고 함께 배워가는 모임입니다.</p>
+                    <h3 className="club-name">
+                      💛 앱테크 모임 💛 (토스, 케이뱅크, 틱톡)
+                    </h3>
+                    <p className="club-description">
+                      다양한 앱을 활용한 테크 정보를 공유하고 함께 배워가는
+                      모임입니다.
+                    </p>
                     <div className="club-details">
                       <span className="club-location">●서울시·온라인</span>
                       <span className="club-field">·새 게시글 3</span>

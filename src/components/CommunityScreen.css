@@ -340,6 +340,7 @@
   padding: 8px 12px;
   border-radius: 8px;
   transition: background-color 0.2s ease;
+  margin-left: auto;
 }
 
 .view-all-btn:hover {
@@ -411,6 +412,7 @@
 
 .club-details {
   display: flex;
+  justify-content: space-between;
   gap: 8px;
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 400;
