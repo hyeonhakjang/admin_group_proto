@@ -10,9 +10,18 @@ const imgIcon2 = "/myclub.png"; // 내 클럽 아이콘
 const imgIcon3 = "/booking.png"; // 예약/구매 아이콘
 const imgIcon4 = "/chat.png"; // 채팅 아이콘
 
-const CommunityScreen: React.FC = () => {
+// Props 인터페이스
+interface CommunityScreenProps {
+  onScreenChange: (screen: 'home' | 'community') => void;
+}
+
+const CommunityScreen: React.FC<CommunityScreenProps> = ({ onScreenChange }) => {
   return (
-    <div className="community-screen" data-name="커뮤니티 화면" data-node-id="11:2999">
+    <div
+      className="community-screen"
+      data-name="커뮤니티 화면"
+      data-node-id="11:2999"
+    >
       {/* Header Navigation Bar */}
       <div
         className="header-nav-bar"
@@ -84,7 +93,11 @@ const CommunityScreen: React.FC = () => {
           <div className="tabs-wrapper">
             {/* Find Clubs Tab */}
             <div className="tab active" data-name="Tab" data-node-id="11:3345">
-              <div className="tab-underline active" data-name="Underline" data-node-id="11:3347">
+              <div
+                className="tab-underline active"
+                data-name="Underline"
+                data-node-id="11:3347"
+              >
                 <p className="tab-text active" data-node-id="11:3348">
                   Find Clubs
                 </p>
@@ -93,7 +106,11 @@ const CommunityScreen: React.FC = () => {
 
             {/* Community Board Tab */}
             <div className="tab" data-name="Tab" data-node-id="11:3328">
-              <div className="tab-underline" data-name="Underline" data-node-id="11:3330">
+              <div
+                className="tab-underline"
+                data-name="Underline"
+                data-node-id="11:3330"
+              >
                 <p className="tab-text" data-node-id="11:3331">
                   Community Board
                 </p>
@@ -118,7 +135,12 @@ const CommunityScreen: React.FC = () => {
       >
         <div className="tabs" data-name="tabs" data-node-id="11:3041">
           {/* Home Tab */}
-          <div className="tab" data-name="tab1" data-node-id="11:3042">
+          <div 
+            className="tab" 
+            data-name="tab1" 
+            data-node-id="11:3042"
+            onClick={() => onScreenChange('home')}
+          >
             <div className="tab-icon" data-name="Icon" data-node-id="11:3043">
               <img alt="Home Icon" className="icon" src={imgIcon} />
             </div>

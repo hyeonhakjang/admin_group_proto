@@ -10,7 +10,12 @@ const imgIcon2 = "/myclub.png"; // 내 클럽 아이콘
 const imgIcon3 = "/booking.png"; // 예약/구매 아이콘
 const imgIcon4 = "/chat.png"; // 채팅 아이콘
 
-const HomeScreen: React.FC = () => {
+// Props 인터페이스
+interface HomeScreenProps {
+  onScreenChange: (screen: 'home' | 'community') => void;
+}
+
+const HomeScreen: React.FC<HomeScreenProps> = ({ onScreenChange }) => {
   return (
     <div className="home-screen" data-name="홈 화면" data-node-id="9:2">
       {/* Header Navigation Bar */}
@@ -95,7 +100,12 @@ const HomeScreen: React.FC = () => {
           </div>
 
           {/* Community Tab */}
-          <div className="tab" data-name="tab2" data-node-id="9:559">
+          <div 
+            className="tab" 
+            data-name="tab2" 
+            data-node-id="9:559"
+            onClick={() => onScreenChange('community')}
+          >
             <div className="tab-icon" data-name="Icon" data-node-id="9:577">
               <img alt="Community Icon" className="icon" src={imgIcon1} />
             </div>
