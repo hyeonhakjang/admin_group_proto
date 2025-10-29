@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./CommunityScreen.css";
 
 // 이미지 상수들 (피그마에서 다운로드한 실제 아이콘들)
@@ -18,6 +18,11 @@ interface CommunityScreenProps {
 const CommunityScreen: React.FC<CommunityScreenProps> = ({
   onScreenChange,
 }) => {
+  const [activeTab, setActiveTab] = useState<"find-clubs" | "community-board">("find-clubs");
+
+  const handleTabClick = (tab: "find-clubs" | "community-board") => {
+    setActiveTab(tab);
+  };
   return (
     <div
       className="community-screen"
@@ -94,27 +99,37 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
         >
           <div className="tabs-wrapper">
             {/* Find Clubs Tab */}
-            <div className="tab active" data-name="Tab" data-node-id="11:3345">
+            <div 
+              className={`tab ${activeTab === "find-clubs" ? "active" : ""}`} 
+              data-name="Tab" 
+              data-node-id="11:3345"
+              onClick={() => handleTabClick("find-clubs")}
+            >
               <div
-                className="tab-underline active"
+                className={`tab-underline ${activeTab === "find-clubs" ? "active" : ""}`}
                 data-name="Underline"
                 data-node-id="11:3347"
               >
-                <p className="tab-text active" data-node-id="11:3348">
-                  Find Clubs
+                <p className={`tab-text ${activeTab === "find-clubs" ? "active" : ""}`} data-node-id="11:3348">
+                  동아리 찾기
                 </p>
               </div>
             </div>
 
             {/* Community Board Tab */}
-            <div className="tab" data-name="Tab" data-node-id="11:3328">
+            <div 
+              className={`tab ${activeTab === "community-board" ? "active" : ""}`} 
+              data-name="Tab" 
+              data-node-id="11:3328"
+              onClick={() => handleTabClick("community-board")}
+            >
               <div
-                className="tab-underline"
+                className={`tab-underline ${activeTab === "community-board" ? "active" : ""}`}
                 data-name="Underline"
                 data-node-id="11:3330"
               >
-                <p className="tab-text" data-node-id="11:3331">
-                  Community Board
+                <p className={`tab-text ${activeTab === "community-board" ? "active" : ""}`} data-node-id="11:3331">
+                  게시판
                 </p>
               </div>
             </div>
@@ -127,7 +142,20 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
         className="main-content"
         data-name="Main Content"
         data-node-id="11:3039"
-      />
+      >
+        {activeTab === "find-clubs" && (
+          <div className="find-clubs-content">
+            <h2>동아리 찾기</h2>
+            <p>동아리 찾기 콘텐츠가 여기에 표시됩니다.</p>
+          </div>
+        )}
+        {activeTab === "community-board" && (
+          <div className="community-board-content">
+            <h2>게시판</h2>
+            <p>게시판 콘텐츠가 여기에 표시됩니다.</p>
+          </div>
+        )}
+      </div>
 
       {/* Bottom Tab Bar */}
       <div

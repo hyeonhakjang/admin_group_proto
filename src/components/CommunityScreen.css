@@ -160,6 +160,8 @@
   padding: 8px 0 0 0;
   position: relative;
   flex-shrink: 0;
+  cursor: pointer; /* 클릭 가능하도록 */
+  transition: all 0.2s ease; /* 부드러운 전환 */
 }
 
 .tab-underline {
