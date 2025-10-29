@@ -139,6 +139,16 @@ const MyClubScreen: React.FC = () => {
     tab: "posts" | "statistics" | "schedule" | "members" | "archive"
   ) => {
     setActiveTab(tab);
+    // 일정 탭이 아닌 다른 탭으로 이동할 때 일정 관련 상태 초기화
+    if (tab !== "schedule") {
+      setSelectedDate(null);
+      setShowEventDetail(false);
+    }
+    // 일정 탭으로 돌아올 때도 상태 초기화
+    if (tab === "schedule") {
+      setSelectedDate(null);
+      setShowEventDetail(false);
+    }
   };
 
   // 달력 관련 함수
