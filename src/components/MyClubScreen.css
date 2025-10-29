@@ -1465,10 +1465,12 @@
 .search-icon {
   position: absolute;
   left: clamp(12px, 3vw, 16px);
-  font-size: clamp(16px, 4vw, 18px);
-  color: #888888;
+  width: clamp(16px, 4vw, 18px);
+  height: clamp(16px, 4vw, 18px);
+  object-fit: contain;
   pointer-events: none;
   z-index: 1;
+  filter: brightness(0) saturate(100%) invert(54%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(50%) contrast(90%);
 }
 
 .members-search-input {

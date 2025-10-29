@@ -657,7 +657,7 @@ const MyClubScreen: React.FC = () => {
 
             {/* 검색 필드 */}
             <div className="members-search-container">
-              <div className="search-icon">🔍</div>
+              <img src="/search-icon.png" alt="검색" className="search-icon" />
               <input
                 type="text"
                 className="members-search-input"
@@ -681,7 +681,9 @@ const MyClubScreen: React.FC = () => {
                     </div>
                   </div>
                   <button
-                    className={`member-role-btn ${member.isOwner ? "owner-role" : ""}`}
+                    className={`member-role-btn ${
+                      member.isOwner ? "owner-role" : ""
+                    }`}
                   >
                     {member.role}
                     {!member.isOwner && (
