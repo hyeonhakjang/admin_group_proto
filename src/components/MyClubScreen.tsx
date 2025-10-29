@@ -83,6 +83,7 @@ const MyClubScreen: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
     if (draggedIndex !== null && draggedIndex !== dropIndex) {
+      console.log(`드래그: ${draggedIndex} -> ${dropIndex}`);
       reorderClubs(draggedIndex, dropIndex);
     }
     setDraggedIndex(null);
@@ -1169,7 +1170,19 @@ const MyClubScreen: React.FC = () => {
                       setDragOverIndex(index);
                     }
                   }}
-                  onDragLeave={() => {
+                  onDragLeave={(e) => {
+                    // 자식 요소로 이동하는 경우는 무시
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = e.clientX;
+                    const y = e.clientY;
+                    if (
+                      x >= rect.left &&
+                      x <= rect.right &&
+                      y >= rect.top &&
+                      y <= rect.bottom
+                    ) {
+                      return;
+                    }
                     setDragOverIndex(null);
                   }}
                   onDrop={(e) => handleDrop(e, index)}
