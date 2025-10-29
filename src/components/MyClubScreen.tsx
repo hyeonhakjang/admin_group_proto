@@ -19,7 +19,7 @@ const MyClubScreen: React.FC = () => {
 
   // 달력 관련 상태
   const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 7)); // 2024년 9월 7일
-  const [selectedDate, setSelectedDate] = useState(new Date(2024, 8, 7));
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   // 일정이 있는 날짜들 (샘플 데이터)
   const eventsDates = [
@@ -30,13 +30,15 @@ const MyClubScreen: React.FC = () => {
   ];
 
   // 선택된 날짜의 일정 정보
-  const selectedEvent = {
-    title: "요즘것들 6기 오리엔테이션",
-    group: "요즘것들",
-    participants: 21,
-    date: selectedDate,
-    time: "오후 01:00 ~ 오후 05:00",
-  };
+  const selectedEvent = selectedDate
+    ? {
+        title: "HICC 정기 세션",
+        group: "HICC",
+        participants: 21,
+        date: selectedDate,
+        time: "오후 01:00 ~ 오후 05:00",
+      }
+    : null;
 
   const handleTabClick = (
     tab: "posts" | "statistics" | "schedule" | "members" | "archive"
@@ -89,7 +91,7 @@ const MyClubScreen: React.FC = () => {
   };
 
   const isSelected = (day: number, isCurrentMonth: boolean) => {
-    if (!isCurrentMonth) return false;
+    if (!isCurrentMonth || !selectedDate) return false;
     return (
       selectedDate.getFullYear() === currentDate.getFullYear() &&
       selectedDate.getMonth() === currentDate.getMonth() &&
@@ -108,11 +110,17 @@ const MyClubScreen: React.FC = () => {
   };
 
   const goToPreviousMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+    );
+    setSelectedDate(null); // 월 변경 시 선택 상태 초기화
   };
 
   const goToNextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+    );
+    setSelectedDate(null); // 월 변경 시 선택 상태 초기화
   };
 
   const getKoreanMonthYear = (date: Date) => {
@@ -381,18 +389,26 @@ const MyClubScreen: React.FC = () => {
 
               {/* 요일 행 */}
               <div className="calendar-weekdays">
-                {["일", "월", "화", "수", "목", "금", "토"].map((day, index) => (
-                  <div key={index} className="calendar-weekday">
-                    {day}
-                  </div>
-                ))}
+                {["일", "월", "화", "수", "목", "금", "토"].map(
+                  (day, index) => (
+                    <div key={index} className="calendar-weekday">
+                      {day}
+                    </div>
+                  )
+                )}
               </div>
 
               {/* 날짜 그리드 */}
               <div className="calendar-grid">
                 {getDaysInMonth(currentDate).map((dayData, index) => {
-                  const hasEventOnDay = hasEvent(dayData.date, dayData.isCurrentMonth);
-                  const isSelectedDay = isSelected(dayData.date, dayData.isCurrentMonth);
+                  const hasEventOnDay = hasEvent(
+                    dayData.date,
+                    dayData.isCurrentMonth
+                  );
+                  const isSelectedDay = isSelected(
+                    dayData.date,
+                    dayData.isCurrentMonth
+                  );
 
                   return (
                     <div
@@ -404,8 +420,12 @@ const MyClubScreen: React.FC = () => {
                         handleDateClick(dayData.date, dayData.isCurrentMonth)
                       }
                     >
-                      <span className="calendar-day-number">{dayData.date}</span>
-                      {hasEventOnDay && <div className="calendar-event-dot"></div>}
+                      <span className="calendar-day-number">
+                        {dayData.date}
+                      </span>
+                      {hasEventOnDay && (
+                        <div className="calendar-event-dot"></div>
+                      )}
                     </div>
                   );
                 })}
@@ -413,40 +433,45 @@ const MyClubScreen: React.FC = () => {
             </div>
 
             {/* 일정 상세 정보 */}
-            <div className="schedule-details">
-              <h3 className="schedule-details-title">
-                {formatDateForEvent(selectedDate)} 일정
-              </h3>
-              {hasEvent(
-                selectedDate.getDate(),
-                selectedDate.getMonth() === currentDate.getMonth() &&
-                  selectedDate.getFullYear() === currentDate.getFullYear()
-              ) ? (
-                <div className="schedule-event-card">
-                  <h4 className="schedule-event-title">{selectedEvent.title}</h4>
-                  <div className="schedule-event-info">
-                    <span className="schedule-event-group">
-                      {selectedEvent.group} · {selectedEvent.participants}명
-                    </span>
-                    <div className="schedule-event-participants">
-                      <div className="participant-avatar">👤</div>
-                      <div className="participant-avatar">👤</div>
-                      <div className="participant-avatar">👤</div>
-                      <div className="participant-avatar">👤</div>
+            {selectedDate && (
+              <div className="schedule-details">
+                <h3 className="schedule-details-title">
+                  {formatDateForEvent(selectedDate)} 일정
+                </h3>
+                {selectedEvent &&
+                hasEvent(
+                  selectedDate.getDate(),
+                  selectedDate.getMonth() === currentDate.getMonth() &&
+                    selectedDate.getFullYear() === currentDate.getFullYear()
+                ) ? (
+                  <div className="schedule-event-card">
+                    <h4 className="schedule-event-title">
+                      {selectedEvent.title}
+                    </h4>
+                    <div className="schedule-event-info">
+                      <span className="schedule-event-group">
+                        {selectedEvent.group} · {selectedEvent.participants}명
+                      </span>
+                      <div className="schedule-event-participants">
+                        <div className="participant-avatar">👤</div>
+                        <div className="participant-avatar">👤</div>
+                        <div className="participant-avatar">👤</div>
+                        <div className="participant-avatar">👤</div>
+                      </div>
+                    </div>
+                    <div className="schedule-event-time">
+                      • {selectedEvent.date.getFullYear()}년{" "}
+                      {selectedEvent.date.getMonth() + 1}월{" "}
+                      {selectedEvent.date.getDate()}일 {selectedEvent.time}
                     </div>
                   </div>
-                  <div className="schedule-event-time">
-                    • {selectedEvent.date.getFullYear()}년{" "}
-                    {selectedEvent.date.getMonth() + 1}월 {selectedEvent.date.getDate()}일{" "}
-                    {selectedEvent.time}
+                ) : (
+                  <div className="schedule-event-card">
+                    <p className="no-event-message">일정이 없습니다.</p>
                   </div>
-                </div>
-              ) : (
-                <div className="schedule-event-card">
-                  <p className="no-event-message">일정이 없습니다.</p>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         )}
         {activeTab === "members" && (
