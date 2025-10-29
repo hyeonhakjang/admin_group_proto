@@ -82,9 +82,12 @@ const MyClubScreen: React.FC = () => {
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
     e.stopPropagation();
-    if (draggedIndex !== null && draggedIndex !== dropIndex) {
-      console.log(`드래그: ${draggedIndex} -> ${dropIndex}`);
-      reorderClubs(draggedIndex, dropIndex);
+    const sourceIndex = draggedIndex;
+    if (sourceIndex !== null && sourceIndex !== dropIndex) {
+      const newClubs = Array.from(clubs);
+      const [removed] = newClubs.splice(sourceIndex, 1);
+      newClubs.splice(dropIndex, 0, removed);
+      setClubs(newClubs);
     }
     setDraggedIndex(null);
     setDragOverIndex(null);
