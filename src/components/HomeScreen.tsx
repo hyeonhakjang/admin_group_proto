@@ -70,6 +70,40 @@ const HomeScreen: React.FC = () => {
         </div>
       </div>
 
+      {/* Top Navigation Bar */}
+      <div
+        className="top-nav-bar"
+        data-name="Top Navigation Bar"
+        data-node-id="9:700"
+      >
+        <div className="nav-back-button" data-name="Back Button" data-node-id="9:701">
+          <img
+            alt="Back Icon"
+            className="icon"
+            src="/back-icon.png"
+          />
+        </div>
+        <h1 className="nav-title-text" data-name="Community Title" data-node-id="9:702">
+          커뮤니티
+        </h1>
+        <div className="nav-actions" data-name="Navigation Actions" data-node-id="9:703">
+          <div className="nav-action-icon" data-name="Search Action" data-node-id="9:704">
+            <img
+              alt="Search Icon"
+              className="icon"
+              src="/search-icon.png"
+            />
+          </div>
+          <div className="nav-action-icon" data-name="Filter Action" data-node-id="9:705">
+            <img
+              alt="Filter Icon"
+              className="icon"
+              src="/filter-icon.png"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
       <div
         className="main-content"

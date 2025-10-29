@@ -108,10 +108,72 @@
   transform: scale(1.05); /* 호버 시 살짝 확대 */
 }
 
+/* Top Navigation Bar */
+.top-nav-bar {
+  background-color: #fffcfa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  min-height: 56px;
+  border-bottom: 1px solid rgba(40, 32, 27, 0.1);
+  position: relative;
+  z-index: 4;
+  box-sizing: border-box;
+}
+
+.nav-back-button {
+  width: clamp(24px, 6vw, 28px);
+  height: clamp(24px, 6vw, 28px);
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.nav-back-button:hover {
+  transform: scale(1.05);
+}
+
+.nav-title-text {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 4.5vw, 20px);
+  color: #28201b;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+  letter-spacing: -0.4px;
+}
+
+.nav-actions {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+  align-items: center;
+}
+
+.nav-action-icon {
+  width: clamp(24px, 6vw, 28px);
+  height: clamp(24px, 6vw, 28px);
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.nav-action-icon:hover {
+  transform: scale(1.05);
+}
+
+.nav-action-icon .icon {
+  filter: brightness(0) saturate(100%) invert(35%) sepia(100%) saturate(2000%)
+    hue-rotate(15deg) brightness(90%) contrast(100%); /* #c34e00 색상 */
+}
+
 /* Main Content */
 .main-content {
   flex: 1; /* 남은 공간을 모두 차지 */
-  min-height: calc(100vh - 160px); /* 헤더와 탭바 높이 증가로 인한 조정 */
+  min-height: calc(100vh - 200px); /* 헤더, 탑 네비, 탭바 높이 고려 */
   width: 100%;
   z-index: 2;
   background-color: #fffcfa;
@@ -210,6 +272,15 @@
     min-width: 100px;
   }
 
+  .top-nav-bar {
+    padding: 12px 16px;
+    min-height: 52px;
+  }
+
+  .nav-actions {
+    gap: 10px;
+  }
+
   .tabs {
     padding: 0 4px;
   }
@@ -241,6 +312,29 @@
   .profile-icon {
     width: 26px;
     height: 26px;
+  }
+
+  .top-nav-bar {
+    padding: 10px 12px;
+    min-height: 48px;
+  }
+
+  .nav-title-text {
+    font-size: 16px;
+  }
+
+  .nav-back-button {
+    width: 22px;
+    height: 22px;
+  }
+
+  .nav-action-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .nav-actions {
+    gap: 8px;
   }
 
   .tabs {
