@@ -760,7 +760,7 @@
 .posts-content {
   width: 100%;
   padding: clamp(16px, 4vw, 24px);
-  background: #f5f5f5;
+  background: transparent;
   min-height: calc(100vh - 200px);
 }
 
@@ -771,10 +771,11 @@
 }
 
 .club-post-card {
-  background: white;
+  background: #f5f5f5;
   border-radius: 12px;
   padding: clamp(16px, 4vw, 20px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
+  border: none;
   display: flex;
   flex-direction: column;
   gap: clamp(12px, 3vw, 16px);
@@ -782,7 +783,7 @@
 }
 
 .club-post-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  background: #eeeeee;
   transform: translateY(-2px);
 }
 
@@ -920,7 +921,7 @@
 }
 
 .engagement-btn {
-  background: #f5f5f5;
+  background: #eeeeee;
   border: none;
   border-radius: 20px;
   padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
@@ -937,7 +938,7 @@
 }
 
 .engagement-btn:hover {
-  background: #e5e5e5;
+  background: #e0e0e0;
   transform: scale(1.05);
 }
 
@@ -1306,7 +1307,7 @@
 
   .posts-content {
     padding: 12px;
-    background: #f5f5f5;
+    background: transparent;
   }
 
   .club-post-card {

@@ -385,12 +385,8 @@ const MyClubScreen: React.FC = () => {
                   </div>
                 </div>
                 <div className="post-engagement-section">
-                  <button className="engagement-btn">
-                    👍 2,321
-                  </button>
-                  <button className="engagement-btn">
-                    💬 5,321
-                  </button>
+                  <button className="engagement-btn">👍 2,321</button>
+                  <button className="engagement-btn">💬 5,321</button>
                   <button className="engagement-btn">🔗</button>
                   <span className="engagement-views">👁 5,321</span>
                 </div>
@@ -414,21 +410,15 @@ const MyClubScreen: React.FC = () => {
                   <button className="post-more-btn">⋯</button>
                 </div>
                 <div className="post-title-section">
-                  <h3 className="post-title">
-                    이번 달 회비 납부 관련 안내
-                  </h3>
+                  <h3 className="post-title">이번 달 회비 납부 관련 안내</h3>
                   <div className="post-topic-icons-right">
                     <span className="topic-icon">🏢</span>
                     <span className="topic-icon">📈</span>
                   </div>
                 </div>
                 <div className="post-engagement-section">
-                  <button className="engagement-btn">
-                    👍 1,856
-                  </button>
-                  <button className="engagement-btn">
-                    💬 342
-                  </button>
+                  <button className="engagement-btn">👍 1,856</button>
+                  <button className="engagement-btn">💬 342</button>
                   <button className="engagement-btn">🔗</button>
                   <span className="engagement-views">👁 2,156</span>
                 </div>
@@ -460,12 +450,8 @@ const MyClubScreen: React.FC = () => {
                   </h3>
                 </div>
                 <div className="post-engagement-section">
-                  <button className="engagement-btn">
-                    👍 892
-                  </button>
-                  <button className="engagement-btn">
-                    💬 156
-                  </button>
+                  <button className="engagement-btn">👍 892</button>
+                  <button className="engagement-btn">💬 156</button>
                   <button className="engagement-btn">🔗</button>
                   <span className="engagement-views">👁 1,234</span>
                 </div>
