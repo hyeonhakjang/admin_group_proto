@@ -756,6 +756,206 @@
   padding: clamp(20px, 5vw, 30px) 0;
 }
 
+/* 게시글 콘텐츠 스타일 */
+.posts-content {
+  width: 100%;
+  padding: clamp(16px, 4vw, 24px);
+  background: #f5f5f5;
+  min-height: calc(100vh - 200px);
+}
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 20px);
+}
+
+.club-post-card {
+  background: white;
+  border-radius: 12px;
+  padding: clamp(16px, 4vw, 20px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+  transition: all 0.2s ease;
+}
+
+.club-post-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.post-author-section {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.5vw, 12px);
+  flex: 1;
+}
+
+.post-author-avatar {
+  width: clamp(40px, 10vw, 48px);
+  height: clamp(40px, 10vw, 48px);
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.post-author-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post-author-info {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2px, 0.5vw, 4px);
+  flex: 1;
+}
+
+.author-name-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.5vw, 8px);
+  flex-wrap: wrap;
+}
+
+.author-name {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+}
+
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(16px, 4vw, 18px);
+  height: clamp(16px, 4vw, 18px);
+  border-radius: 50%;
+  background: #22c55e;
+  color: white;
+  font-size: clamp(10px, 2.5vw, 12px);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.post-time {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(11px, 2.5vw, 12px);
+  color: #888888;
+}
+
+.post-more-btn {
+  background: transparent;
+  border: none;
+  font-size: clamp(18px, 4.5vw, 24px);
+  color: #888888;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.post-more-btn:hover {
+  color: #28201b;
+}
+
+.post-title-section {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 12px);
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.post-topic-icons {
+  display: flex;
+  gap: clamp(4px, 1vw, 6px);
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.post-topic-icons-right {
+  display: flex;
+  gap: clamp(4px, 1vw, 6px);
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.topic-icon {
+  font-size: clamp(16px, 4vw, 20px);
+  line-height: 1;
+}
+
+.post-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(15px, 3.75vw, 18px);
+  color: #28201b;
+  margin: 0;
+  line-height: 1.4;
+  flex: 1;
+  min-width: 0;
+}
+
+.post-engagement-section {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 12px);
+  flex-wrap: wrap;
+  padding-top: clamp(8px, 2vw, 12px);
+  border-top: 1px solid #f0f0f0;
+}
+
+.engagement-btn {
+  background: #f5f5f5;
+  border: none;
+  border-radius: 20px;
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #28201b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1;
+}
+
+.engagement-btn:hover {
+  background: #e5e5e5;
+  transform: scale(1.05);
+}
+
+.engagement-btn:active {
+  transform: scale(0.98);
+}
+
+.engagement-views {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #888888;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* 게시판 콘텐츠 스타일 */
 .community-board-content {
   width: 100%;
@@ -1102,5 +1302,52 @@
 
   .schedule-details {
     padding: 12px;
+  }
+
+  .posts-content {
+    padding: 12px;
+    background: #f5f5f5;
+  }
+
+  .club-post-card {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .post-author-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .author-name {
+    font-size: 13px;
+  }
+
+  .verified-badge {
+    width: 14px;
+    height: 14px;
+    font-size: 9px;
+  }
+
+  .post-time {
+    font-size: 10px;
+  }
+
+  .post-title {
+    font-size: 14px;
+    min-width: auto;
+  }
+
+  .topic-icon {
+    font-size: 14px;
+  }
+
+  .engagement-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .engagement-views {
+    font-size: 11px;
   }
 }
