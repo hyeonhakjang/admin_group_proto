@@ -345,7 +345,9 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                 <div className="ranking-item">
                   <span className="ranking-number">1</span>
                   <div className="ranking-club-info">
-                    <div className="ranking-club-name">연합 프로그래밍 동아리</div>
+                    <div className="ranking-club-name">
+                      연합 프로그래밍 동아리
+                    </div>
                     <div className="ranking-club-field">학술</div>
                   </div>
                   <span className="ranking-points">2,156점</span>

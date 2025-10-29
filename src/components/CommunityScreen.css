@@ -304,6 +304,9 @@
 .find-clubs-content {
   width: 100%;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 5vw, 28px);
 }
 
 .clubs-section {
