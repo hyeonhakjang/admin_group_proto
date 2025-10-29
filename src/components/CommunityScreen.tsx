@@ -219,7 +219,7 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                     </p>
                     <div className="club-details">
                       <span className="club-location">● 동아리</span>
-                      <span className="club-field">학술술</span>
+                      <span className="club-field">학술</span>
                     </div>
                   </div>
                 </div>
