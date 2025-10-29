@@ -725,12 +725,10 @@
   bottom: 0;
   left: 0;
   right: 0;
+  height: 85vh;
   max-height: 85vh;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: clamp(16px, 4vw, 20px);
-  padding: clamp(16px, 4vw, 20px);
   background: white;
   border-radius: 20px 20px 0 0;
   border: 1px solid #e0e0e0;
@@ -738,6 +736,18 @@
   z-index: 1001;
   animation: slideUp 0.3s ease;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.schedule-event-detail-card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 20px);
+  padding: clamp(16px, 4vw, 20px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 .event-back-btn {

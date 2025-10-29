@@ -668,53 +668,57 @@ const MyClubScreen: React.FC = () => {
                           >
                             ← 뒤로가기
                           </button>
-                        <h4 className="event-detail-title">
-                          {selectedEvent.title}
-                        </h4>
-                        <div className="event-detail-info">
-                          <div className="event-detail-row">
-                            <span className="event-detail-label">날짜:</span>
-                            <span className="event-detail-value">
-                              {selectedEvent.date.getFullYear()}년{" "}
-                              {selectedEvent.date.getMonth() + 1}월{" "}
-                              {selectedEvent.date.getDate()}일
-                            </span>
+                          <h4 className="event-detail-title">
+                            {selectedEvent.title}
+                          </h4>
+                          <div className="event-detail-info">
+                            <div className="event-detail-row">
+                              <span className="event-detail-label">날짜:</span>
+                              <span className="event-detail-value">
+                                {selectedEvent.date.getFullYear()}년{" "}
+                                {selectedEvent.date.getMonth() + 1}월{" "}
+                                {selectedEvent.date.getDate()}일
+                              </span>
+                            </div>
+                            <div className="event-detail-row">
+                              <span className="event-detail-label">시간:</span>
+                              <span className="event-detail-value">
+                                {selectedEvent.time}
+                              </span>
+                            </div>
+                            <div className="event-detail-row">
+                              <span className="event-detail-label">장소:</span>
+                              <span className="event-detail-value">
+                                {selectedEvent.location}
+                              </span>
+                            </div>
+                            <div className="event-detail-row">
+                              <span className="event-detail-label">
+                                참가자:
+                              </span>
+                              <span className="event-detail-value">
+                                {selectedEvent.group} ·{" "}
+                                {selectedEvent.participants}명
+                              </span>
+                            </div>
                           </div>
-                          <div className="event-detail-row">
-                            <span className="event-detail-label">시간:</span>
-                            <span className="event-detail-value">
-                              {selectedEvent.time}
-                            </span>
+                          <div className="event-detail-description">
+                            <h5 className="event-detail-section-title">
+                              상세 내용
+                            </h5>
+                            <p>{selectedEvent.description}</p>
                           </div>
-                          <div className="event-detail-row">
-                            <span className="event-detail-label">장소:</span>
-                            <span className="event-detail-value">
-                              {selectedEvent.location}
-                            </span>
-                          </div>
-                          <div className="event-detail-row">
-                            <span className="event-detail-label">참가자:</span>
-                            <span className="event-detail-value">
-                              {selectedEvent.group} ·{" "}
-                              {selectedEvent.participants}명
-                            </span>
+                          <div className="event-detail-agenda">
+                            <h5 className="event-detail-section-title">
+                              일정표
+                            </h5>
+                            <ul className="event-agenda-list">
+                              {selectedEvent.agenda.map((item, index) => (
+                                <li key={index}>{item}</li>
+                              ))}
+                            </ul>
                           </div>
                         </div>
-                        <div className="event-detail-description">
-                          <h5 className="event-detail-section-title">
-                            상세 내용
-                          </h5>
-                          <p>{selectedEvent.description}</p>
-                        </div>
-                        <div className="event-detail-agenda">
-                          <h5 className="event-detail-section-title">일정표</h5>
-                          <ul className="event-agenda-list">
-                            {selectedEvent.agenda.map((item, index) => (
-                              <li key={index}>{item}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
                       </>
                     )}
                   </>
