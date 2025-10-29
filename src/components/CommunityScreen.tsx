@@ -378,8 +378,92 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
         )}
         {activeTab === "community-board" && (
           <div className="community-board-content">
-            <h2>게시판</h2>
-            <p>게시판 콘텐츠가 여기에 표시됩니다.</p>
+            {/* 실시간 인기글 섹션 */}
+            <div className="popular-posts-section">
+              {/* 헤더 */}
+              <div className="popular-posts-header">
+                <div className="popular-posts-title-wrapper">
+                  <h2 className="popular-posts-title">실시간 인기글</h2>
+                  <span className="popular-posts-time">오전 7시 기준</span>
+                </div>
+                <button className="view-all-btn">더보기 &gt;</button>
+              </div>
+
+              {/* 인기글 리스트 */}
+              <div className="popular-posts-list">
+                {/* 글 1 */}
+                <div className="post-card">
+                  <div className="post-badge">HOT</div>
+                  <div className="post-content">
+                    <h3 className="post-title">
+                      IT 창업을 6개월 안에 경험하는 연합 IT...
+                    </h3>
+                    <div className="post-meta">
+                      <span className="post-date">2024.10.17 11:52</span>
+                      <div className="post-engagement">
+                        <span className="engagement-item">
+                          👁 971
+                        </span>
+                        <span className="engagement-item">
+                          ❤️ 2
+                        </span>
+                        <span className="engagement-item">
+                          💬 1
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 글 2 */}
+                <div className="post-card">
+                  <div className="post-badge">HOT</div>
+                  <div className="post-content">
+                    <h3 className="post-title">
+                      새로운 프로젝트 팀원 모집합니다!
+                    </h3>
+                    <div className="post-meta">
+                      <span className="post-date">2024.10.16 14:30</span>
+                      <div className="post-engagement">
+                        <span className="engagement-item">
+                          👁 656
+                        </span>
+                        <span className="engagement-item">
+                          ❤️ 5
+                        </span>
+                        <span className="engagement-item">
+                          💬 3
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 글 3 */}
+                <div className="post-card">
+                  <div className="post-badge">HOT</div>
+                  <div className="post-content">
+                    <h3 className="post-title">
+                      이번 주말 오프라인 모임 일정 공지
+                    </h3>
+                    <div className="post-meta">
+                      <span className="post-date">2024.10.15 09:15</span>
+                      <div className="post-engagement">
+                        <span className="engagement-item">
+                          👁 432
+                        </span>
+                        <span className="engagement-item">
+                          ❤️ 8
+                        </span>
+                        <span className="engagement-item">
+                          💬 2
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
