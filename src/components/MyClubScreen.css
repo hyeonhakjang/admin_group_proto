@@ -725,7 +725,6 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 85vh;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
@@ -744,10 +743,9 @@
   flex-direction: column;
   gap: clamp(16px, 4vw, 20px);
   padding: clamp(16px, 4vw, 20px);
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
-  flex: 1;
-  min-height: 0;
+  max-height: 85vh;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
 }
