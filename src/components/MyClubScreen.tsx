@@ -64,9 +64,11 @@ const MyClubScreen: React.FC = () => {
   };
 
   // HTML5 Drag API 핸들러 (데스크톱)
-  const handleDragStart = (index: number) => {
+  const handleDragStart = (e: React.DragEvent, index: number) => {
     setDraggedIndex(index);
     setIsDragging(true);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", index.toString());
   };
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
@@ -1149,14 +1151,7 @@ const MyClubScreen: React.FC = () => {
                     draggedIndex === index ? "dragging" : ""
                   } ${dragOverIndex === index ? "drag-over" : ""}`}
                   draggable={true}
-                  onDragStart={(e) => {
-                    handleDragStart(index);
-                    e.dataTransfer.effectAllowed = "move";
-                    e.dataTransfer.setData(
-                      "text/html",
-                      e.currentTarget.outerHTML
-                    );
-                  }}
+                  onDragStart={(e) => handleDragStart(e, index)}
                   onDragOver={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
