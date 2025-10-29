@@ -14,11 +14,11 @@ const imgIcon4 = "/chat.png"; // 채팅 아이콘
 const MyClubScreen: React.FC = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<
-    "my-clubs" | "club-board" | "schedule" | "members" | "settings"
-  >("my-clubs");
+    "posts" | "statistics" | "schedule" | "members" | "archive"
+  >("posts");
 
   const handleTabClick = (
-    tab: "my-clubs" | "club-board" | "schedule" | "members" | "settings"
+    tab: "posts" | "statistics" | "schedule" | "members" | "archive"
   ) => {
     setActiveTab(tab);
   };
@@ -98,52 +98,52 @@ const MyClubScreen: React.FC = () => {
           data-node-id="12:3316"
         >
           <div className="tabs-wrapper">
-            {/* My Clubs Tab */}
+            {/* Posts Tab */}
             <div
-              className={`tab ${activeTab === "my-clubs" ? "active" : ""}`}
+              className={`tab ${activeTab === "posts" ? "active" : ""}`}
               data-name="Tab"
               data-node-id="12:3345"
-              onClick={() => handleTabClick("my-clubs")}
+              onClick={() => handleTabClick("posts")}
             >
               <div
                 className={`tab-underline ${
-                  activeTab === "my-clubs" ? "active" : ""
+                  activeTab === "posts" ? "active" : ""
                 }`}
                 data-name="Underline"
                 data-node-id="12:3347"
               >
                 <p
                   className={`tab-text ${
-                    activeTab === "my-clubs" ? "active" : ""
+                    activeTab === "posts" ? "active" : ""
                   }`}
                   data-node-id="12:3348"
                 >
-                  내 동아리
+                  게시글
                 </p>
               </div>
             </div>
 
-            {/* Club Board Tab */}
+            {/* Statistics Tab */}
             <div
-              className={`tab ${activeTab === "club-board" ? "active" : ""}`}
+              className={`tab ${activeTab === "statistics" ? "active" : ""}`}
               data-name="Tab"
               data-node-id="12:3328"
-              onClick={() => handleTabClick("club-board")}
+              onClick={() => handleTabClick("statistics")}
             >
               <div
                 className={`tab-underline ${
-                  activeTab === "club-board" ? "active" : ""
+                  activeTab === "statistics" ? "active" : ""
                 }`}
                 data-name="Underline"
                 data-node-id="12:3330"
               >
                 <p
                   className={`tab-text ${
-                    activeTab === "club-board" ? "active" : ""
+                    activeTab === "statistics" ? "active" : ""
                   }`}
                   data-node-id="12:3331"
                 >
-                  게시판
+                  통계
                 </p>
               </div>
             </div>
@@ -198,27 +198,27 @@ const MyClubScreen: React.FC = () => {
               </div>
             </div>
 
-            {/* Settings Tab */}
+            {/* Archive Tab */}
             <div
-              className={`tab ${activeTab === "settings" ? "active" : ""}`}
+              className={`tab ${activeTab === "archive" ? "active" : ""}`}
               data-name="Tab"
               data-node-id="12:3338"
-              onClick={() => handleTabClick("settings")}
+              onClick={() => handleTabClick("archive")}
             >
               <div
                 className={`tab-underline ${
-                  activeTab === "settings" ? "active" : ""
+                  activeTab === "archive" ? "active" : ""
                 }`}
                 data-name="Underline"
                 data-node-id="12:3339"
               >
                 <p
                   className={`tab-text ${
-                    activeTab === "settings" ? "active" : ""
+                    activeTab === "archive" ? "active" : ""
                   }`}
                   data-node-id="12:3340"
                 >
-                  설정
+                  자료실
                 </p>
               </div>
             </div>
@@ -232,16 +232,16 @@ const MyClubScreen: React.FC = () => {
         data-name="Main Content"
         data-node-id="12:3039"
       >
-        {activeTab === "my-clubs" && (
-          <div className="my-clubs-content">
-            <h2>내 동아리</h2>
-            <p>내 동아리 콘텐츠가 여기에 표시됩니다.</p>
+        {activeTab === "posts" && (
+          <div className="posts-content">
+            <h2>게시글</h2>
+            <p>게시글 콘텐츠가 여기에 표시됩니다.</p>
           </div>
         )}
-        {activeTab === "club-board" && (
-          <div className="club-board-content">
-            <h2>게시판</h2>
-            <p>게시판 콘텐츠가 여기에 표시됩니다.</p>
+        {activeTab === "statistics" && (
+          <div className="statistics-content">
+            <h2>통계</h2>
+            <p>통계 콘텐츠가 여기에 표시됩니다.</p>
           </div>
         )}
         {activeTab === "schedule" && (
@@ -256,10 +256,10 @@ const MyClubScreen: React.FC = () => {
             <p>멤버 콘텐츠가 여기에 표시됩니다.</p>
           </div>
         )}
-        {activeTab === "settings" && (
-          <div className="settings-content">
-            <h2>설정</h2>
-            <p>설정 콘텐츠가 여기에 표시됩니다.</p>
+        {activeTab === "archive" && (
+          <div className="archive-content">
+            <h2>자료실</h2>
+            <p>자료실 콘텐츠가 여기에 표시됩니다.</p>
           </div>
         )}
       </div>
