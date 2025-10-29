@@ -72,19 +72,9 @@ const MyClubScreen: React.FC = () => {
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     e.stopPropagation();
+    e.dataTransfer.dropEffect = "move";
     if (draggedIndex === null || draggedIndex === index) return;
-    
     setDragOverIndex(index);
-    
-    // 즉시 순서 변경 (드래그 중 실시간 업데이트)
-    if (draggedIndex !== null && draggedIndex !== index) {
-      const dragDirection = draggedIndex < index ? 1 : -1;
-      const newIndex = draggedIndex + dragDirection;
-      if (newIndex !== draggedIndex && newIndex >= 0 && newIndex < clubs.length) {
-        reorderClubs(draggedIndex, newIndex);
-        setDraggedIndex(newIndex);
-      }
-    }
   };
 
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
@@ -116,14 +106,25 @@ const MyClubScreen: React.FC = () => {
     e.preventDefault();
     const currentY = e.touches[0].clientY;
     const deltaY = currentY - touchStartY;
-    
+
     // 현재 터치 위치에 있는 항목 찾기
-    const elements = document.elementsFromPoint(e.touches[0].clientX, e.touches[0].clientY);
-    const targetItem = elements.find(el => el.classList.contains('club-modal-item'));
-    
+    const elements = document.elementsFromPoint(
+      e.touches[0].clientX,
+      e.touches[0].clientY
+    );
+    const targetItem = elements.find((el) =>
+      el.classList.contains("club-modal-item")
+    );
+
     if (targetItem) {
-      const targetIndex = parseInt(targetItem.getAttribute('data-index') || '-1');
-      if (targetIndex >= 0 && targetIndex !== draggedIndex && Math.abs(deltaY) > 20) {
+      const targetIndex = parseInt(
+        targetItem.getAttribute("data-index") || "-1"
+      );
+      if (
+        targetIndex >= 0 &&
+        targetIndex !== draggedIndex &&
+        Math.abs(deltaY) > 20
+      ) {
         reorderClubs(draggedIndex, targetIndex);
         setDraggedIndex(targetIndex);
         setTouchStartY(currentY);
@@ -1151,7 +1152,10 @@ const MyClubScreen: React.FC = () => {
                   onDragStart={(e) => {
                     handleDragStart(index);
                     e.dataTransfer.effectAllowed = "move";
-                    e.dataTransfer.setData("text/html", e.currentTarget.outerHTML);
+                    e.dataTransfer.setData(
+                      "text/html",
+                      e.currentTarget.outerHTML
+                    );
                   }}
                   onDragOver={(e) => {
                     e.preventDefault();
