@@ -588,7 +588,7 @@
 }
 
 .post-card {
-  background: #f5f5f5;
+  background: #fafafa;
   border-radius: 12px;
   padding: clamp(18px, 4.5vw, 24px);
   display: flex;
@@ -599,7 +599,7 @@
 }
 
 .post-card:hover {
-  background: #eeeeee;
+  background: #f5f5f5;
   transform: translateX(4px);
 }
 
