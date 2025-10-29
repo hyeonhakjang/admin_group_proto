@@ -543,6 +543,219 @@
   margin-left: auto;
 }
 
+/* 일정 (달력) 스타일 */
+.schedule-content {
+  width: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 24px);
+}
+
+.calendar-container {
+  background: #fffcfa;
+  border-radius: 20px;
+  padding: clamp(16px, 4vw, 24px);
+  box-shadow: 0 2px 8px rgba(40, 32, 27, 0.08);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: clamp(16px, 4vw, 20px);
+}
+
+.calendar-nav-btn {
+  background: none;
+  border: none;
+  font-size: clamp(18px, 4.5vw, 22px);
+  color: #28201b;
+  cursor: pointer;
+  padding: clamp(8px, 2vw, 12px);
+  transition: color 0.2s ease;
+}
+
+.calendar-nav-btn:hover {
+  color: #c34e00;
+}
+
+.calendar-month-year {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 20px);
+  color: #28201b;
+  margin: 0;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1vw, 8px);
+  margin-bottom: clamp(8px, 2vw, 12px);
+}
+
+.calendar-weekday {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #888888;
+  text-align: center;
+  padding: clamp(8px, 2vw, 12px);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1vw, 8px);
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+  position: relative;
+  padding: clamp(4px, 1vw, 8px);
+  transition: all 0.2s ease;
+}
+
+.calendar-day:hover {
+  background: rgba(195, 78, 0, 0.1);
+}
+
+.calendar-day.selected {
+  background: #2563eb;
+  color: white;
+}
+
+.calendar-day.other-month {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.calendar-day.other-month:hover {
+  background: transparent;
+}
+
+.calendar-day-number {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(13px, 3vw, 15px);
+  color: inherit;
+}
+
+.calendar-day.selected .calendar-day-number {
+  color: white;
+}
+
+.calendar-event-dot {
+  width: clamp(4px, 1vw, 6px);
+  height: clamp(4px, 1vw, 6px);
+  border-radius: 50%;
+  background: #888888;
+  margin-top: clamp(2px, 0.5vw, 4px);
+}
+
+.calendar-day.selected .calendar-event-dot {
+  background: white;
+}
+
+.schedule-details {
+  background: #fffcfa;
+  border-radius: 20px;
+  padding: clamp(16px, 4vw, 24px);
+  box-shadow: 0 2px 8px rgba(40, 32, 27, 0.08);
+}
+
+.schedule-details-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 20px);
+  color: #28201b;
+  margin: 0 0 clamp(12px, 3vw, 16px) 0;
+}
+
+.schedule-event-card {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.5vw, 14px);
+}
+
+.schedule-event-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  margin: 0;
+}
+
+.schedule-event-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.schedule-event-group {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666666;
+}
+
+.schedule-event-participants {
+  display: flex;
+  gap: clamp(-4px, -1vw, -2px);
+  align-items: center;
+}
+
+.participant-avatar {
+  width: clamp(24px, 6vw, 28px);
+  height: clamp(24px, 6vw, 28px);
+  border-radius: 50%;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(12px, 3vw, 14px);
+  border: 2px solid #fffcfa;
+  margin-left: clamp(-4px, -1vw, -2px);
+}
+
+.participant-avatar:first-child {
+  margin-left: 0;
+}
+
+.schedule-event-time {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.schedule-event-time::before {
+  content: "•";
+  color: #2563eb;
+  font-size: 16px;
+}
+
+.no-event-message {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 3vw, 15px);
+  color: #888888;
+  margin: 0;
+  text-align: center;
+  padding: clamp(20px, 5vw, 30px) 0;
+}
+
 /* 게시판 콘텐츠 스타일 */
 .community-board-content {
   width: 100%;
@@ -873,5 +1086,21 @@
 
   .ranking-points {
     font-size: 11px;
+  }
+
+  .calendar-container {
+    padding: 12px;
+  }
+
+  .calendar-day {
+    padding: 4px;
+  }
+
+  .calendar-day-number {
+    font-size: 12px;
+  }
+
+  .schedule-details {
+    padding: 12px;
   }
 }

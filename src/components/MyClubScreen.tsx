@@ -17,10 +17,120 @@ const MyClubScreen: React.FC = () => {
     "posts" | "statistics" | "schedule" | "members" | "archive"
   >("posts");
 
+  // 달력 관련 상태
+  const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 7)); // 2024년 9월 7일
+  const [selectedDate, setSelectedDate] = useState(new Date(2024, 8, 7));
+
+  // 일정이 있는 날짜들 (샘플 데이터)
+  const eventsDates = [
+    new Date(2024, 8, 7), // 9월 7일
+    new Date(2024, 8, 14), // 9월 14일
+    new Date(2024, 8, 21), // 9월 21일
+    new Date(2024, 8, 28), // 9월 28일
+  ];
+
+  // 선택된 날짜의 일정 정보
+  const selectedEvent = {
+    title: "요즘것들 6기 오리엔테이션",
+    group: "요즘것들",
+    participants: 21,
+    date: selectedDate,
+    time: "오후 01:00 ~ 오후 05:00",
+  };
+
   const handleTabClick = (
     tab: "posts" | "statistics" | "schedule" | "members" | "archive"
   ) => {
     setActiveTab(tab);
+  };
+
+  // 달력 관련 함수
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+
+    const days = [];
+    // 이전 달의 마지막 날짜들
+    const prevMonthDays = new Date(year, month, 0).getDate();
+    for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+      days.push({ date: prevMonthDays - i, isCurrentMonth: false });
+    }
+    // 현재 달의 날짜들
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push({ date: i, isCurrentMonth: true });
+    }
+    // 다음 달의 날짜들 (캘린더 그리드를 채우기 위해)
+    const totalCells = 35; // 5주 * 7일
+    const remainingDays = totalCells - days.length;
+    for (let i = 1; i <= remainingDays; i++) {
+      days.push({ date: i, isCurrentMonth: false });
+    }
+
+    return days;
+  };
+
+  const hasEvent = (day: number, isCurrentMonth: boolean) => {
+    if (!isCurrentMonth) return false;
+    const checkDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      day
+    );
+    return eventsDates.some(
+      (eventDate) =>
+        eventDate.getFullYear() === checkDate.getFullYear() &&
+        eventDate.getMonth() === checkDate.getMonth() &&
+        eventDate.getDate() === checkDate.getDate()
+    );
+  };
+
+  const isSelected = (day: number, isCurrentMonth: boolean) => {
+    if (!isCurrentMonth) return false;
+    return (
+      selectedDate.getFullYear() === currentDate.getFullYear() &&
+      selectedDate.getMonth() === currentDate.getMonth() &&
+      selectedDate.getDate() === day
+    );
+  };
+
+  const handleDateClick = (day: number, isCurrentMonth: boolean) => {
+    if (!isCurrentMonth) return;
+    const clickedDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      day
+    );
+    setSelectedDate(clickedDate);
+  };
+
+  const goToPreviousMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+  };
+
+  const goToNextMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+  };
+
+  const getKoreanMonthYear = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    return `${year}년 ${month}월`;
+  };
+
+  const getKoreanDayName = (dayIndex: number) => {
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+    return days[dayIndex];
+  };
+
+  const formatDateForEvent = (date: Date) => {
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const dayName = getKoreanDayName(date.getDay());
+    return `${month}월 ${day}일 ${dayName}`;
   };
 
   return (
@@ -246,8 +356,97 @@ const MyClubScreen: React.FC = () => {
         )}
         {activeTab === "schedule" && (
           <div className="schedule-content">
-            <h2>일정</h2>
-            <p>일정 콘텐츠가 여기에 표시됩니다.</p>
+            {/* 달력 뷰 */}
+            <div className="calendar-container">
+              {/* 달력 헤더 */}
+              <div className="calendar-header">
+                <button
+                  className="calendar-nav-btn"
+                  onClick={goToPreviousMonth}
+                  aria-label="이전 달"
+                >
+                  &lt;
+                </button>
+                <h2 className="calendar-month-year">
+                  {getKoreanMonthYear(currentDate)}
+                </h2>
+                <button
+                  className="calendar-nav-btn"
+                  onClick={goToNextMonth}
+                  aria-label="다음 달"
+                >
+                  &gt;
+                </button>
+              </div>
+
+              {/* 요일 행 */}
+              <div className="calendar-weekdays">
+                {["일", "월", "화", "수", "목", "금", "토"].map((day, index) => (
+                  <div key={index} className="calendar-weekday">
+                    {day}
+                  </div>
+                ))}
+              </div>
+
+              {/* 날짜 그리드 */}
+              <div className="calendar-grid">
+                {getDaysInMonth(currentDate).map((dayData, index) => {
+                  const hasEventOnDay = hasEvent(dayData.date, dayData.isCurrentMonth);
+                  const isSelectedDay = isSelected(dayData.date, dayData.isCurrentMonth);
+
+                  return (
+                    <div
+                      key={index}
+                      className={`calendar-day ${
+                        !dayData.isCurrentMonth ? "other-month" : ""
+                      } ${isSelectedDay ? "selected" : ""}`}
+                      onClick={() =>
+                        handleDateClick(dayData.date, dayData.isCurrentMonth)
+                      }
+                    >
+                      <span className="calendar-day-number">{dayData.date}</span>
+                      {hasEventOnDay && <div className="calendar-event-dot"></div>}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 일정 상세 정보 */}
+            <div className="schedule-details">
+              <h3 className="schedule-details-title">
+                {formatDateForEvent(selectedDate)} 일정
+              </h3>
+              {hasEvent(
+                selectedDate.getDate(),
+                selectedDate.getMonth() === currentDate.getMonth() &&
+                  selectedDate.getFullYear() === currentDate.getFullYear()
+              ) ? (
+                <div className="schedule-event-card">
+                  <h4 className="schedule-event-title">{selectedEvent.title}</h4>
+                  <div className="schedule-event-info">
+                    <span className="schedule-event-group">
+                      {selectedEvent.group} · {selectedEvent.participants}명
+                    </span>
+                    <div className="schedule-event-participants">
+                      <div className="participant-avatar">👤</div>
+                      <div className="participant-avatar">👤</div>
+                      <div className="participant-avatar">👤</div>
+                      <div className="participant-avatar">👤</div>
+                    </div>
+                  </div>
+                  <div className="schedule-event-time">
+                    • {selectedEvent.date.getFullYear()}년{" "}
+                    {selectedEvent.date.getMonth() + 1}월 {selectedEvent.date.getDate()}일{" "}
+                    {selectedEvent.time}
+                  </div>
+                </div>
+              ) : (
+                <div className="schedule-event-card">
+                  <p className="no-event-message">일정이 없습니다.</p>
+                </div>
+              )}
+            </div>
           </div>
         )}
         {activeTab === "members" && (
@@ -316,9 +515,7 @@ const MyClubScreen: React.FC = () => {
           {/* My Club Tab */}
           <Link
             to="/myclub"
-            className={`tab ${
-              location.pathname === "/myclub" ? "active" : ""
-            }`}
+            className={`tab ${location.pathname === "/myclub" ? "active" : ""}`}
             data-name="tab3"
             data-node-id="12:3071"
           >
@@ -361,4 +558,3 @@ const MyClubScreen: React.FC = () => {
 };
 
 export default MyClubScreen;
-
