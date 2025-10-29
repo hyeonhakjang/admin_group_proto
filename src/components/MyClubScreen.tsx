@@ -1146,13 +1146,7 @@ const MyClubScreen: React.FC = () => {
                 ✕
               </button>
             </div>
-            <div
-              className="club-list"
-              onDragOver={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
+            <div className="club-list">
               {clubs.map((club, index) => (
                 <div
                   key={club.id}
@@ -1162,31 +1156,12 @@ const MyClubScreen: React.FC = () => {
                   } ${dragOverIndex === index ? "drag-over" : ""}`}
                   draggable={true}
                   onDragStart={(e) => handleDragStart(e, index)}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleDragOver(e, index);
-                  }}
+                  onDragOver={(e) => handleDragOver(e, index)}
                   onDragEnter={(e) => {
                     e.preventDefault();
                     if (draggedIndex !== null && draggedIndex !== index) {
                       setDragOverIndex(index);
                     }
-                  }}
-                  onDragLeave={(e) => {
-                    // 자식 요소로 이동하는 경우는 무시
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const x = e.clientX;
-                    const y = e.clientY;
-                    if (
-                      x >= rect.left &&
-                      x <= rect.right &&
-                      y >= rect.top &&
-                      y <= rect.bottom
-                    ) {
-                      return;
-                    }
-                    setDragOverIndex(null);
                   }}
                   onDrop={(e) => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
@@ -1206,7 +1181,7 @@ const MyClubScreen: React.FC = () => {
                   }}
                 >
                   <div className="club-modal-avatar">
-                    <img src={club.avatar} alt={club.name} />
+                    <img src={club.avatar} alt={club.name} draggable={false} />
                   </div>
                   <div className="club-modal-name">{club.name}</div>
                   <div className="club-modal-role">{club.role}</div>
