@@ -33,6 +33,9 @@
   max-width: none;
   width: 100%;
   height: 100%;
+  transition: filter 0.2s ease; /* 색상 변경 시 부드러운 전환 */
+  filter: brightness(0) saturate(100%) invert(25%) sepia(8%) saturate(1000%)
+    hue-rotate(15deg) brightness(90%) contrast(100%); /* rgba(46, 30, 20, 0.62) 색상 */
 }
 
 /* Navigation Bar */
@@ -116,7 +119,9 @@
   z-index: 2;
   background-color: #fffcfa;
   padding: 16px;
-  padding-bottom: calc(80px + 16px); /* 바텀 네비게이션 높이만큼 하단 패딩 추가 */
+  padding-bottom: calc(
+    80px + 16px
+  ); /* 바텀 네비게이션 높이만큼 하단 패딩 추가 */
   box-sizing: border-box;
 }
 
@@ -201,6 +206,11 @@
 
 .tab-label.active {
   color: #c34e00;
+}
+
+.tab.active .icon {
+  filter: brightness(0) saturate(100%) invert(35%) sepia(100%) saturate(2000%)
+    hue-rotate(15deg) brightness(90%) contrast(100%); /* #c34e00 색상 */
 }
 
 /* 모바일 반응형 스타일 */
