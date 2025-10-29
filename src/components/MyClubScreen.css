@@ -243,7 +243,9 @@
   box-sizing: border-box;
 }
 
-.tab {
+.tab,
+.tab:link,
+.tab:visited {
   flex: 1;
   min-height: clamp(50px, 10vw, 60px); /* 탭 높이 증가 */
   position: relative;
@@ -256,6 +258,8 @@
   min-width: 60px; /* 최소 너비 설정 */
   padding: 8px; /* 패딩 증가 */
   box-sizing: border-box;
+  text-decoration: none;
+  color: inherit;
 }
 
 .tab.active {

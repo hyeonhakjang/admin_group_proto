@@ -1,30 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomeScreen from "./components/HomeScreen";
 import CommunityScreen from "./components/CommunityScreen";
 import MyClubScreen from "./components/MyClubScreen";
 import "./App.css";
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<
-    "home" | "community" | "myclub"
-  >("home");
-
-  const handleScreenChange = (screen: "home" | "community" | "myclub") => {
-    setCurrentScreen(screen);
-  };
-
   return (
-    <div className="App">
-      {currentScreen === "home" && (
-        <HomeScreen onScreenChange={handleScreenChange} />
-      )}
-      {currentScreen === "community" && (
-        <CommunityScreen onScreenChange={handleScreenChange} />
-      )}
-      {currentScreen === "myclub" && (
-        <MyClubScreen onScreenChange={handleScreenChange} />
-      )}
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<HomeScreen />} />
+          <Route path="/community" element={<CommunityScreen />} />
+          <Route path="/myclub" element={<MyClubScreen />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
