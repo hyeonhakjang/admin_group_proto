@@ -87,6 +87,11 @@
   cursor: pointer;
 }
 
+.trailing-icon .icon {
+  filter: brightness(0) saturate(100%) invert(35%) sepia(100%) saturate(2000%)
+    hue-rotate(15deg) brightness(90%) contrast(100%); /* #c34e00 색상 */
+}
+
 .profile-icon {
   position: relative;
   flex-shrink: 0;
