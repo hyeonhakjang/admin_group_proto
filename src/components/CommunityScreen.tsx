@@ -267,6 +267,111 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                 </div>
               </div>
             </div>
+
+            {/* 연합 동아리 찾기 섹션 */}
+            <div className="clubs-section">
+              {/* 헤더 */}
+              <div className="section-header">
+                <h2 className="section-title">연합 동아리 찾기</h2>
+                <button className="view-all-btn">더보기 &gt;</button>
+              </div>
+
+              {/* 동아리 리스트 */}
+              <div className="clubs-list">
+                {/* 동아리 1 */}
+                <div className="club-item">
+                  <div className="club-image">
+                    <img src="/club1-image.png" alt="연합 동아리 1" />
+                  </div>
+                  <div className="club-info">
+                    <h3 className="club-name">연합 프로그래밍 동아리</h3>
+                    <p className="club-description">
+                      여러 대학이 함께하는 프로그래밍 동아리입니다.
+                    </p>
+                    <div className="club-details">
+                      <span className="club-location">● 연합</span>
+                      <span className="club-field">학술</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 동아리 2 */}
+                <div className="club-item">
+                  <div className="club-image">
+                    <img src="/club2-image.png" alt="연합 동아리 2" />
+                  </div>
+                  <div className="club-info">
+                    <h3 className="club-name">연합 밴드 동아리</h3>
+                    <p className="club-description">
+                      여러 대학 밴드가 함께하는 연합 동아리입니다.
+                    </p>
+                    <div className="club-details">
+                      <span className="club-location">● 연합</span>
+                      <span className="club-field">공연</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 동아리 3 */}
+                <div className="club-item">
+                  <div className="club-image">
+                    <img src="/club3-image.png" alt="연합 동아리 3" />
+                  </div>
+                  <div className="club-info">
+                    <h3 className="club-name">연합 디자인 동아리</h3>
+                    <p className="club-description">
+                      여러 대학 디자인 전공자들이 함께하는 동아리입니다.
+                    </p>
+                    <div className="club-details">
+                      <span className="club-location">● 연합</span>
+                      <span className="club-field">예술</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 연합 동아리 랭킹 섹션 */}
+            <div className="ranking-section">
+              {/* 헤더 */}
+              <div className="section-header">
+                <h3 className="ranking-title">연합 동아리 랭킹</h3>
+                <button className="view-all-btn">더보기 &gt;</button>
+              </div>
+
+              {/* 랭킹 리스트 */}
+              <div className="ranking-list">
+                {/* 1위 */}
+                <div className="ranking-item">
+                  <span className="ranking-number">1</span>
+                  <div className="ranking-club-info">
+                    <div className="ranking-club-name">연합 프로그래밍 동아리</div>
+                    <div className="ranking-club-field">학술</div>
+                  </div>
+                  <span className="ranking-points">2,156점</span>
+                </div>
+
+                {/* 2위 */}
+                <div className="ranking-item">
+                  <span className="ranking-number">2</span>
+                  <div className="ranking-club-info">
+                    <div className="ranking-club-name">연합 밴드 동아리</div>
+                    <div className="ranking-club-field">공연</div>
+                  </div>
+                  <span className="ranking-points">1,789점</span>
+                </div>
+
+                {/* 3위 */}
+                <div className="ranking-item">
+                  <span className="ranking-number">3</span>
+                  <div className="ranking-club-info">
+                    <div className="ranking-club-name">연합 디자인 동아리</div>
+                    <div className="ranking-club-field">예술</div>
+                  </div>
+                  <span className="ranking-points">1,456점</span>
+                </div>
+              </div>
+            </div>
           </div>
         )}
         {activeTab === "community-board" && (
