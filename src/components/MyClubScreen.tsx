@@ -20,9 +20,10 @@ const MyClubScreen: React.FC = () => {
   // 동아리 선택 모달 상태
   const [selectedClub, setSelectedClub] = useState("HICC");
   const [showClubModal, setShowClubModal] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // 가입된 동아리 목록 (샘플 데이터)
-  const clubs = [
+  const [clubs, setClubs] = useState([
     {
       id: 1,
       name: "HICC",
@@ -41,11 +42,34 @@ const MyClubScreen: React.FC = () => {
       avatar: "/club3-image.png",
       role: "부회장",
     },
-  ];
+  ]);
 
-  const handleClubSelect = (club: typeof clubs[0]) => {
+  const handleClubSelect = (club: (typeof clubs)[0]) => {
     setSelectedClub(club.name);
     setShowClubModal(false);
+  };
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (dropIndex: number) => {
+    if (draggedIndex === null) return;
+
+    const newClubs = [...clubs];
+    const draggedItem = newClubs[draggedIndex];
+    newClubs.splice(draggedIndex, 1);
+    newClubs.splice(dropIndex, 0, draggedItem);
+    setClubs(newClubs);
+    setDraggedIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
   };
 
   // 공지글만 보기 토글 상태
@@ -1050,11 +1074,20 @@ const MyClubScreen: React.FC = () => {
               </button>
             </div>
             <div className="club-list">
-              {clubs.map((club) => (
+              {clubs.map((club, index) => (
                 <div
                   key={club.id}
                   className="club-modal-item"
+                  draggable
+                  onDragStart={() => handleDragStart(index)}
+                  onDragOver={handleDragOver}
+                  onDrop={() => handleDrop(index)}
+                  onDragEnd={handleDragEnd}
                   onClick={() => handleClubSelect(club)}
+                  style={{
+                    opacity: draggedIndex === index ? 0.5 : 1,
+                    cursor: "grab",
+                  }}
                 >
                   <div className="club-modal-avatar">
                     <img src={club.avatar} alt={club.name} />
