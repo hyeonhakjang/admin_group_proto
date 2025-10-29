@@ -640,6 +640,20 @@
   padding-top: clamp(4px, 1vw, 6px);
 }
 
+.post-body {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666666;
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: clamp(6px, 1.5vw, 8px);
+}
+
 .post-meta {
   display: flex;
   justify-content: space-between;

@@ -400,6 +400,10 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                     <h3 className="post-title">
                       IT 창업을 6개월 안에 경험하는 연합 IT...
                     </h3>
+                    <p className="post-body">
+                      안녕하세요! 여러 대학 학생들이 함께 IT 창업을 체험해보는 연합 동아리입니다. 
+                      프론트엔드, 백엔드, 디자인 등 다양한 역할을 경험할 수 있습니다.
+                    </p>
                     <div className="post-meta">
                       <span className="post-date">2024.10.17 11:52</span>
                       <div className="post-engagement">
@@ -420,6 +424,10 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                     <h3 className="post-title">
                       새로운 프로젝트 팀원 모집합니다!
                     </h3>
+                    <p className="post-body">
+                      현재 진행 중인 웹 애플리케이션 프로젝트에 함께할 팀원을 모집하고 있습니다. 
+                      React와 Node.js를 사용하는 프로젝트이며, 실무 경험을 쌓을 수 있는 좋은 기회입니다.
+                    </p>
                     <div className="post-meta">
                       <span className="post-date">2024.10.16 14:30</span>
                       <div className="post-engagement">
@@ -440,6 +448,10 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                     <h3 className="post-title">
                       이번 주말 오프라인 모임 일정 공지
                     </h3>
+                    <p className="post-body">
+                      이번 주말(10/19) 오후 2시에 홍익대학교 본관 앞 카페에서 정기 모임이 있습니다. 
+                      동아리 활동에 관한 이야기와 앞으로의 계획을 함께 논의할 예정입니다.
+                    </p>
                     <div className="post-meta">
                       <span className="post-date">2024.10.15 09:15</span>
                       <div className="post-engagement">
