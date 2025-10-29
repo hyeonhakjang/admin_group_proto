@@ -72,6 +72,7 @@ const MyClubScreen: React.FC = () => {
   // 달력 관련 상태
   const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 7)); // 2024년 9월 7일
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [showEventDetail, setShowEventDetail] = useState(false);
 
   // 일정이 있는 날짜들 (샘플 데이터)
   const eventsDates = [
@@ -89,6 +90,15 @@ const MyClubScreen: React.FC = () => {
         participants: 21,
         date: selectedDate,
         time: "오후 01:00 ~ 오후 05:00",
+        location: "홍익대학교 공학관 301호",
+        description:
+          "이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해 다룹니다. 초보자도 참여 가능하며, 실습 시간도 포함되어 있습니다. 노트북을 지참해 주시기 바랍니다.",
+        agenda: [
+          "14:00 - 14:30: 웹 개발 기초 강의",
+          "14:30 - 15:30: React 소개 및 환경 설정",
+          "15:30 - 16:00: 실습 시간",
+          "16:00 - 17:00: Q&A 및 네트워킹",
+        ],
       }
     : null;
 
@@ -442,7 +452,7 @@ const MyClubScreen: React.FC = () => {
                       <span className="topic-icon">💡</span>
                     </div>
                     <h3 className="post-title">
-                      HICC 정기 세션 안내 및 참여 신청
+                      9월 7일 정기 세션 안내 및 참여 신청
                     </h3>
                     <div className="post-topic-icons-right">
                       <span className="topic-icon">📈</span>
@@ -617,27 +627,87 @@ const MyClubScreen: React.FC = () => {
                   selectedDate.getMonth() === currentDate.getMonth() &&
                     selectedDate.getFullYear() === currentDate.getFullYear()
                 ) ? (
-                  <div className="schedule-event-card">
-                    <h4 className="schedule-event-title">
-                      {selectedEvent.title}
-                    </h4>
-                    <div className="schedule-event-info">
-                      <span className="schedule-event-group">
-                        {selectedEvent.group} · {selectedEvent.participants}명
-                      </span>
-                      <div className="schedule-event-participants">
-                        <div className="participant-avatar">👤</div>
-                        <div className="participant-avatar">👤</div>
-                        <div className="participant-avatar">👤</div>
-                        <div className="participant-avatar">👤</div>
+                  <>
+                    {!showEventDetail ? (
+                      <div
+                        className="schedule-event-card"
+                        onClick={() => setShowEventDetail(true)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <h4 className="schedule-event-title">
+                          {selectedEvent.title}
+                        </h4>
+                        <div className="schedule-event-info">
+                          <span className="schedule-event-group">
+                            {selectedEvent.group} · {selectedEvent.participants}명
+                          </span>
+                          <div className="schedule-event-participants">
+                            <div className="participant-avatar">👤</div>
+                            <div className="participant-avatar">👤</div>
+                            <div className="participant-avatar">👤</div>
+                            <div className="participant-avatar">👤</div>
+                          </div>
+                        </div>
+                        <div className="schedule-event-time">
+                          • {selectedEvent.date.getFullYear()}년{" "}
+                          {selectedEvent.date.getMonth() + 1}월{" "}
+                          {selectedEvent.date.getDate()}일 {selectedEvent.time}
+                        </div>
                       </div>
-                    </div>
-                    <div className="schedule-event-time">
-                      • {selectedEvent.date.getFullYear()}년{" "}
-                      {selectedEvent.date.getMonth() + 1}월{" "}
-                      {selectedEvent.date.getDate()}일 {selectedEvent.time}
-                    </div>
-                  </div>
+                    ) : (
+                      <div className="schedule-event-detail-card">
+                        <button
+                          className="event-back-btn"
+                          onClick={() => setShowEventDetail(false)}
+                        >
+                          ← 뒤로가기
+                        </button>
+                        <h4 className="event-detail-title">
+                          {selectedEvent.title}
+                        </h4>
+                        <div className="event-detail-info">
+                          <div className="event-detail-row">
+                            <span className="event-detail-label">날짜:</span>
+                            <span className="event-detail-value">
+                              {selectedEvent.date.getFullYear()}년{" "}
+                              {selectedEvent.date.getMonth() + 1}월{" "}
+                              {selectedEvent.date.getDate()}일
+                            </span>
+                          </div>
+                          <div className="event-detail-row">
+                            <span className="event-detail-label">시간:</span>
+                            <span className="event-detail-value">
+                              {selectedEvent.time}
+                            </span>
+                          </div>
+                          <div className="event-detail-row">
+                            <span className="event-detail-label">장소:</span>
+                            <span className="event-detail-value">
+                              {selectedEvent.location}
+                            </span>
+                          </div>
+                          <div className="event-detail-row">
+                            <span className="event-detail-label">참가자:</span>
+                            <span className="event-detail-value">
+                              {selectedEvent.group} · {selectedEvent.participants}명
+                            </span>
+                          </div>
+                        </div>
+                        <div className="event-detail-description">
+                          <h5 className="event-detail-section-title">상세 내용</h5>
+                          <p>{selectedEvent.description}</p>
+                        </div>
+                        <div className="event-detail-agenda">
+                          <h5 className="event-detail-section-title">일정표</h5>
+                          <ul className="event-agenda-list">
+                            {selectedEvent.agenda.map((item, index) => (
+                              <li key={index}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <div className="schedule-event-card">
                     <p className="no-event-message">일정이 없습니다.</p>

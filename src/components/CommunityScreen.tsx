@@ -468,8 +468,7 @@ const CommunityScreen: React.FC = () => {
               {/* 헤더 */}
               <div className="popular-posts-header">
                 <div className="popular-posts-title-wrapper">
-                  <h2 className="popular-posts-title">실시간 인기글</h2>
-                  <span className="popular-posts-time">오전 7시 기준</span>
+                  <h2 className="popular-posts-title">모집 게시판</h2>
                 </div>
                 <button className="view-all-btn">더보기 &gt;</button>
               </div>
@@ -558,8 +557,7 @@ const CommunityScreen: React.FC = () => {
               {/* 헤더 */}
               <div className="popular-posts-header">
                 <div className="popular-posts-title-wrapper">
-                  <h2 className="popular-posts-title">실시간 인기글</h2>
-                  <span className="popular-posts-time">오전 7시 기준</span>
+                  <h2 className="popular-posts-title">홍보 게시판</h2>
                 </div>
                 <button className="view-all-btn">더보기 &gt;</button>
               </div>
