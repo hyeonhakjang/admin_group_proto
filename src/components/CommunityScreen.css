@@ -550,7 +550,7 @@
   border-radius: 20px;
   padding: clamp(16px, 4vw, 24px);
   box-shadow: 0 2px 8px rgba(40, 32, 27, 0.08);
-  margin-bottom: clamp(16px, 4vw, 24px);
+  margin-bottom: clamp(24px, 6vw, 32px);
 }
 
 .popular-posts-header {
