@@ -12,10 +12,12 @@ const imgIcon4 = "/chat.png"; // 채팅 아이콘
 
 // Props 인터페이스
 interface CommunityScreenProps {
-  onScreenChange: (screen: 'home' | 'community') => void;
+  onScreenChange: (screen: "home" | "community") => void;
 }
 
-const CommunityScreen: React.FC<CommunityScreenProps> = ({ onScreenChange }) => {
+const CommunityScreen: React.FC<CommunityScreenProps> = ({
+  onScreenChange,
+}) => {
   return (
     <div
       className="community-screen"
@@ -135,11 +137,11 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({ onScreenChange }) => 
       >
         <div className="tabs" data-name="tabs" data-node-id="11:3041">
           {/* Home Tab */}
-          <div 
-            className="tab" 
-            data-name="tab1" 
+          <div
+            className="tab"
+            data-name="tab1"
             data-node-id="11:3042"
-            onClick={() => onScreenChange('home')}
+            onClick={() => onScreenChange("home")}
           >
             <div className="tab-icon" data-name="Icon" data-node-id="11:3043">
               <img alt="Home Icon" className="icon" src={imgIcon} />
