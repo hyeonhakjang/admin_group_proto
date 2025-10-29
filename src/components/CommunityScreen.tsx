@@ -401,15 +401,9 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                     <div className="post-meta">
                       <span className="post-date">2024.10.17 11:52</span>
                       <div className="post-engagement">
-                        <span className="engagement-item">
-                          👁 971
-                        </span>
-                        <span className="engagement-item">
-                          ❤️ 2
-                        </span>
-                        <span className="engagement-item">
-                          💬 1
-                        </span>
+                        <span className="engagement-item">👁 971</span>
+                        <span className="engagement-item">❤️ 2</span>
+                        <span className="engagement-item">💬 1</span>
                       </div>
                     </div>
                   </div>
@@ -425,15 +419,9 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                     <div className="post-meta">
                       <span className="post-date">2024.10.16 14:30</span>
                       <div className="post-engagement">
-                        <span className="engagement-item">
-                          👁 656
-                        </span>
-                        <span className="engagement-item">
-                          ❤️ 5
-                        </span>
-                        <span className="engagement-item">
-                          💬 3
-                        </span>
+                        <span className="engagement-item">👁 656</span>
+                        <span className="engagement-item">❤️ 5</span>
+                        <span className="engagement-item">💬 3</span>
                       </div>
                     </div>
                   </div>
@@ -449,15 +437,9 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
                     <div className="post-meta">
                       <span className="post-date">2024.10.15 09:15</span>
                       <div className="post-engagement">
-                        <span className="engagement-item">
-                          👁 432
-                        </span>
-                        <span className="engagement-item">
-                          ❤️ 8
-                        </span>
-                        <span className="engagement-item">
-                          💬 2
-                        </span>
+                        <span className="engagement-item">👁 432</span>
+                        <span className="engagement-item">❤️ 8</span>
+                        <span className="engagement-item">💬 2</span>
                       </div>
                     </div>
                   </div>
