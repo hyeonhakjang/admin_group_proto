@@ -168,7 +168,7 @@ const CommunityScreen: React.FC<CommunityScreenProps> = ({
               {/* 헤더 */}
               <div className="section-header">
                 <h2 className="section-title">교내 동아리 찾기</h2>
-                <button className="view-all-btn">교내 동아리 찾기 페이지로 이동 ></button>
+                <button className="view-all-btn">교내 동아리 찾기 페이지로 이동 &gt;</button>
               </div>
 
               {/* 동아리 리스트 */}
