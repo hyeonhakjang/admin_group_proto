@@ -1218,14 +1218,17 @@ const MyClubScreen: React.FC = () => {
               >
                 ← 뒤로가기
               </button>
-              <h4 className="post-detail-title">9월 7일 정기 세션 안내 및 참여 신청</h4>
+              <h4 className="post-detail-title">
+                9월 7일 정기 세션 안내 및 참여 신청
+              </h4>
               <div className="post-detail-meta">
                 <div className="post-detail-author">홍익대 HICC ✓</div>
                 <div className="post-detail-time">오늘 18:41</div>
               </div>
               <div className="post-detail-body">
-                이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해 다룹니다. 초보자도
-                참여 가능하며, 실습 시간도 포함되어 있습니다. 노트북 지참 바랍니다.
+                이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해
+                다룹니다. 초보자도 참여 가능하며, 실습 시간도 포함되어 있습니다.
+                노트북 지참 바랍니다.
               </div>
 
               {/* 참석/불참 선택 영역 */}
@@ -1236,7 +1239,10 @@ const MyClubScreen: React.FC = () => {
                     className={`attendance-btn ${
                       attendanceChoice === "attend" ? "selected" : ""
                     }`}
-                    onClick={() => setAttendanceChoice("attend")}
+                    onClick={() => {
+                      setAttendanceChoice("attend");
+                      setShowAttendanceModal(true);
+                    }}
                   >
                     참석
                   </button>
@@ -1244,18 +1250,14 @@ const MyClubScreen: React.FC = () => {
                     className={`attendance-btn ${
                       attendanceChoice === "absent" ? "selected" : ""
                     }`}
-                    onClick={() => setAttendanceChoice("absent")}
+                    onClick={() => {
+                      setAttendanceChoice("absent");
+                      setShowAttendanceModal(true);
+                    }}
                   >
                     불참
                   </button>
                 </div>
-                <button
-                  className="attendance-submit-btn"
-                  disabled={!attendanceChoice}
-                  onClick={() => setShowAttendanceModal(true)}
-                >
-                  등록
-                </button>
               </div>
             </div>
           </div>
@@ -1278,7 +1280,8 @@ const MyClubScreen: React.FC = () => {
                   </button>
                 </div>
                 <div className="attendance-modal-body">
-                  {attendanceChoice === "attend" ? "참석" : "불참"}으로 등록할까요?
+                  {attendanceChoice === "attend" ? "참석" : "불참"}으로
+                  등록할까요?
                 </div>
                 <div className="attendance-modal-actions">
                   <button
