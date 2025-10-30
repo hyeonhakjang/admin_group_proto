@@ -202,6 +202,13 @@ const MyClubScreen: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showEventDetail, setShowEventDetail] = useState(false);
 
+  // 공지 상세 및 참석/불참 모달 상태
+  const [showPostDetail, setShowPostDetail] = useState(false);
+  const [attendanceChoice, setAttendanceChoice] = useState<
+    "attend" | "absent" | null
+  >(null);
+  const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+
   // 댓글 상태
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState([
@@ -606,7 +613,11 @@ const MyClubScreen: React.FC = () => {
             <div className="posts-list">
               {/* 게시글 1 - 공지글 */}
               {(!showNoticeOnly || true) && (
-                <div className="club-post-card">
+                <div
+                  className="club-post-card"
+                  onClick={() => setShowPostDetail(true)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div className="post-header">
                     <div className="post-author-section">
                       <div className="post-author-avatar">
@@ -1189,6 +1200,106 @@ const MyClubScreen: React.FC = () => {
               ))}
             </div>
           </div>
+        </>
+      )}
+
+      {/* 공지 상세 바텀시트 + 참석/불참 선택 */}
+      {showPostDetail && (
+        <>
+          <div
+            className="event-detail-overlay"
+            onClick={() => setShowPostDetail(false)}
+          ></div>
+          <div className="post-detail-card">
+            <div className="post-detail-inner">
+              <button
+                className="event-back-btn"
+                onClick={() => setShowPostDetail(false)}
+              >
+                ← 뒤로가기
+              </button>
+              <h4 className="post-detail-title">9월 7일 정기 세션 안내 및 참여 신청</h4>
+              <div className="post-detail-meta">
+                <div className="post-detail-author">홍익대 HICC ✓</div>
+                <div className="post-detail-time">오늘 18:41</div>
+              </div>
+              <div className="post-detail-body">
+                이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해 다룹니다. 초보자도
+                참여 가능하며, 실습 시간도 포함되어 있습니다. 노트북 지참 바랍니다.
+              </div>
+
+              {/* 참석/불참 선택 영역 */}
+              <div className="attendance-section">
+                <div className="attendance-title">참석 여부 선택</div>
+                <div className="attendance-options">
+                  <button
+                    className={`attendance-btn ${
+                      attendanceChoice === "attend" ? "selected" : ""
+                    }`}
+                    onClick={() => setAttendanceChoice("attend")}
+                  >
+                    참석
+                  </button>
+                  <button
+                    className={`attendance-btn ${
+                      attendanceChoice === "absent" ? "selected" : ""
+                    }`}
+                    onClick={() => setAttendanceChoice("absent")}
+                  >
+                    불참
+                  </button>
+                </div>
+                <button
+                  className="attendance-submit-btn"
+                  disabled={!attendanceChoice}
+                  onClick={() => setShowAttendanceModal(true)}
+                >
+                  등록
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* 등록 확인 모달 */}
+          {showAttendanceModal && (
+            <>
+              <div
+                className="club-modal-overlay"
+                onClick={() => setShowAttendanceModal(false)}
+              ></div>
+              <div className="attendance-modal">
+                <div className="attendance-modal-header">
+                  <h2 className="attendance-modal-title">참석 여부 등록</h2>
+                  <button
+                    className="club-modal-close"
+                    onClick={() => setShowAttendanceModal(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="attendance-modal-body">
+                  {attendanceChoice === "attend" ? "참석" : "불참"}으로 등록할까요?
+                </div>
+                <div className="attendance-modal-actions">
+                  <button
+                    className="attendance-cancel-btn"
+                    onClick={() => setShowAttendanceModal(false)}
+                  >
+                    취소
+                  </button>
+                  <button
+                    className="attendance-confirm-btn"
+                    onClick={() => {
+                      setShowAttendanceModal(false);
+                      setShowPostDetail(false);
+                    }}
+                  >
+                    확인
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </>
       )}
     </div>
