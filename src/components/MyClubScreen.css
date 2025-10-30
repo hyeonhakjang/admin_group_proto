@@ -762,7 +762,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: clamp(16px, 4vw, 20px);
-  padding-bottom: clamp(40px, 10vw, 60px);
+  padding-bottom: clamp(12px, 3vw, 16px);
   display: flex;
   flex-direction: column;
   gap: clamp(12px, 3vw, 16px);
@@ -1060,7 +1060,7 @@
   flex-direction: column;
   gap: clamp(12px, 3vw, 16px);
   padding-top: clamp(12px, 3vw, 16px);
-  padding-bottom: clamp(20px, 5vw, 30px);
+  padding-bottom: clamp(8px, 2vw, 12px);
   border-top: 1px solid #e0e0e0;
 }
 
@@ -1143,8 +1143,8 @@
   flex-direction: column;
   gap: clamp(12px, 3vw, 16px);
   margin-top: clamp(8px, 2vw, 12px);
-  margin-bottom: clamp(20px, 5vw, 30px);
-  padding-bottom: clamp(10px, 2.5vw, 15px);
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .comment-item {
