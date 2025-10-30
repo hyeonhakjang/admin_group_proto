@@ -725,7 +725,6 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 80vh;
   max-height: 80vh;
   background: white;
   border-radius: 20px 20px 0 0;
@@ -745,7 +744,6 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 70vh;
   max-height: 70vh;
   background: white;
   border-radius: 20px 20px 0 0;
@@ -760,7 +758,7 @@
 }
 
 .post-detail-inner {
-  flex: 1;
+  flex: initial;
   overflow-y: auto;
   overflow-x: hidden;
   padding: clamp(16px, 4vw, 20px);
@@ -769,6 +767,7 @@
   flex-direction: column;
   gap: clamp(12px, 3vw, 16px);
   -webkit-overflow-scrolling: touch;
+  max-height: calc(70vh - clamp(16px, 4vw, 20px));
 }
 
 .post-detail-title {
@@ -932,7 +931,7 @@
 }
 
 .schedule-event-detail-card-inner {
-  flex: 1;
+  flex: initial;
   overflow-y: auto;
   overflow-x: hidden;
   padding: clamp(16px, 4vw, 20px);
@@ -944,6 +943,7 @@
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   box-sizing: border-box;
+  max-height: calc(80vh - clamp(16px, 4vw, 20px));
 }
 
 .event-back-btn {

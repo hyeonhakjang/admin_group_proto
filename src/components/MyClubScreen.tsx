@@ -1301,7 +1301,9 @@ const MyClubScreen: React.FC = () => {
                       </div>
                       <div className="comment-content-wrapper">
                         <div className="comment-header">
-                          <span className="comment-author">{comment.author}</span>
+                          <span className="comment-author">
+                            {comment.author}
+                          </span>
                           <span className="comment-time">{comment.time}</span>
                         </div>
                         <p className="comment-text">{comment.content}</p>
