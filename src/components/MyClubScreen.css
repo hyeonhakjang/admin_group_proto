@@ -802,6 +802,83 @@
   line-height: 1.6;
 }
 
+/* 회비(dues) 섹션 */
+.dues-section {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+  border-top: 1px solid #e0e0e0;
+  padding-top: clamp(12px, 3vw, 16px);
+}
+
+.dues-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(15px, 3.75vw, 18px);
+  color: #28201b;
+}
+
+.dues-methods {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.dues-method-btn {
+  width: 100%;
+  padding: clamp(10px, 2.5vw, 12px);
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(13px, 3vw, 14px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dues-method-btn.kakao {
+  background: #fef3c7;
+  color: #1f2937;
+}
+
+.dues-method-btn.toss {
+  background: #e0ecff;
+  color: #1f2937;
+}
+
+.dues-method-btn:hover {
+  transform: translateY(-1px);
+}
+
+.dues-actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.5vw, 12px);
+}
+
+.remit-done-btn {
+  padding: clamp(8px, 2vw, 10px) clamp(14px, 3.5vw, 16px);
+  background: #c34e00;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(12px, 3vw, 13px);
+  cursor: pointer;
+}
+
+.remit-status {
+  padding: 6px 10px;
+  background: #fff5f0;
+  color: #c34e00;
+  border: 1px solid #ffd6c2;
+  border-radius: 999px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(11px, 2.5vw, 12px);
+}
+
 /* 참석/불참 선택 영역 */
 .attendance-section {
   display: flex;

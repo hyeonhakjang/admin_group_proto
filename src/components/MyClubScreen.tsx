@@ -204,10 +204,14 @@ const MyClubScreen: React.FC = () => {
 
   // 공지 상세 및 참석/불참 모달 상태
   const [showPostDetail, setShowPostDetail] = useState(false);
+  const [selectedPostType, setSelectedPostType] = useState<
+    "session" | "dues" | "general"
+  >("session");
   const [attendanceChoice, setAttendanceChoice] = useState<
     "attend" | "absent" | null
   >(null);
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+  const [isRemittanceChecking, setIsRemittanceChecking] = useState(false);
 
   // 댓글 상태
   const [newComment, setNewComment] = useState("");
@@ -615,7 +619,12 @@ const MyClubScreen: React.FC = () => {
               {(!showNoticeOnly || true) && (
                 <div
                   className="club-post-card"
-                  onClick={() => setShowPostDetail(true)}
+                  onClick={() => {
+                    setSelectedPostType("session");
+                    setAttendanceChoice(null);
+                    setIsRemittanceChecking(false);
+                    setShowPostDetail(true);
+                  }}
                   style={{ cursor: "pointer" }}
                 >
                   <div className="post-header">
@@ -659,7 +668,12 @@ const MyClubScreen: React.FC = () => {
               {(!showNoticeOnly || true) && (
                 <div
                   className="club-post-card"
-                  onClick={() => setShowPostDetail(true)}
+                  onClick={() => {
+                    setSelectedPostType("dues");
+                    setAttendanceChoice(null);
+                    setIsRemittanceChecking(false);
+                    setShowPostDetail(true);
+                  }}
                   style={{ cursor: "pointer" }}
                 >
                   <div className="post-header">
@@ -697,7 +711,12 @@ const MyClubScreen: React.FC = () => {
               {(!showNoticeOnly || false) && (
                 <div
                   className="club-post-card"
-                  onClick={() => setShowPostDetail(true)}
+                  onClick={() => {
+                    setSelectedPostType("general");
+                    setAttendanceChoice(null);
+                    setIsRemittanceChecking(false);
+                    setShowPostDetail(true);
+                  }}
                   style={{ cursor: "pointer" }}
                 >
                   <div className="post-header">
@@ -1227,46 +1246,78 @@ const MyClubScreen: React.FC = () => {
                 ← 뒤로가기
               </button>
               <h4 className="post-detail-title">
-                9월 7일 정기 세션 안내 및 참여 신청
+                {selectedPostType === "dues"
+                  ? "이번 달 회비 납부 관련 안내"
+                  : selectedPostType === "session"
+                  ? "9월 7일 정기 세션 안내 및 참여 신청"
+                  : "공지 상세"}
               </h4>
               <div className="post-detail-meta">
                 <div className="post-detail-author">홍익대 HICC ✓</div>
                 <div className="post-detail-time">오늘 18:41</div>
               </div>
               <div className="post-detail-body">
-                이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해
-                다룹니다. 초보자도 참여 가능하며, 실습 시간도 포함되어 있습니다.
-                노트북 지참 바랍니다.
+                {selectedPostType === "dues" ? (
+                  <>
+                    이번 달 회비 납부 안내입니다. 아래 결제 수단으로 송금하신 후,
+                    하단의 송금 완료 버튼을 눌러 확인 요청을 진행해주세요. 납부 기한을 꼭 지켜주세요.
+                  </>
+                ) : (
+                  <>
+                    이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해 다룹니다. 초보자도
+                    참여 가능하며, 실습 시간도 포함되어 있습니다. 노트북 지참 바랍니다.
+                  </>
+                )}
               </div>
 
-              {/* 참석/불참 선택 영역 */}
-              <div className="attendance-section">
-                <div className="attendance-title">참석 여부 선택</div>
-                <div className="attendance-options">
-                  <button
-                    className={`attendance-btn ${
-                      attendanceChoice === "attend" ? "selected" : ""
-                    }`}
-                    onClick={() => {
-                      setAttendanceChoice("attend");
-                      setShowAttendanceModal(true);
-                    }}
-                  >
-                    참석
-                  </button>
-                  <button
-                    className={`attendance-btn ${
-                      attendanceChoice === "absent" ? "selected" : ""
-                    }`}
-                    onClick={() => {
-                      setAttendanceChoice("absent");
-                      setShowAttendanceModal(true);
-                    }}
-                  >
-                    불참
-                  </button>
+              {selectedPostType === "dues" ? (
+                <div className="dues-section">
+                  <div className="dues-title">송금 방법 선택</div>
+                  <div className="dues-methods">
+                    <button className="dues-method-btn kakao">카카오페이로 송금</button>
+                    <button className="dues-method-btn toss">TOSS로 송금</button>
+                  </div>
+                  <div className="dues-actions">
+                    <button
+                      className="remit-done-btn"
+                      onClick={() => setIsRemittanceChecking(true)}
+                    >
+                      송금 완료
+                    </button>
+                    {isRemittanceChecking && (
+                      <span className="remit-status">확인중</span>
+                    )}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="attendance-section">
+                  <div className="attendance-title">참석 여부 선택</div>
+                  <div className="attendance-options">
+                    <button
+                      className={`attendance-btn ${
+                        attendanceChoice === "attend" ? "selected" : ""
+                      }`}
+                      onClick={() => {
+                        setAttendanceChoice("attend");
+                        setShowAttendanceModal(true);
+                      }}
+                    >
+                      참석
+                    </button>
+                    <button
+                      className={`attendance-btn ${
+                        attendanceChoice === "absent" ? "selected" : ""
+                      }`}
+                      onClick={() => {
+                        setAttendanceChoice("absent");
+                        setShowAttendanceModal(true);
+                      }}
+                    >
+                      불참
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* 댓글 섹션 (공지 상세) */}
               <div className="event-comments-section">
