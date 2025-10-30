@@ -657,7 +657,11 @@ const MyClubScreen: React.FC = () => {
 
               {/* 게시글 2 - 공지글 */}
               {(!showNoticeOnly || true) && (
-                <div className="club-post-card">
+                <div
+                  className="club-post-card"
+                  onClick={() => setShowPostDetail(true)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div className="post-header">
                     <div className="post-author-section">
                       <div className="post-author-avatar">
@@ -691,7 +695,11 @@ const MyClubScreen: React.FC = () => {
 
               {/* 게시글 3 - 일반글 */}
               {(!showNoticeOnly || false) && (
-                <div className="club-post-card">
+                <div
+                  className="club-post-card"
+                  onClick={() => setShowPostDetail(true)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div className="post-header">
                     <div className="post-author-section">
                       <div className="post-author-avatar">
