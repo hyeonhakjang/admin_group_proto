@@ -34,6 +34,9 @@
   height: clamp(200px, 50vw, 300px);
   overflow: hidden;
   margin-top: 64px; /* 헤더 높이만큼 상단 마진 추가 */
+  display: block;
+  visibility: visible;
+  z-index: 1;
 }
 
 .club-cover-image {
