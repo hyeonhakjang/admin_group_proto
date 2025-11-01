@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import "./CampusOfficialSignupScreen.css";
 
 const CampusOfficialSignupScreen: React.FC = () => {
@@ -151,8 +150,6 @@ const CampusOfficialSignupScreen: React.FC = () => {
           </button>
         </form>
       </div>
-
-      <BottomTabBar />
     </div>
   );
 };

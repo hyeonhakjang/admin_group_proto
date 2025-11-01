@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import "./ClubSignupScreen.css";
 
 const ClubSignupScreen: React.FC = () => {
@@ -339,8 +338,6 @@ const ClubSignupScreen: React.FC = () => {
           </button>
         </form>
       </div>
-
-      <BottomTabBar />
     </div>
   );
 };

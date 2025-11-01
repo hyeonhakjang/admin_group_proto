@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import "./SocialPersonalSignupScreen.css";
 
 const SocialPersonalSignupScreen: React.FC = () => {
@@ -281,8 +280,6 @@ const SocialPersonalSignupScreen: React.FC = () => {
           </div>
         </>
       )}
-
-      <BottomTabBar />
     </div>
   );
 };

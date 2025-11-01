@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import "./SignupSelectionScreen.css";
 
 const SignupSelectionScreen: React.FC = () => {
@@ -40,8 +39,6 @@ const SignupSelectionScreen: React.FC = () => {
           개인 계정 가입
         </button>
       </div>
-
-      <BottomTabBar />
     </div>
   );
 };
