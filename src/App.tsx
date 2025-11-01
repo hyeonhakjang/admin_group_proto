@@ -19,10 +19,22 @@ function App() {
           <Route path="/community" element={<CommunityScreen />} />
           <Route path="/myclub" element={<MyClubScreen />} />
           <Route path="/community/club/:id" element={<ClubDetailScreen />} />
-          <Route path="/community/explore/domestic" element={<ExploreDomesticScreen />} />
-          <Route path="/community/ranking/domestic" element={<RankingDomesticScreen />} />
-          <Route path="/community/explore/alliance" element={<ExploreAllianceScreen />} />
-          <Route path="/community/ranking/alliance" element={<RankingAllianceScreen />} />
+          <Route
+            path="/community/explore/domestic"
+            element={<ExploreDomesticScreen />}
+          />
+          <Route
+            path="/community/ranking/domestic"
+            element={<RankingDomesticScreen />}
+          />
+          <Route
+            path="/community/explore/alliance"
+            element={<ExploreAllianceScreen />}
+          />
+          <Route
+            path="/community/ranking/alliance"
+            element={<RankingAllianceScreen />}
+          />
         </Routes>
       </div>
     </BrowserRouter>

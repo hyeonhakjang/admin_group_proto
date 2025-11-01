@@ -9,7 +9,8 @@ const sampleClubData = {
   id: 1,
   name: "HICC",
   category: "학술",
-  description: "홍익대학교 컴퓨터공학 동아리로, 웹 개발, 알고리즘, 프로젝트 등 다양한 활동을 진행합니다.",
+  description:
+    "홍익대학교 컴퓨터공학 동아리로, 웹 개발, 알고리즘, 프로젝트 등 다양한 활동을 진행합니다.",
   logo: "/profile-icon.png",
   cover: "/profile-icon.png",
   members: 120,
@@ -117,10 +118,7 @@ const ClubDetailScreen: React.FC = () => {
           >
             가입 신청
           </button>
-          <button
-            className="chat-btn"
-            onClick={() => navigate("/chat")}
-          >
+          <button className="chat-btn" onClick={() => navigate("/chat")}>
             채팅 문의
           </button>
         </div>
@@ -139,7 +137,11 @@ const ClubDetailScreen: React.FC = () => {
           <div className="feed-grid">
             {club.feed.map((item) => (
               <div key={item.id} className="feed-item">
-                <img src={item.image} alt={item.caption} className="feed-image" />
+                <img
+                  src={item.image}
+                  alt={item.caption}
+                  className="feed-image"
+                />
                 <div className="feed-caption">{item.caption}</div>
               </div>
             ))}

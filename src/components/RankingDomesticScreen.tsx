@@ -3,12 +3,40 @@ import { useNavigate } from "react-router-dom";
 import BottomTabBar from "./BottomTabBar";
 import "./RankingDomesticScreen.css";
 
-const categories = ["전체", "학술", "공연", "스포츠", "종교", "봉사", "오락", "예술", "기타"];
+const categories = [
+  "전체",
+  "학술",
+  "공연",
+  "스포츠",
+  "종교",
+  "봉사",
+  "오락",
+  "예술",
+  "기타",
+];
 
 const sampleClubs = [
-  { id: 1, name: "HICC", category: "학술", activityScore: 850, logo: "/profile-icon.png" },
-  { id: 2, name: "브레인스워즈", category: "학술", activityScore: 720, logo: "/profile-icon.png" },
-  { id: 3, name: "VOERA", category: "공연", activityScore: 680, logo: "/profile-icon.png" },
+  {
+    id: 1,
+    name: "HICC",
+    category: "학술",
+    activityScore: 850,
+    logo: "/profile-icon.png",
+  },
+  {
+    id: 2,
+    name: "브레인스워즈",
+    category: "학술",
+    activityScore: 720,
+    logo: "/profile-icon.png",
+  },
+  {
+    id: 3,
+    name: "VOERA",
+    category: "공연",
+    activityScore: 680,
+    logo: "/profile-icon.png",
+  },
 ];
 
 const RankingDomesticScreen: React.FC = () => {
@@ -18,8 +46,11 @@ const RankingDomesticScreen: React.FC = () => {
 
   const filteredClubs = sampleClubs
     .filter((club) => {
-      const matchCategory = selectedCategory === "전체" || club.category === selectedCategory;
-      const matchSearch = club.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchCategory =
+        selectedCategory === "전체" || club.category === selectedCategory;
+      const matchSearch = club.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
       return matchCategory && matchSearch;
     })
     .sort((a, b) => b.activityScore - a.activityScore);
@@ -46,7 +77,9 @@ const RankingDomesticScreen: React.FC = () => {
         {categories.map((category) => (
           <div
             key={category}
-            className={`category-tab ${selectedCategory === category ? "active" : ""}`}
+            className={`category-tab ${
+              selectedCategory === category ? "active" : ""
+            }`}
             onClick={() => setSelectedCategory(category)}
           >
             {category}

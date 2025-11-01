@@ -48,7 +48,8 @@
 
 .search-input {
   width: 100%;
-  padding: clamp(10px, 2.5vw, 12px) clamp(10px, 2.5vw, 12px) clamp(10px, 2.5vw, 12px) clamp(40px, 10vw, 48px);
+  padding: clamp(10px, 2.5vw, 12px) clamp(10px, 2.5vw, 12px)
+    clamp(10px, 2.5vw, 12px) clamp(40px, 10vw, 48px);
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   background: #f5f5f5;
@@ -169,4 +170,190 @@
   font-size: clamp(14px, 3.5vw, 16px);
   color: #c34e00;
   margin-left: auto;
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .ranking-header {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .back-btn {
+    font-size: 13px;
+    padding: 6px 0;
+  }
+
+  .category-tabs {
+    padding: 12px;
+  }
+
+  .ranking-list {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .ranking-item {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .ranking-club-logo {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 360px) {
+  .ranking-header {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .back-btn {
+    font-size: 12px;
+  }
+
+  .category-tabs {
+    padding: 10px;
+  }
+
+  .category-tab {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .ranking-list {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .ranking-item {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .ranking-number {
+    font-size: 16px;
+    min-width: 28px;
+  }
+
+  .ranking-club-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .ranking-club-name {
+    font-size: 13px;
+  }
+
+  .ranking-score {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 320px) {
+  .ranking-header {
+    padding: 8px;
+  }
+
+  .back-btn {
+    font-size: 11px;
+  }
+
+  .category-tabs {
+    padding: 8px;
+  }
+
+  .category-tab {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
+
+  .ranking-list {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .ranking-item {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .ranking-number {
+    font-size: 14px;
+    min-width: 24px;
+  }
+
+  .ranking-club-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .ranking-club-name {
+    font-size: 12px;
+  }
+
+  .ranking-club-category {
+    font-size: 10px;
+  }
+
+  .ranking-score {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 240px) {
+  .ranking-header {
+    padding: 6px;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .back-btn {
+    font-size: 10px;
+    text-align: left;
+  }
+
+  .category-tabs {
+    padding: 6px;
+    gap: 4px;
+  }
+
+  .category-tab {
+    font-size: 9px;
+    padding: 4px 6px;
+  }
+
+  .ranking-list {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .ranking-item {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .ranking-number {
+    font-size: 12px;
+    min-width: 20px;
+  }
+
+  .ranking-club-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .ranking-club-name {
+    font-size: 11px;
+  }
+
+  .ranking-club-category {
+    font-size: 9px;
+  }
+
+  .ranking-score {
+    font-size: 11px;
+  }
 }

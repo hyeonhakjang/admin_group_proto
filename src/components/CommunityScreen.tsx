@@ -70,7 +70,9 @@ const CommunityScreen: React.FC = () => {
             동아리 탐색
           </div>
           <div
-            className={`top-nav-tab ${activeTopTab === "board" ? "active" : ""}`}
+            className={`top-nav-tab ${
+              activeTopTab === "board" ? "active" : ""
+            }`}
             onClick={() => setActiveTopTab("board")}
           >
             게시판
@@ -107,7 +109,9 @@ const CommunityScreen: React.FC = () => {
                       <h3 className="club-card-name">{club.name}</h3>
                       <p className="club-card-desc">{club.description}</p>
                       <div className="club-card-meta">
-                        <span className="club-card-category">{club.category}</span>
+                        <span className="club-card-category">
+                          {club.category}
+                        </span>
                         <span className="club-card-score">
                           활동점수: {club.activityScore}
                         </span>
@@ -148,9 +152,13 @@ const CommunityScreen: React.FC = () => {
                       </div>
                       <div className="ranking-club-info">
                         <h3 className="ranking-club-name">{club.name}</h3>
-                        <span className="ranking-club-category">{club.category}</span>
+                        <span className="ranking-club-category">
+                          {club.category}
+                        </span>
                       </div>
-                      <span className="ranking-score">{club.activityScore}</span>
+                      <span className="ranking-score">
+                        {club.activityScore}
+                      </span>
                     </div>
                   ))}
               </div>
@@ -181,7 +189,9 @@ const CommunityScreen: React.FC = () => {
                       <h3 className="club-card-name">{club.name}</h3>
                       <p className="club-card-desc">{club.description}</p>
                       <div className="club-card-meta">
-                        <span className="club-card-category">{club.category}</span>
+                        <span className="club-card-category">
+                          {club.category}
+                        </span>
                         <span className="club-card-score">
                           활동점수: {club.activityScore}
                         </span>
@@ -222,9 +232,13 @@ const CommunityScreen: React.FC = () => {
                       </div>
                       <div className="ranking-club-info">
                         <h3 className="ranking-club-name">{club.name}</h3>
-                        <span className="ranking-club-category">{club.category}</span>
+                        <span className="ranking-club-category">
+                          {club.category}
+                        </span>
                       </div>
-                      <span className="ranking-score">{club.activityScore}</span>
+                      <span className="ranking-score">
+                        {club.activityScore}
+                      </span>
                     </div>
                   ))}
               </div>

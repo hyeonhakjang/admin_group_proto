@@ -310,4 +310,153 @@
     width: 60px;
     height: 60px;
   }
+
+  .ranking-item {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .ranking-club-logo {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 360px) {
+  .top-nav-tabs {
+    padding: 0 12px;
+    gap: 12px;
+  }
+
+  .top-nav-tab {
+    font-size: 13px;
+  }
+
+  .community-main-content {
+    padding: 10px;
+  }
+
+  .club-card {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .club-card-logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .club-card-name {
+    font-size: 14px;
+  }
+
+  .ranking-number {
+    font-size: 16px;
+    min-width: 28px;
+  }
+
+  .ranking-club-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .ranking-club-name {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 320px) {
+  .top-nav-tab {
+    font-size: 12px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .community-main-content {
+    padding: 8px;
+  }
+
+  .club-card {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .club-card-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .club-card-name {
+    font-size: 13px;
+  }
+
+  .ranking-item {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .ranking-number {
+    font-size: 14px;
+    min-width: 24px;
+  }
+
+  .ranking-club-logo {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 240px) {
+  .top-nav-tabs {
+    padding: 0 4px;
+    gap: 8px;
+  }
+
+  .top-nav-tab {
+    font-size: 11px;
+    padding: 6px 0;
+  }
+
+  .community-main-content {
+    padding: 6px;
+  }
+
+  .club-card {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .club-card-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .club-card-name {
+    font-size: 12px;
+  }
+
+  .ranking-item {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .ranking-number {
+    font-size: 12px;
+    min-width: 20px;
+  }
+
+  .ranking-club-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .ranking-club-name {
+    font-size: 11px;
+  }
+
+  .ranking-score {
+    font-size: 12px;
+  }
 }

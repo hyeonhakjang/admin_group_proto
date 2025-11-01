@@ -48,7 +48,8 @@
 
 .search-input {
   width: 100%;
-  padding: clamp(10px, 2.5vw, 12px) clamp(10px, 2.5vw, 12px) clamp(10px, 2.5vw, 12px) clamp(40px, 10vw, 48px);
+  padding: clamp(10px, 2.5vw, 12px) clamp(10px, 2.5vw, 12px)
+    clamp(10px, 2.5vw, 12px) clamp(40px, 10vw, 48px);
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   background: #f5f5f5;
@@ -250,4 +251,183 @@
   font-size: clamp(10px, 2.5vw, 11px);
   padding: 4px 8px;
   border-radius: 6px;
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .explore-header {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .back-btn {
+    font-size: 13px;
+    padding: 6px 0;
+  }
+
+  .category-tabs {
+    padding: 12px;
+  }
+
+  .sort-section {
+    padding: 12px;
+  }
+
+  .club-list {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .club-list-item {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .club-list-logo {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 360px) {
+  .explore-header {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .back-btn {
+    font-size: 12px;
+  }
+
+  .category-tabs {
+    padding: 10px;
+  }
+
+  .category-tab {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .sort-section {
+    padding: 10px;
+  }
+
+  .filter-btn {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .club-list {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .club-list-item {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .club-list-logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .club-list-name {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 320px) {
+  .explore-header {
+    padding: 8px;
+  }
+
+  .back-btn {
+    font-size: 11px;
+  }
+
+  .category-tabs {
+    padding: 8px;
+  }
+
+  .category-tab {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
+
+  .sort-section {
+    padding: 8px;
+  }
+
+  .club-list {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .club-list-item {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .club-list-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .club-list-name {
+    font-size: 13px;
+  }
+
+  .club-list-description {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 240px) {
+  .explore-header {
+    padding: 6px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .back-btn {
+    font-size: 10px;
+    text-align: left;
+  }
+
+  .category-tabs {
+    padding: 6px;
+    gap: 4px;
+  }
+
+  .category-tab {
+    font-size: 9px;
+    padding: 4px 6px;
+  }
+
+  .sort-section {
+    padding: 6px;
+  }
+
+  .club-list {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .club-list-item {
+    padding: 6px;
+    gap: 6px;
+    flex-direction: column;
+  }
+
+  .club-list-logo {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .club-list-name {
+    font-size: 12px;
+  }
 }

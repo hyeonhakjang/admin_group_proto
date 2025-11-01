@@ -3,8 +3,24 @@ import { useNavigate } from "react-router-dom";
 import BottomTabBar from "./BottomTabBar";
 import "./ExploreDomesticScreen.css";
 
-const categories = ["전체", "학술", "공연", "스포츠", "종교", "봉사", "오락", "예술", "기타"];
-const affiliations = ["전체", "총동아리연합회", "경영대학 학생회", "공과대학 학생회", "문과대학 학생회"];
+const categories = [
+  "전체",
+  "학술",
+  "공연",
+  "스포츠",
+  "종교",
+  "봉사",
+  "오락",
+  "예술",
+  "기타",
+];
+const affiliations = [
+  "전체",
+  "총동아리연합회",
+  "경영대학 학생회",
+  "공과대학 학생회",
+  "문과대학 학생회",
+];
 const sortOptions = ["최신순", "인기순", "활동순", "이름순"];
 
 const sampleClubs = [
@@ -50,9 +66,13 @@ const ExploreDomesticScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredClubs = sampleClubs.filter((club) => {
-    const matchCategory = selectedCategory === "전체" || club.category === selectedCategory;
-    const matchAffiliation = selectedAffiliation === "전체" || club.affiliation === selectedAffiliation;
-    const matchSearch = club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchCategory =
+      selectedCategory === "전체" || club.category === selectedCategory;
+    const matchAffiliation =
+      selectedAffiliation === "전체" ||
+      club.affiliation === selectedAffiliation;
+    const matchSearch =
+      club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       club.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchCategory && matchAffiliation && matchSearch;
   });
@@ -81,7 +101,9 @@ const ExploreDomesticScreen: React.FC = () => {
         {categories.map((category) => (
           <div
             key={category}
-            className={`category-tab ${selectedCategory === category ? "active" : ""}`}
+            className={`category-tab ${
+              selectedCategory === category ? "active" : ""
+            }`}
             onClick={() => setSelectedCategory(category)}
           >
             {category}
@@ -163,7 +185,9 @@ const ExploreDomesticScreen: React.FC = () => {
               <p className="club-list-description">{club.description}</p>
               <div className="club-list-footer">
                 <span className="club-list-category">{club.category}</span>
-                <span className="club-list-score">활동점수: {club.activityScore}</span>
+                <span className="club-list-score">
+                  활동점수: {club.activityScore}
+                </span>
               </div>
             </div>
           </div>
