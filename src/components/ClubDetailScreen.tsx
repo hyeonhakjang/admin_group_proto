@@ -203,12 +203,16 @@ const ClubDetailScreen: React.FC = () => {
 
   return (
     <div className="club-detail-screen">
-      {/* Section Hero: 커버 이미지 */}
-      <div className="club-hero-section">
-        <img src={club.cover} alt={club.name} className="club-cover-image" />
+      {/* 헤더: 뒤로가기 버튼 */}
+      <div className="club-header-back">
         <button className="back-btn" onClick={() => navigate(-1)}>
           ← 뒤로가기
         </button>
+      </div>
+
+      {/* Section Hero: 커버 이미지 */}
+      <div className="club-hero-section">
+        <img src={club.cover} alt={club.name} className="club-cover-image" />
       </div>
 
       {/* Main Content */}

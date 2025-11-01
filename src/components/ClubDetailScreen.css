@@ -10,6 +10,20 @@
   box-sizing: border-box;
 }
 
+/* 헤더 (뒤로가기 버튼) */
+.club-header-back {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  z-index: 100;
+  padding: clamp(12px, 3vw, 16px);
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+}
+
 /* Hero Section */
 .club-hero-section {
   position: relative;
@@ -26,9 +40,6 @@
 }
 
 .back-btn {
-  position: absolute;
-  top: clamp(16px, 4vw, 20px);
-  left: clamp(16px, 4vw, 20px);
   background: rgba(255, 255, 255, 0.9);
   border: none;
   border-radius: 8px;
@@ -39,6 +50,7 @@
   color: #28201b;
   cursor: pointer;
   transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
 }
 
 .back-btn:hover {
