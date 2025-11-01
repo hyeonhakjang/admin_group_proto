@@ -161,6 +161,8 @@
   flex-direction: column;
   gap: clamp(12px, 3vw, 16px);
   padding: clamp(12px, 3vw, 16px);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .club-list-item {
