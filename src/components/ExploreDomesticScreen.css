@@ -3,6 +3,10 @@
   min-height: 100vh;
   font-family: "Inter", "Noto Sans KR", sans-serif;
   padding-bottom: calc(80px + 16px);
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .explore-header {
@@ -12,6 +16,8 @@
   padding: clamp(12px, 3vw, 16px);
   background: white;
   border-bottom: 1px solid #e0e0e0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .back-btn {
@@ -72,6 +78,8 @@
   background: white;
   border-bottom: 1px solid #e0e0e0;
   -webkit-overflow-scrolling: touch;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .category-tab {
@@ -103,6 +111,8 @@
   gap: clamp(8px, 2vw, 12px);
   padding: clamp(12px, 3vw, 16px);
   background: white;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .filter-wrapper {
@@ -160,6 +170,8 @@
   flex-direction: column;
   gap: clamp(12px, 3vw, 16px);
   padding: clamp(12px, 3vw, 16px);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .club-list-item {
