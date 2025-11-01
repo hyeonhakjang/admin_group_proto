@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Header from "./Header";
 import BottomTabBar from "./BottomTabBar";
 import "./ClubDetailScreen.css";
-import "./Header.css";
 
 // 샘플 동아리 데이터 (실제로는 API에서 가져올 데이터)
 const sampleClubData = {
@@ -204,25 +204,7 @@ const ClubDetailScreen: React.FC = () => {
 
   return (
     <div className="club-detail-screen">
-      {/* Header Navigation Bar (HomeScreen과 동일) */}
-      <div className="header-nav-bar">
-        <div className="nav-bar">
-          <p className="nav-title" onClick={() => navigate(-1)} style={{ cursor: "pointer" }}>
-            ← 뒤로가기
-          </p>
-          <div className="trailing-icons">
-            <div className="trailing-icon">
-              <img alt="Search Icon" className="icon" src="/search-icon.png" />
-            </div>
-            <div className="trailing-icon">
-              <img alt="Alarm Icon" className="icon" src="/alarm-icon.png" />
-            </div>
-            <div className="profile-icon">
-              <img alt="Profile Icon" className="icon" src="/profile-icon.png" />
-            </div>
-          </div>
-        </div>
-      </div>
+      <Header />
 
       {/* Main Content */}
       <div className="club-detail-content">
