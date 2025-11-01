@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Header from "./Header";
 import BottomTabBar from "./BottomTabBar";
 import "./ClubDetailScreen.css";
 
@@ -204,7 +203,13 @@ const ClubDetailScreen: React.FC = () => {
 
   return (
     <div className="club-detail-screen">
-      <Header />
+      {/* Section Hero: 커버 이미지 */}
+      <div className="club-hero-section">
+        <img src={club.cover} alt={club.name} className="club-cover-image" />
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          ← 뒤로가기
+        </button>
+      </div>
 
       {/* Main Content */}
       <div className="club-detail-content">
