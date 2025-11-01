@@ -367,11 +367,7 @@ const ClubDetailScreen: React.FC = () => {
                 ) ? (
                   <>
                     {!showEventDetail ? (
-                      <div
-                        className="schedule-event-card"
-                        onClick={() => setShowEventDetail(true)}
-                        style={{ cursor: "pointer" }}
-                      >
+                      <div className="schedule-event-card">
                         <h4 className="schedule-event-title">
                           {selectedEvent.title}
                         </h4>
