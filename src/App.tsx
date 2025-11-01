@@ -8,6 +8,12 @@ import ExploreDomesticScreen from "./components/ExploreDomesticScreen";
 import RankingDomesticScreen from "./components/RankingDomesticScreen";
 import ExploreAllianceScreen from "./components/ExploreAllianceScreen";
 import RankingAllianceScreen from "./components/RankingAllianceScreen";
+import LoginScreen from "./components/LoginScreen";
+import SignupSelectionScreen from "./components/SignupSelectionScreen";
+import CampusOfficialSignupScreen from "./components/CampusOfficialSignupScreen";
+import ClubSignupScreen from "./components/ClubSignupScreen";
+import PersonalSignupScreen from "./components/PersonalSignupScreen";
+import SocialPersonalSignupScreen from "./components/SocialPersonalSignupScreen";
 import "./App.css";
 
 function App() {
@@ -34,6 +40,21 @@ function App() {
           <Route
             path="/community/ranking/alliance"
             element={<RankingAllianceScreen />}
+          />
+          <Route path="/login" element={<LoginScreen />} />
+          <Route
+            path="/signup/selection"
+            element={<SignupSelectionScreen />}
+          />
+          <Route
+            path="/signup/campus-official"
+            element={<CampusOfficialSignupScreen />}
+          />
+          <Route path="/signup/club" element={<ClubSignupScreen />} />
+          <Route path="/signup/personal" element={<PersonalSignupScreen />} />
+          <Route
+            path="/signup/social-personal"
+            element={<SocialPersonalSignupScreen />}
           />
         </Routes>
       </div>
