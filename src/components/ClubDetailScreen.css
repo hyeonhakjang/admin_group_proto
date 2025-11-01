@@ -15,11 +15,11 @@
 
 /* 헤더 (뒤로가기 버튼) */
 .club-header-back {
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
   right: 0;
-  background-color: transparent;
+  background-color: #fffcfa;
   z-index: 100;
   padding: clamp(12px, 3vw, 16px);
   display: flex;
@@ -28,6 +28,7 @@
   pointer-events: none; /* 컨테이너는 클릭 이벤트 차단 */
   width: 100%;
   box-sizing: border-box;
+  flex-shrink: 0; /* 축소 방지 */
 }
 
 /* Hero Section */
@@ -36,11 +37,13 @@
   width: 100%;
   height: clamp(200px, 50vw, 300px);
   overflow: hidden;
-  margin-top: 0; /* 마진 제거 - 뒤로가기 버튼이 히어로 섹션 내부에 위치 */
+  margin-top: 0; /* 마진 제거 - 헤더 아래 바로 위치 */
   display: block;
   visibility: visible;
   z-index: 1;
   background-color: #f0f0f0; /* 임시 배경색 (이미지 로딩 전 표시) */
+  flex-shrink: 0; /* 축소 방지 */
+  clear: both; /* 플로트 요소 제거 */
 }
 
 .club-cover-image {
