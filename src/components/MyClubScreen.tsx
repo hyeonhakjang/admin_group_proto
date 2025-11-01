@@ -1259,13 +1259,15 @@ const MyClubScreen: React.FC = () => {
               <div className="post-detail-body">
                 {selectedPostType === "dues" ? (
                   <>
-                    이번 달 회비 납부 안내입니다. 아래 결제 수단으로 송금하신 후,
-                    하단의 송금 완료 버튼을 눌러 확인 요청을 진행해주세요. 납부 기한을 꼭 지켜주세요.
+                    이번 달 회비 납부 안내입니다. 아래 결제 수단으로 송금하신
+                    후, 하단의 송금 완료 버튼을 눌러 확인 요청을 진행해주세요.
+                    납부 기한을 꼭 지켜주세요.
                   </>
                 ) : (
                   <>
-                    이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해 다룹니다. 초보자도
-                    참여 가능하며, 실습 시간도 포함되어 있습니다. 노트북 지참 바랍니다.
+                    이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해
+                    다룹니다. 초보자도 참여 가능하며, 실습 시간도 포함되어
+                    있습니다. 노트북 지참 바랍니다.
                   </>
                 )}
               </div>
@@ -1274,8 +1276,12 @@ const MyClubScreen: React.FC = () => {
                 <div className="dues-section">
                   <div className="dues-title">송금 방법 선택</div>
                   <div className="dues-methods">
-                    <button className="dues-method-btn kakao">카카오페이로 송금</button>
-                    <button className="dues-method-btn toss">TOSS로 송금</button>
+                    <button className="dues-method-btn kakao">
+                      카카오페이로 송금
+                    </button>
+                    <button className="dues-method-btn toss">
+                      TOSS로 송금
+                    </button>
                   </div>
                   <div className="dues-actions">
                     <button
