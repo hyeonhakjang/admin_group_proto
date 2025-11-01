@@ -237,14 +237,537 @@
   margin: 0 0 clamp(12px, 3vw, 16px) 0;
 }
 
-.calendar-placeholder {
-  background: #f5f5f5;
-  border-radius: 12px;
-  padding: clamp(20px, 5vw, 30px);
-  text-align: center;
-  color: #888888;
+/* 달력 컴포넌트 (MyClubScreen에서 재사용) */
+.schedule-content {
+  width: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 24px);
+}
+
+.calendar-container {
+  background: #fffcfa;
+  border-radius: 20px;
+  padding: clamp(16px, 4vw, 24px);
+  box-shadow: 0 2px 8px rgba(40, 32, 27, 0.08);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: clamp(16px, 4vw, 20px);
+}
+
+.calendar-nav-btn {
+  background: none;
+  border: none;
+  font-size: clamp(18px, 4.5vw, 22px);
+  color: #28201b;
+  cursor: pointer;
+  padding: clamp(8px, 2vw, 12px);
+  transition: color 0.2s ease;
+}
+
+.calendar-nav-btn:hover {
+  color: #c34e00;
+}
+
+.calendar-month-year {
   font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 20px);
+  color: #28201b;
+  margin: 0;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1vw, 8px);
+  margin-bottom: clamp(8px, 2vw, 12px);
+}
+
+.calendar-weekday {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
   font-size: clamp(12px, 3vw, 14px);
+  color: #888888;
+  text-align: center;
+  padding: clamp(8px, 2vw, 12px);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1vw, 8px);
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+  position: relative;
+  padding: clamp(4px, 1vw, 8px);
+  transition: all 0.2s ease;
+}
+
+.calendar-day:hover {
+  background: rgba(195, 78, 0, 0.1);
+}
+
+.calendar-day.selected {
+  background: #2563eb;
+  color: white;
+}
+
+.calendar-day.other-month {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.calendar-day.other-month:hover {
+  background: transparent;
+}
+
+.calendar-day-number {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(13px, 3vw, 15px);
+  color: inherit;
+}
+
+.calendar-day.selected .calendar-day-number {
+  color: white;
+}
+
+.calendar-event-dot {
+  width: clamp(4px, 1vw, 6px);
+  height: clamp(4px, 1vw, 6px);
+  border-radius: 50%;
+  background: #888888;
+  margin-top: clamp(2px, 0.5vw, 4px);
+}
+
+.calendar-day.selected .calendar-event-dot {
+  background: white;
+}
+
+.schedule-details {
+  background: #fffcfa;
+  border-radius: 20px;
+  padding: clamp(16px, 4vw, 24px);
+  box-shadow: 0 2px 8px rgba(40, 32, 27, 0.08);
+}
+
+.schedule-details-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 20px);
+  color: #28201b;
+  margin: 0 0 clamp(12px, 3vw, 16px) 0;
+}
+
+.schedule-event-card {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.5vw, 14px);
+  transition: all 0.2s ease;
+}
+
+.schedule-event-card:hover {
+  opacity: 0.8;
+  transform: translateY(-2px);
+}
+
+.event-detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.schedule-event-detail-card {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 80vh;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  border: 1px solid #e0e0e0;
+  border-bottom: none;
+  z-index: 1001;
+  animation: slideUp 0.3s ease;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.schedule-event-detail-card-inner {
+  flex: initial;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: clamp(16px, 4vw, 20px);
+  padding-bottom: clamp(40px, 10vw, 60px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 20px);
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+  max-height: calc(80vh - clamp(16px, 4vw, 20px));
+}
+
+.event-back-btn {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  color: #c34e00;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(13px, 3vw, 14px);
+  cursor: pointer;
+  padding: clamp(4px, 1vw, 6px) 0;
+  transition: all 0.2s ease;
+}
+
+.event-back-btn:hover {
+  opacity: 0.8;
+  transform: translateX(-2px);
+}
+
+.event-detail-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(18px, 4.5vw, 22px);
+  color: #28201b;
+  margin: 0;
+}
+
+.event-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.5vw, 12px);
+  padding: clamp(12px, 3vw, 16px);
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.event-detail-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.event-detail-label {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #28201b;
+  min-width: clamp(60px, 15vw, 70px);
+}
+
+.event-detail-value {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #666666;
+  flex: 1;
+}
+
+.event-detail-description,
+.event-detail-agenda {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.event-detail-section-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(15px, 3.75vw, 18px);
+  color: #28201b;
+  margin: 0;
+}
+
+.event-detail-description p {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #666666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.event-agenda-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1.5vw, 8px);
+}
+
+.event-agenda-list li {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #666666;
+  line-height: 1.6;
+  padding-left: clamp(16px, 4vw, 20px);
+  position: relative;
+}
+
+.event-agenda-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #c34e00;
+  font-weight: bold;
+}
+
+.event-comments-section {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+  padding-top: clamp(12px, 3vw, 16px);
+  padding-bottom: clamp(8px, 2vw, 12px);
+  border-top: 1px solid #e0e0e0;
+}
+
+.comment-input-container {
+  display: flex;
+  gap: clamp(10px, 2.5vw, 12px);
+  align-items: flex-start;
+}
+
+.comment-input-avatar {
+  width: clamp(32px, 8vw, 36px);
+  height: clamp(32px, 8vw, 36px);
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.comment-input-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comment-input-wrapper {
+  display: flex;
+  gap: clamp(8px, 2vw, 10px);
+  flex: 1;
+  align-items: center;
+}
+
+.comment-input {
+  flex: 1;
+  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 14px);
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  background: #f5f5f5;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #28201b;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.comment-input:focus {
+  border-color: #c34e00;
+  background: white;
+}
+
+.comment-input::placeholder {
+  color: #888888;
+}
+
+.comment-submit-btn {
+  padding: clamp(8px, 2vw, 10px) clamp(16px, 4vw, 20px);
+  background: #c34e00;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(12px, 3vw, 13px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.comment-submit-btn:hover:not(:disabled) {
+  background: #a03d00;
+  transform: scale(1.05);
+}
+
+.comment-submit-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+  margin-top: clamp(8px, 2vw, 12px);
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.comment-item {
+  display: flex;
+  gap: clamp(10px, 2.5vw, 12px);
+  align-items: flex-start;
+}
+
+.comment-avatar {
+  width: clamp(32px, 8vw, 36px);
+  height: clamp(32px, 8vw, 36px);
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.comment-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comment-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 6px);
+  min-width: 0;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 10px);
+}
+
+.comment-author {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #28201b;
+}
+
+.comment-time {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(11px, 2.5vw, 12px);
+  color: #888888;
+}
+
+.comment-text {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #28201b;
+  line-height: 1.5;
+  margin: 0;
+  word-wrap: break-word;
+}
+
+.schedule-event-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  margin: 0;
+}
+
+.schedule-event-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.schedule-event-group {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666666;
+}
+
+.schedule-event-participants {
+  display: flex;
+  gap: clamp(-4px, -1vw, -2px);
+  align-items: center;
+}
+
+.participant-avatar {
+  width: clamp(24px, 6vw, 28px);
+  height: clamp(24px, 6vw, 28px);
+  border-radius: 50%;
+  border: 2px solid white;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(12px, 3vw, 14px);
+  margin-left: clamp(-4px, -1vw, -2px);
+}
+
+.participant-avatar:first-child {
+  margin-left: 0;
+}
+
+.schedule-event-time {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #888888;
+}
+
+.schedule-event-time::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #888888;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.no-event-message {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #888888;
+  text-align: center;
+  padding: clamp(20px, 5vw, 30px);
+  margin: 0;
 }
 
 /* Section H: Feed */
