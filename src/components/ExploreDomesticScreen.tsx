@@ -79,11 +79,15 @@ const ExploreDomesticScreen: React.FC = () => {
 
   return (
     <div className="explore-domestic-screen">
-      {/* Header */}
-      <div className="explore-header">
+      {/* 헤더: 뒤로가기 버튼 */}
+      <div className="explore-header-back">
         <button className="back-btn" onClick={() => navigate(-1)}>
           ← 뒤로가기
         </button>
+      </div>
+
+      {/* 검색 영역 */}
+      <div className="search-section">
         <div className="search-container">
           <img src="/search-icon.png" alt="검색" className="search-icon" />
           <input

@@ -9,15 +9,22 @@
   box-sizing: border-box;
 }
 
-.explore-header {
+/* 헤더 (뒤로가기 버튼) */
+.explore-header-back {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fffcfa;
+  z-index: 100;
+  padding: clamp(12px, 3vw, 16px);
   display: flex;
   align-items: center;
-  gap: clamp(12px, 3vw, 16px);
-  padding: clamp(12px, 3vw, 16px);
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
+  min-height: 64px;
+  pointer-events: none;
   width: 100%;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .back-btn {
@@ -29,17 +36,28 @@
   color: #28201b;
   cursor: pointer;
   padding: 8px 0;
+  pointer-events: auto;
 }
 
 .back-btn:hover {
   color: #c34e00;
 }
 
+/* 검색 영역 */
+.search-section {
+  padding: clamp(12px, 3vw, 16px);
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
 .search-container {
-  flex: 1;
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .search-icon {
