@@ -320,4 +320,3 @@ const PersonalSignupScreen: React.FC = () => {
 };
 
 export default PersonalSignupScreen;
-

@@ -288,4 +288,3 @@ const SocialPersonalSignupScreen: React.FC = () => {
 };
 
 export default SocialPersonalSignupScreen;
-

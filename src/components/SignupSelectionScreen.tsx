@@ -47,4 +47,3 @@ const SignupSelectionScreen: React.FC = () => {
 };
 
 export default SignupSelectionScreen;
-

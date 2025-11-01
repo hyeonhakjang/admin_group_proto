@@ -13,7 +13,7 @@ const ClubSignupScreen: React.FC = () => {
     managerName: "",
     contact: "",
     university: "",
-    hasUniversity: true,
+    noUniversity: false,
     affiliatedGroup: "",
   });
   const [showUniversitySearch, setShowUniversitySearch] = useState(false);
@@ -53,8 +53,8 @@ const ClubSignupScreen: React.FC = () => {
       setFormData((prev) => ({
         ...prev,
         [name]: checked,
-        university: checked ? prev.university : "",
-        affiliatedGroup: checked ? prev.affiliatedGroup : "없음",
+        university: checked ? "" : prev.university,
+        affiliatedGroup: checked ? "없음" : prev.affiliatedGroup,
       }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -178,14 +178,14 @@ const ClubSignupScreen: React.FC = () => {
               <label className="checkbox-label">
                 <input
                   type="checkbox"
-                  name="hasUniversity"
-                  checked={formData.hasUniversity}
+                  name="noUniversity"
+                  checked={formData.noUniversity}
                   onChange={handleChange}
                 />
                 <span>학교 없음</span>
               </label>
             </div>
-            {formData.hasUniversity && (
+            {!formData.noUniversity && (
               <div className="search-input-wrapper">
                 <input
                   type="text"
@@ -253,7 +253,7 @@ const ClubSignupScreen: React.FC = () => {
 
           <div className="form-group">
             <label className="form-label">소속된 캠퍼스 공식 단체</label>
-            {!formData.hasUniversity ? (
+            {formData.noUniversity || !formData.university ? (
               <input
                 type="text"
                 className="form-input"
@@ -271,13 +271,17 @@ const ClubSignupScreen: React.FC = () => {
                     placeholder="소속 단체를 검색하세요"
                     value={formData.affiliatedGroup}
                     onChange={handleChange}
-                    onFocus={() => formData.university && setShowGroupSearch(true)}
+                    onFocus={() =>
+                      formData.university && setShowGroupSearch(true)
+                    }
                     readOnly
                   />
                   <button
                     type="button"
                     className="search-btn"
-                    onClick={() => formData.university && setShowGroupSearch(true)}
+                    onClick={() =>
+                      formData.university && setShowGroupSearch(true)
+                    }
                     disabled={!formData.university}
                   >
                     검색
@@ -342,4 +346,3 @@ const ClubSignupScreen: React.FC = () => {
 };
 
 export default ClubSignupScreen;
-

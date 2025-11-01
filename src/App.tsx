@@ -42,10 +42,7 @@ function App() {
             element={<RankingAllianceScreen />}
           />
           <Route path="/login" element={<LoginScreen />} />
-          <Route
-            path="/signup/selection"
-            element={<SignupSelectionScreen />}
-          />
+          <Route path="/signup/selection" element={<SignupSelectionScreen />} />
           <Route
             path="/signup/campus-official"
             element={<CampusOfficialSignupScreen />}

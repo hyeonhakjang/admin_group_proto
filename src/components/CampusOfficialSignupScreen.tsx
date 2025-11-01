@@ -158,4 +158,3 @@ const CampusOfficialSignupScreen: React.FC = () => {
 };
 
 export default CampusOfficialSignupScreen;
-
