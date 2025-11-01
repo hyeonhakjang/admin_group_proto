@@ -224,11 +224,6 @@ const ClubDetailScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* Section Hero: 커버 이미지 */}
-      <div className="club-hero-section">
-        <img src={club.cover} alt={club.name} className="club-cover-image" />
-      </div>
-
       {/* Main Content */}
       <div className="club-detail-content">
         {/* Section A: 로고 */}
