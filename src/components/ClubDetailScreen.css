@@ -15,12 +15,12 @@
 
 /* 헤더 (뒤로가기 버튼) */
 .club-header-back {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   background-color: transparent;
-  z-index: 1000 !important;
+  z-index: 100;
   padding: clamp(12px, 3vw, 16px);
   display: flex;
   align-items: center;
@@ -28,8 +28,6 @@
   pointer-events: none; /* 컨테이너는 클릭 이벤트 차단 */
   width: 100%;
   box-sizing: border-box;
-  /* GPU 가속을 위한 별도 레이어 생성 */
-  isolation: isolate;
 }
 
 /* Hero Section */
@@ -38,7 +36,7 @@
   width: 100%;
   height: clamp(200px, 50vw, 300px);
   overflow: hidden;
-  margin-top: 64px; /* 헤더 높이만큼 상단 마진 추가 */
+  margin-top: 0; /* 마진 제거 - 뒤로가기 버튼이 히어로 섹션 내부에 위치 */
   display: block;
   visibility: visible;
   z-index: 1;
