@@ -60,6 +60,7 @@
   top: 50%;
   transform: translate(-50%, -50%);
   margin-top: -10px;
+  pointer-events: none;
 }
 
 .tab-label {
@@ -79,6 +80,7 @@
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  pointer-events: none;
 }
 
 .tab-label.active {
