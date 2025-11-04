@@ -1299,15 +1299,17 @@ const MyClubScreen: React.FC = () => {
 
       {/* 게시글 상세 모달 */}
       {showPostModal && selectedPost && (
-        <>
+        <div
+          className="post-modal-overlay"
+          onClick={() => {
+            setShowPostModal(false);
+            setSelectedPost(null);
+          }}
+        >
           <div
-            className="post-modal-overlay"
-            onClick={() => {
-              setShowPostModal(false);
-              setSelectedPost(null);
-            }}
-          ></div>
-          <div className="post-modal">
+            className="post-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="post-modal-header">
               <h3 className="post-modal-title">{selectedPost.title}</h3>
               <button
@@ -1337,7 +1339,7 @@ const MyClubScreen: React.FC = () => {
               <div className="post-modal-content">{selectedPost.content}</div>
             </div>
           </div>
-        </>
+        </div>
       )}
 
       {/* 글 작성 플로팅 버튼 */}
