@@ -232,10 +232,7 @@ const MyClubScreen: React.FC = () => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       // 더보기 버튼이나 메뉴 내부가 아닌 경우에만 닫기
-      if (
-        !target.closest(".post-more-btn") &&
-        !target.closest(".more-menu")
-      ) {
+      if (!target.closest(".post-more-btn") && !target.closest(".more-menu")) {
         setShowMoreMenu(null);
       }
     };
