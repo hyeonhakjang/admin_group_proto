@@ -1732,13 +1732,369 @@
   border-radius: 16px;
   width: 100%;
   max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* 모달 헤더: 뒤로가기 버튼 */
+.post-modal-header-back {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 100;
+  padding: clamp(12px, 3vw, 16px);
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.post-modal-back-btn {
+  background: transparent;
+  border: none;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.post-modal-back-btn:hover {
+  color: #c34e00;
+}
+
+.post-modal-body {
+  padding: clamp(16px, 4vw, 24px);
+  overflow-y: auto;
+  flex: 1;
+  background-color: #fffcfa;
+}
+
+/* 프로필 사진, 이름, 날짜 */
+.post-modal-header {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+.post-modal-club-info {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.post-modal-club-logo {
+  width: clamp(48px, 12vw, 56px);
+  height: clamp(48px, 12vw, 56px);
+  border-radius: 12px;
+  object-fit: cover;
+  background: #f5f5f5;
+  flex-shrink: 0;
+}
+
+.post-modal-club-text {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 6px);
+}
+
+.post-modal-club-name {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 18px);
+  color: #28201b;
+}
+
+.post-modal-date {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #888888;
+}
+
+/* 제목 */
+.post-modal-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(20px, 5vw, 24px);
+  color: #28201b;
+  margin: 0 0 clamp(16px, 4vw, 20px) 0;
+  line-height: 1.4;
+}
+
+/* 내용 */
+.post-modal-content-wrapper {
+  margin-bottom: clamp(24px, 6vw, 32px);
+}
+
+.post-modal-content-text {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+/* 좋아요, 스크랩 버튼 */
+.post-modal-actions {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+  padding: clamp(16px, 4vw, 20px) 0;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: clamp(24px, 6vw, 32px);
+}
+
+.post-modal-action-btn {
+  flex: 1;
+  padding: clamp(12px, 3vw, 14px);
+  border-radius: 8px;
+  border: none;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.post-modal-action-btn.like-btn {
+  background: #fff5f0;
+  color: #c34e00;
+}
+
+.post-modal-action-btn.like-btn:hover {
+  background: #ffe5d6;
+}
+
+.post-modal-action-btn.like-btn.active {
+  background: #c34e00;
+  color: white;
+}
+
+.post-modal-action-btn.scrap-btn {
+  background: #f5f5f5;
+  color: #666666;
+}
+
+.post-modal-action-btn.scrap-btn:hover {
+  background: #e8e8e8;
+}
+
+.post-modal-action-btn.scrap-btn.active {
+  background: #c34e00;
+  color: white;
+}
+
+/* 댓글 섹션 */
+.post-modal-comments {
+  margin-top: clamp(24px, 6vw, 32px);
+}
+
+.post-modal-comments-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(18px, 4.5vw, 20px);
+  color: #28201b;
+  margin: 0 0 clamp(16px, 4vw, 20px) 0;
+}
+
+.post-modal-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 20px);
+  margin-bottom: clamp(24px, 6vw, 32px);
+}
+
+.post-modal-comment-item {
+  background: white;
+  border-radius: 12px;
+  padding: clamp(12px, 3vw, 16px);
+  border: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-modal-comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: clamp(10px, 2.5vw, 12px);
+  width: 100%;
+}
+
+.post-modal-comment-author-info {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 10px);
+  flex-shrink: 0;
+}
+
+.post-modal-comment-author-avatar {
+  width: clamp(32px, 8vw, 40px);
+  height: clamp(32px, 8vw, 40px);
+  border-radius: 50%;
+  object-fit: cover;
+  background: #f5f5f5;
+  flex-shrink: 0;
+}
+
+.post-modal-comment-author {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #28201b;
+  white-space: nowrap;
+}
+
+.post-modal-comment-actions {
+  display: flex;
+  gap: clamp(6px, 1.5vw, 8px);
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.post-modal-comment-like-btn,
+.post-modal-comment-reply-btn {
+  padding: clamp(4px, 1vw, 5px) clamp(8px, 2vw, 10px);
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(10px, 2.5vw, 11px);
+  color: #666666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.post-modal-comment-like-btn:hover,
+.post-modal-comment-reply-btn:hover {
+  background: #f5f5f5;
+  border-color: #c34e00;
+}
+
+.post-modal-comment-like-btn.active {
+  background: #fff5f0;
+  border-color: #c34e00;
+  color: #c34e00;
+}
+
+.post-modal-comment-body {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 10px);
+}
+
+.post-modal-comment-content {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #28201b;
+  line-height: 1.6;
+  margin: 0;
+  word-wrap: break-word;
+}
+
+.post-modal-comment-date {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(11px, 2.75vw, 12px);
+  color: #888888;
+}
+
+/* 댓글 작성 영역 */
+.post-modal-comment-write-area {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
+  background: white;
+  border-radius: 12px;
+  padding: clamp(12px, 3vw, 16px);
+  border: 1px solid #e0e0e0;
+}
+
+.post-modal-anonymous-checkbox {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 10px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #666666;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.post-modal-anonymous-checkbox input[type="checkbox"] {
+  width: clamp(18px, 4.5vw, 20px);
+  height: clamp(18px, 4.5vw, 20px);
+  cursor: pointer;
+  accent-color: #c34e00;
+}
+
+.post-modal-comment-input-area {
+  flex: 1;
+  padding: clamp(10px, 2.5vw, 12px);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: clamp(40px, 10vw, 48px);
+  display: flex;
+  align-items: center;
+}
+
+.post-modal-comment-input-area:hover {
+  border-color: #c34e00;
+  background: #fff5f0;
+}
+
+.post-modal-comment-input-placeholder {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #999999;
+}
+
+/* 댓글 작성 모달 */
+.post-modal-comment-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2001;
+  padding: clamp(16px, 4vw, 24px);
+}
+
+.post-modal-comment-modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-.post-modal-header {
+.post-modal-comment-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1746,16 +2102,15 @@
   border-bottom: 1px solid #e0e0e0;
 }
 
-.post-modal-title {
+.post-modal-comment-modal-header h3 {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 700;
   font-size: clamp(18px, 4.5vw, 20px);
   color: #28201b;
   margin: 0;
-  flex: 1;
 }
 
-.post-modal-close {
+.post-modal-comment-modal-close {
   background: none;
   border: none;
   font-size: clamp(24px, 6vw, 28px);
@@ -1770,53 +2125,93 @@
   transition: color 0.2s ease;
 }
 
-.post-modal-close:hover {
+.post-modal-comment-modal-close:hover {
   color: #28201b;
 }
 
-.post-modal-body {
-  padding: clamp(16px, 4vw, 20px);
-  overflow-y: auto;
-  flex: 1;
-}
-
-.post-modal-author {
+.post-modal-comment-modal-form {
   display: flex;
-  align-items: center;
-  gap: clamp(10px, 2.5vw, 12px);
-  margin-bottom: clamp(16px, 4vw, 20px);
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+  overflow-y: auto;
+  padding: clamp(16px, 4vw, 20px);
 }
 
-.post-modal-author-avatar {
-  width: clamp(40px, 10vw, 48px);
-  height: clamp(40px, 10vw, 48px);
-  border-radius: 50%;
-  object-fit: cover;
+.post-modal-comment-modal-reply-info {
+  background: #fff5f0;
+  border-radius: 8px;
+  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 14px);
+  margin-bottom: clamp(12px, 3vw, 16px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #c34e00;
+  font-weight: 500;
 }
 
-.post-modal-author-name {
+.post-modal-comment-modal-checkbox {
+  margin-bottom: clamp(8px, 2vw, 10px);
+}
+
+.post-modal-comment-modal-input {
+  width: 100%;
+  padding: clamp(12px, 3vw, 14px);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #28201b;
+  resize: vertical;
+  min-height: clamp(120px, 30vw, 150px);
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+.post-modal-comment-modal-input:focus {
+  outline: none;
+  border-color: #c34e00;
+}
+
+.post-modal-comment-modal-actions {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+  justify-content: flex-end;
+  margin-top: clamp(8px, 2vw, 10px);
+}
+
+.post-modal-comment-modal-cancel,
+.post-modal-comment-modal-submit {
+  padding: clamp(10px, 2.5vw, 12px) clamp(20px, 5vw, 24px);
+  border-radius: 8px;
+  border: none;
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 600;
-  font-size: clamp(14px, 3.5vw, 16px);
-  color: #28201b;
+  font-size: clamp(13px, 3.25vw, 15px);
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.post-modal-date {
-  font-family: "Inter", "Noto Sans KR", sans-serif;
-  font-weight: 400;
-  font-size: clamp(12px, 3vw, 14px);
-  color: #888888;
-  margin-left: auto;
+.post-modal-comment-modal-cancel {
+  background: #f5f5f5;
+  color: #666666;
 }
 
-.post-modal-content {
-  font-family: "Inter", "Noto Sans KR", sans-serif;
-  font-weight: 400;
-  font-size: clamp(14px, 3.5vw, 16px);
-  color: #28201b;
-  line-height: 1.6;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+.post-modal-comment-modal-cancel:hover {
+  background: #e8e8e8;
+}
+
+.post-modal-comment-modal-submit {
+  background: #c34e00;
+  color: white;
+}
+
+.post-modal-comment-modal-submit:hover:not(:disabled) {
+  background: #a03f00;
+}
+
+.post-modal-comment-modal-submit:disabled {
+  background: #e0e0e0;
+  color: #999999;
+  cursor: not-allowed;
 }
 
 .toggle-switch {
@@ -2461,7 +2856,9 @@
 /* 글 작성 플로팅 버튼 */
 .floating-write-btn {
   position: fixed;
-  bottom: calc(80px + clamp(16px, 4vw, 24px)); /* BottomTabBar 높이(80px) + 여백 */
+  bottom: calc(
+    80px + clamp(16px, 4vw, 24px)
+  ); /* BottomTabBar 높이(80px) + 여백 */
   left: 80%; /* 화면 너비의 80% 지점에 고정 (예약/구매와 채팅 사이) */
   transform: translateX(-50%); /* 버튼 중앙 기준으로 정렬 */
   width: clamp(56px, 14vw, 64px);

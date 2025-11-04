@@ -155,6 +155,18 @@ const MyClubScreen: React.FC = () => {
   const [showPostModal, setShowPostModal] = useState(false);
   const [selectedPost, setSelectedPost] = useState<any>(null);
   const [showMoreMenu, setShowMoreMenu] = useState<number | null>(null);
+  
+  // 모달용 좋아요/스크랩 상태
+  const [modalIsLiked, setModalIsLiked] = useState(false);
+  const [modalIsScrapped, setModalIsScrapped] = useState(false);
+  const [modalLikeCount, setModalLikeCount] = useState(0);
+  
+  // 모달용 댓글 상태
+  const [modalComments, setModalComments] = useState<any[]>([]);
+  const [modalNewComment, setModalNewComment] = useState("");
+  const [modalIsAnonymous, setModalIsAnonymous] = useState(false);
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -388,6 +400,79 @@ const MyClubScreen: React.FC = () => {
       )
     );
   };
+
+  // 모달용 핸들러 함수들
+  const handleModalLike = () => {
+    setModalIsLiked(!modalIsLiked);
+    setModalLikeCount(modalIsLiked ? modalLikeCount - 1 : modalLikeCount + 1);
+  };
+
+  const handleModalScrap = () => {
+    setModalIsScrapped(!modalIsScrapped);
+  };
+
+  const handleModalCommentLike = (commentId: number) => {
+    setModalComments(
+      modalComments.map((comment) =>
+        comment.id === commentId
+          ? {
+              ...comment,
+              isLiked: !comment.isLiked,
+              likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
+            }
+          : comment
+      )
+    );
+  };
+
+  const handleModalCommentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (modalNewComment.trim()) {
+      const commentContent = replyingTo
+        ? `@${modalComments.find((c) => c.id === replyingTo)?.author || "사용자"} ${modalNewComment}`
+        : modalNewComment;
+
+      const comment = {
+        id: modalComments.length + 1,
+        author: modalIsAnonymous ? "익명" : "사용자",
+        authorAvatar: "/profile-icon.png",
+        content: commentContent,
+        createdAt: new Date().toISOString().split("T")[0],
+        isAnonymous: modalIsAnonymous,
+        likes: 0,
+        isLiked: false,
+      };
+      setModalComments([...modalComments, comment]);
+      setModalNewComment("");
+      setModalIsAnonymous(false);
+      setReplyingTo(null);
+      setShowCommentModal(false);
+    }
+  };
+
+  const handleModalCommentAreaClick = () => {
+    setReplyingTo(null);
+    setShowCommentModal(true);
+  };
+
+  const handleModalReplyClick = (commentId: number) => {
+    setReplyingTo(commentId);
+    setShowCommentModal(true);
+  };
+
+  // 모달이 열릴 때 초기화
+  useEffect(() => {
+    if (showPostModal && selectedPost) {
+      setModalIsLiked(false);
+      setModalIsScrapped(false);
+      setModalLikeCount(selectedPost.likes || 0);
+      setModalComments([]);
+      setModalNewComment("");
+      setModalIsAnonymous(false);
+      setShowCommentModal(false);
+      setReplyingTo(null);
+    }
+  }, [showPostModal, selectedPost]);
 
   // 일정이 있는 날짜들 (샘플 데이터)
   const eventsDates = [
@@ -774,13 +859,13 @@ const MyClubScreen: React.FC = () => {
                   <div className="dropdown-menu">
                     <div
                       className="dropdown-item"
-                      onClick={() => {
+                  onClick={() => {
                         setSelectedCategory(null);
                         setShowCategoryDropdown(false);
                       }}
                     >
                       전체
-                    </div>
+                      </div>
                     {categories.map((category) => (
                       <div
                         key={category}
@@ -791,10 +876,10 @@ const MyClubScreen: React.FC = () => {
                         }}
                       >
                         {category}
-                      </div>
+                        </div>
                     ))}
-                  </div>
-                )}
+                </div>
+              )}
               </div>
 
               {/* 섹션 C: 정렬 필터 */}
@@ -814,7 +899,7 @@ const MyClubScreen: React.FC = () => {
                       <div
                         key={option}
                         className="dropdown-item"
-                        onClick={() => {
+                  onClick={() => {
                           setSelectedSort(option);
                           setShowSortDropdown(false);
                         }}
@@ -822,10 +907,10 @@ const MyClubScreen: React.FC = () => {
                         {option}
                       </div>
                     ))}
-                  </div>
+                        </div>
                 )}
-              </div>
-            </div>
+                      </div>
+                    </div>
 
             {/* 섹션 D: 게시글 리스트 */}
             <div className="posts-list">
@@ -930,14 +1015,14 @@ const MyClubScreen: React.FC = () => {
                           >
                             공유
                           </button>
-                        </div>
+                  </div>
                       )}
                     </div>
                   </div>
                   {/* 섹션 D-C: 글 제목 영역 */}
                   <div className="post-title-section">
                     <h3 className="post-title">{post.title}</h3>
-                  </div>
+                    </div>
                   {/* 섹션 D-D, D-E: 좋아요/댓글 수와 카테고리 */}
                   <div className="post-footer-section">
                     <div className="post-engagement-counts">
@@ -947,7 +1032,7 @@ const MyClubScreen: React.FC = () => {
                       <span className="engagement-count">
                         💬 {post.comments.toLocaleString()}
                       </span>
-                    </div>
+                  </div>
                     <span className="post-category">{post.category}</span>
                   </div>
                 </div>
@@ -1187,14 +1272,14 @@ const MyClubScreen: React.FC = () => {
                                   >
                                     <div className="comment-header">
                                       <div className="comment-author-info">
-                                        <img
+                                      <img
                                           src={
                                             comment.authorAvatar ||
                                             "/profile-icon.png"
                                           }
-                                          alt={comment.author}
+                                        alt={comment.author}
                                           className="comment-author-avatar"
-                                        />
+                                      />
                                         <span className="comment-author">
                                           {comment.author}
                                         </span>
@@ -1306,38 +1391,234 @@ const MyClubScreen: React.FC = () => {
             setSelectedPost(null);
           }}
         >
-          <div
-            className="post-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="post-modal-header">
-              <h3 className="post-modal-title">{selectedPost.title}</h3>
+          <div className="post-modal" onClick={(e) => e.stopPropagation()}>
+            {/* 모달 헤더: 뒤로가기 버튼 */}
+            <div className="post-modal-header-back">
               <button
-                className="post-modal-close"
+                className="post-modal-back-btn"
                 onClick={() => {
                   setShowPostModal(false);
                   setSelectedPost(null);
                 }}
               >
-                ✕
+                ← 뒤로가기
               </button>
             </div>
+
             <div className="post-modal-body">
-              <div className="post-modal-author">
-                <img
-                  src={selectedPost.authorAvatar}
-                  alt={selectedPost.author}
-                  className="post-modal-author-avatar"
-                />
-                <span className="post-modal-author-name">
-                  {selectedPost.author}
-                </span>
-                <span className="post-modal-date">
-                  {selectedPost.createdAt}
-                </span>
+              {/* 프로필 사진, 이름, 날짜 */}
+              <div className="post-modal-header">
+                <div className="post-modal-club-info">
+                  <img
+                    src={selectedPost.authorAvatar}
+                    alt={selectedPost.author}
+                    className="post-modal-club-logo"
+                  />
+                  <div className="post-modal-club-text">
+                    <span className="post-modal-club-name">
+                      {selectedPost.author}
+                    </span>
+                    <span className="post-modal-date">
+                      {selectedPost.createdAt}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="post-modal-content">{selectedPost.content}</div>
+
+              {/* 제목 */}
+              <h1 className="post-modal-title">{selectedPost.title}</h1>
+
+              {/* 내용 */}
+              <div className="post-modal-content-wrapper">
+                <pre className="post-modal-content-text">
+                  {selectedPost.content}
+                </pre>
+              </div>
+
+              {/* 좋아요, 스크랩 버튼 */}
+              <div className="post-modal-actions">
+                <button
+                  className={`post-modal-action-btn like-btn ${
+                    modalIsLiked ? "active" : ""
+                  }`}
+                  onClick={handleModalLike}
+                >
+                  좋아요 {modalLikeCount}
+                </button>
+                <button
+                  className={`post-modal-action-btn scrap-btn ${
+                    modalIsScrapped ? "active" : ""
+                  }`}
+                  onClick={handleModalScrap}
+                >
+                  {modalIsScrapped ? "스크랩됨" : "스크랩"}
+                </button>
+              </div>
+
+              {/* 댓글 섹션 */}
+              <div className="post-modal-comments">
+                <h2 className="post-modal-comments-title">
+                  댓글 {modalComments.length}
+                </h2>
+
+                {/* 댓글 목록 */}
+                <div className="post-modal-comments-list">
+                  {modalComments.map((comment) => (
+                    <div key={comment.id} className="post-modal-comment-item">
+                      <div className="post-modal-comment-header">
+                        <div className="post-modal-comment-author-info">
+                          <img
+                            src={comment.authorAvatar || "/profile-icon.png"}
+                            alt={comment.author}
+                            className="post-modal-comment-author-avatar"
+                          />
+                          <span className="post-modal-comment-author">
+                            {comment.author}
+                          </span>
+                        </div>
+                        <div className="post-modal-comment-actions">
+                          <button
+                            className={`post-modal-comment-like-btn ${
+                              comment.isLiked ? "active" : ""
+                            }`}
+                            onClick={() =>
+                              handleModalCommentLike(comment.id)
+                            }
+                          >
+                            좋아요 {comment.likes}
+                          </button>
+                          <button
+                            className="post-modal-comment-reply-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleModalReplyClick(comment.id);
+                            }}
+                          >
+                            답글
+                          </button>
+                        </div>
+                      </div>
+                      <div className="post-modal-comment-body">
+                        <p className="post-modal-comment-content">
+                          {comment.content}
+                        </p>
+                        <span className="post-modal-comment-date">
+                          {comment.createdAt}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 댓글 작성 영역 */}
+                <div className="post-modal-comment-write-area">
+                  <label className="post-modal-anonymous-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={modalIsAnonymous}
+                      onChange={(e) => setModalIsAnonymous(e.target.checked)}
+                    />
+                    <span>익명</span>
+                  </label>
+                  <div
+                    className="post-modal-comment-input-area"
+                    onClick={handleModalCommentAreaClick}
+                  >
+                    <span className="post-modal-comment-input-placeholder">
+                      댓글을 입력하세요...
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {/* 댓글 작성 모달 */}
+            {showCommentModal && (
+              <div
+                className="post-modal-comment-modal-overlay"
+                onClick={() => {
+                  setShowCommentModal(false);
+                  setReplyingTo(null);
+                }}
+              >
+                <div
+                  className="post-modal-comment-modal"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="post-modal-comment-modal-header">
+                    <h3>{replyingTo ? "답글 작성" : "댓글 작성"}</h3>
+                    <button
+                      className="post-modal-comment-modal-close"
+                      onClick={() => {
+                        setShowCommentModal(false);
+                        setReplyingTo(null);
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <form
+                    className="post-modal-comment-modal-form"
+                    onSubmit={handleModalCommentSubmit}
+                  >
+                    {replyingTo && (
+                      <div className="post-modal-comment-modal-reply-info">
+                        <span>
+                          {modalComments.find((c) => c.id === replyingTo)
+                            ?.author || "사용자"}
+                          님에게 답글
+                        </span>
+                      </div>
+                    )}
+                    <div className="post-modal-comment-modal-checkbox">
+                      <label className="post-modal-anonymous-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={modalIsAnonymous}
+                          onChange={(e) =>
+                            setModalIsAnonymous(e.target.checked)
+                          }
+                        />
+                        <span>익명</span>
+                      </label>
+                    </div>
+                    <textarea
+                      className="post-modal-comment-modal-input"
+                      value={modalNewComment}
+                      onChange={(e) => setModalNewComment(e.target.value)}
+                      placeholder={
+                        replyingTo
+                          ? "답글을 입력하세요..."
+                          : "댓글을 입력하세요..."
+                      }
+                      rows={5}
+                      autoFocus
+                    />
+                    <div className="post-modal-comment-modal-actions">
+                      <button
+                        type="button"
+                        className="post-modal-comment-modal-cancel"
+                        onClick={() => {
+                          setShowCommentModal(false);
+                          setModalNewComment("");
+                          setModalIsAnonymous(false);
+                          setReplyingTo(null);
+                        }}
+                      >
+                        취소
+                      </button>
+                      <button
+                        type="submit"
+                        className="post-modal-comment-modal-submit"
+                        disabled={!modalNewComment.trim()}
+                      >
+                        등록
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -1672,7 +1953,7 @@ const MyClubScreen: React.FC = () => {
                 <div className="comments-list">
                   {comments.map((comment) => (
                     <div key={comment.id} className="comment-item">
-                      <div className="comment-header">
+                        <div className="comment-header">
                         <div className="comment-author-info">
                           <img
                             src={comment.authorAvatar || "/profile-icon.png"}
