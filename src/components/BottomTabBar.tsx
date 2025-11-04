@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./BottomTabBar.css";
 
 // 이미지 상수들
@@ -11,6 +11,7 @@ const imgIcon4 = "/chat.png"; // 채팅 아이콘
 
 const BottomTabBar: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <div
@@ -80,21 +81,51 @@ const BottomTabBar: React.FC = () => {
         </Link>
 
         {/* Booking/Purchase Tab */}
-        <div className="tab" data-name="tab4?" data-node-id="9:499">
+        <div
+          className={`tab ${location.pathname === "/booking" ? "active" : ""}`}
+          data-name="tab4?"
+          data-node-id="9:499"
+          onClick={() => navigate("/booking")}
+          style={{ cursor: "pointer" }}
+        >
           <div className="tab-icon" data-name="Icon" data-node-id="9:508">
-            <img alt="Booking Icon" className="icon" src={imgIcon3} />
+            <img
+              alt="Booking Icon"
+              className={`icon ${location.pathname === "/booking" ? "active" : ""}`}
+              src={imgIcon3}
+            />
           </div>
-          <p className="tab-label" data-node-id="9:501">
+          <p
+            className={`tab-label ${
+              location.pathname === "/booking" ? "active" : ""
+            }`}
+            data-node-id="9:501"
+          >
             예약/구매
           </p>
         </div>
 
         {/* Chat Tab */}
-        <div className="tab" data-name="tab5?" data-node-id="9:479">
+        <div
+          className={`tab ${location.pathname === "/chat" ? "active" : ""}`}
+          data-name="tab5?"
+          data-node-id="9:479"
+          onClick={() => navigate("/chat")}
+          style={{ cursor: "pointer" }}
+        >
           <div className="tab-icon" data-name="Icon" data-node-id="9:486">
-            <img alt="Chat Icon" className="icon" src={imgIcon4} />
+            <img
+              alt="Chat Icon"
+              className={`icon ${location.pathname === "/chat" ? "active" : ""}`}
+              src={imgIcon4}
+            />
           </div>
-          <p className="tab-label" data-node-id="9:481">
+          <p
+            className={`tab-label ${
+              location.pathname === "/chat" ? "active" : ""
+            }`}
+            data-node-id="9:481"
+          >
             채팅
           </p>
         </div>

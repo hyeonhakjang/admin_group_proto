@@ -15,6 +15,7 @@ import ClubSignupScreen from "./components/ClubSignupScreen";
 import PersonalSignupScreen from "./components/PersonalSignupScreen";
 import SocialPersonalSignupScreen from "./components/SocialPersonalSignupScreen";
 import PostDetailScreen from "./components/PostDetailScreen";
+import ComingSoonScreen from "./components/ComingSoonScreen";
 import "./App.css";
 
 function App() {
@@ -54,10 +55,12 @@ function App() {
             path="/signup/social-personal"
             element={<SocialPersonalSignupScreen />}
           />
+          <Route path="/community/post/:id" element={<PostDetailScreen />} />
           <Route
-            path="/community/post/:id"
-            element={<PostDetailScreen />}
+            path="/booking"
+            element={<ComingSoonScreen title="예약/구매" />}
           />
+          <Route path="/chat" element={<ComingSoonScreen title="채팅" />} />
         </Routes>
       </div>
     </BrowserRouter>

@@ -1,0 +1,161 @@
+/* 준비중 화면 전체 */
+.coming-soon-screen {
+  background-color: #fffcfa;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh + 100px);
+  padding-bottom: 100px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  overflow-x: hidden;
+}
+
+/* 헤더 (뒤로가기 버튼) */
+.coming-soon-header-back {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fffcfa;
+  z-index: 100;
+  padding: clamp(12px, 3vw, 16px);
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  pointer-events: none;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  cursor: pointer;
+  padding: 8px 0;
+  pointer-events: auto;
+}
+
+.back-btn:hover {
+  color: #c34e00;
+}
+
+/* 준비중 콘텐츠 */
+.coming-soon-content {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 10vw, 60px) clamp(20px, 5vw, 40px);
+  min-height: calc(100vh - 164px);
+}
+
+.coming-soon-icon {
+  font-size: clamp(64px, 16vw, 80px);
+  margin-bottom: clamp(24px, 6vw, 32px);
+}
+
+.coming-soon-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(24px, 6vw, 28px);
+  color: #28201b;
+  margin: 0 0 clamp(16px, 4vw, 20px) 0;
+  text-align: center;
+}
+
+.coming-soon-message {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(18px, 4.5vw, 22px);
+  color: #c34e00;
+  margin: 0 0 clamp(12px, 3vw, 16px) 0;
+  text-align: center;
+}
+
+.coming-soon-description {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #666666;
+  margin: 0 0 clamp(32px, 8vw, 40px) 0;
+  text-align: center;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+.coming-soon-back-button {
+  padding: clamp(12px, 3vw, 14px) clamp(24px, 6vw, 32px);
+  background: #c34e00;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.coming-soon-back-button:hover {
+  background: #a03f00;
+}
+
+.coming-soon-back-button:active {
+  transform: scale(0.98);
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .coming-soon-content {
+    padding: clamp(32px, 8vw, 40px) clamp(16px, 4vw, 20px);
+  }
+
+  .coming-soon-icon {
+    font-size: 56px;
+  }
+}
+
+@media (max-width: 360px) {
+  .coming-soon-content {
+    padding: clamp(24px, 6vw, 32px) clamp(12px, 3vw, 16px);
+  }
+
+  .coming-soon-icon {
+    font-size: 48px;
+  }
+
+  .coming-soon-title {
+    font-size: 20px;
+  }
+
+  .coming-soon-message {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 320px) {
+  .coming-soon-icon {
+    font-size: 40px;
+  }
+
+  .coming-soon-title {
+    font-size: 18px;
+  }
+
+  .coming-soon-message {
+    font-size: 15px;
+  }
+
+  .coming-soon-description {
+    font-size: 13px;
+  }
+}
