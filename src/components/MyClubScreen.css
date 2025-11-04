@@ -2462,9 +2462,8 @@
 .floating-write-btn {
   position: fixed;
   bottom: calc(80px + clamp(16px, 4vw, 24px)); /* BottomTabBar 높이(80px) + 여백 */
-  left: 50%;
-  /* 예약/구매와 채팅 탭 사이 위치 조정 (BottomTabBar의 중앙에서 약간 오른쪽) */
-  transform: translateX(calc(-50% + clamp(60px, 15vw, 80px)));
+  left: 80%; /* 화면 너비의 80% 지점에 고정 (예약/구매와 채팅 사이) */
+  transform: translateX(-50%); /* 버튼 중앙 기준으로 정렬 */
   width: clamp(56px, 14vw, 64px);
   height: clamp(56px, 14vw, 64px);
   border-radius: 50%;
@@ -2482,12 +2481,12 @@
 
 .floating-write-btn:hover {
   background: #a03f00;
-  transform: translateX(calc(-50% + clamp(60px, 15vw, 80px))) scale(1.1);
+  transform: translateX(-50%) scale(1.1);
   box-shadow: 0 6px 16px rgba(195, 78, 0, 0.4);
 }
 
 .floating-write-btn:active {
-  transform: translateX(calc(-50% + clamp(60px, 15vw, 80px))) scale(0.95);
+  transform: translateX(-50%) scale(0.95);
 }
 
 .floating-write-icon {
