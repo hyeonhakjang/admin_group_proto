@@ -14,6 +14,7 @@ import CampusOfficialSignupScreen from "./components/CampusOfficialSignupScreen"
 import ClubSignupScreen from "./components/ClubSignupScreen";
 import PersonalSignupScreen from "./components/PersonalSignupScreen";
 import SocialPersonalSignupScreen from "./components/SocialPersonalSignupScreen";
+import PostDetailScreen from "./components/PostDetailScreen";
 import "./App.css";
 
 function App() {
@@ -52,6 +53,10 @@ function App() {
           <Route
             path="/signup/social-personal"
             element={<SocialPersonalSignupScreen />}
+          />
+          <Route
+            path="/community/post/:id"
+            element={<PostDetailScreen />}
           />
         </Routes>
       </div>
