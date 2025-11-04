@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./BottomTabBar.css";
 
 // 이미지 상수들
@@ -11,7 +11,6 @@ const imgIcon4 = "/chat.png"; // 채팅 아이콘
 
 const BottomTabBar: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   return (
     <div
@@ -81,27 +80,18 @@ const BottomTabBar: React.FC = () => {
         </Link>
 
         {/* Booking/Purchase Tab */}
-        <div
+        <Link
+          to="/booking"
           className={`tab ${location.pathname === "/booking" ? "active" : ""}`}
           data-name="tab4?"
           data-node-id="9:499"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("/booking");
-          }}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              navigate("/booking");
-            }
-          }}
         >
           <div className="tab-icon" data-name="Icon" data-node-id="9:508">
             <img
               alt="Booking Icon"
-              className={`icon ${location.pathname === "/booking" ? "active" : ""}`}
+              className={`icon ${
+                location.pathname === "/booking" ? "active" : ""
+              }`}
               src={imgIcon3}
             />
           </div>
@@ -113,30 +103,21 @@ const BottomTabBar: React.FC = () => {
           >
             예약/구매
           </p>
-        </div>
+        </Link>
 
         {/* Chat Tab */}
-        <div
+        <Link
+          to="/chat"
           className={`tab ${location.pathname === "/chat" ? "active" : ""}`}
           data-name="tab5?"
           data-node-id="9:479"
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("/chat");
-          }}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              navigate("/chat");
-            }
-          }}
         >
           <div className="tab-icon" data-name="Icon" data-node-id="9:486">
             <img
               alt="Chat Icon"
-              className={`icon ${location.pathname === "/chat" ? "active" : ""}`}
+              className={`icon ${
+                location.pathname === "/chat" ? "active" : ""
+              }`}
               src={imgIcon4}
             />
           </div>
@@ -148,7 +129,7 @@ const BottomTabBar: React.FC = () => {
           >
             채팅
           </p>
-        </div>
+        </Link>
       </div>
     </div>
   );
