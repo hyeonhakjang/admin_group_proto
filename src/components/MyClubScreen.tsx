@@ -1146,24 +1146,56 @@ const MyClubScreen: React.FC = () => {
           </Link>
 
           {/* Booking/Purchase Tab */}
-          <div className="tab" data-name="tab4?" data-node-id="12:3081">
+          <Link
+            to="/booking"
+            className={`tab ${location.pathname === "/booking" ? "active" : ""}`}
+            data-name="tab4?"
+            data-node-id="12:3081"
+          >
             <div className="tab-icon" data-name="Icon" data-node-id="12:3082">
-              <img alt="Booking Icon" className="icon" src={imgIcon3} />
+              <img
+                alt="Booking Icon"
+                className={`icon ${
+                  location.pathname === "/booking" ? "active" : ""
+                }`}
+                src={imgIcon3}
+              />
             </div>
-            <p className="tab-label" data-node-id="12:3089">
+            <p
+              className={`tab-label ${
+                location.pathname === "/booking" ? "active" : ""
+              }`}
+              data-node-id="12:3089"
+            >
               예약/구매
             </p>
-          </div>
+          </Link>
 
           {/* Chat Tab */}
-          <div className="tab" data-name="tab5?" data-node-id="12:3090">
+          <Link
+            to="/chat"
+            className={`tab ${location.pathname === "/chat" ? "active" : ""}`}
+            data-name="tab5?"
+            data-node-id="12:3090"
+          >
             <div className="tab-icon" data-name="Icon" data-node-id="12:3091">
-              <img alt="Chat Icon" className="icon" src={imgIcon4} />
+              <img
+                alt="Chat Icon"
+                className={`icon ${
+                  location.pathname === "/chat" ? "active" : ""
+                }`}
+                src={imgIcon4}
+              />
             </div>
-            <p className="tab-label" data-node-id="12:3096">
+            <p
+              className={`tab-label ${
+                location.pathname === "/chat" ? "active" : ""
+              }`}
+              data-node-id="12:3096"
+            >
               채팅
             </p>
-          </div>
+          </Link>
         </div>
       </div>
 
