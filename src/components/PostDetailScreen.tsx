@@ -242,6 +242,7 @@ const PostDetailScreen: React.FC = () => {
   const [newComment, setNewComment] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [showCommentModal, setShowCommentModal] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -270,11 +271,15 @@ const PostDetailScreen: React.FC = () => {
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (newComment.trim()) {
+      const commentContent = replyingTo
+        ? `@${comments.find((c) => c.id === replyingTo)?.author || "사용자"} ${newComment}`
+        : newComment;
+
       const comment: Comment = {
         id: comments.length + 1,
         author: isAnonymous ? "익명" : "사용자",
         authorAvatar: "/profile-icon.png",
-        content: newComment,
+        content: commentContent,
         createdAt: new Date().toISOString().split("T")[0],
         isAnonymous,
         likes: 0,
@@ -283,11 +288,18 @@ const PostDetailScreen: React.FC = () => {
       setComments([...comments, comment]);
       setNewComment("");
       setIsAnonymous(false);
+      setReplyingTo(null);
       setShowCommentModal(false);
     }
   };
 
   const handleCommentAreaClick = () => {
+    setReplyingTo(null);
+    setShowCommentModal(true);
+  };
+
+  const handleReplyClick = (commentId: number) => {
+    setReplyingTo(commentId);
     setShowCommentModal(true);
   };
 
@@ -382,7 +394,15 @@ const PostDetailScreen: React.FC = () => {
                     >
                       좋아요 {comment.likes}
                     </button>
-                    <button className="comment-reply-btn">답글</button>
+                    <button
+                      className="comment-reply-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleReplyClick(comment.id);
+                      }}
+                    >
+                      답글
+                    </button>
                   </div>
                 </div>
                 <div className="comment-body">
@@ -418,14 +438,20 @@ const PostDetailScreen: React.FC = () => {
         {showCommentModal && (
           <div
             className="comment-modal-overlay"
-            onClick={() => setShowCommentModal(false)}
+            onClick={() => {
+              setShowCommentModal(false);
+              setReplyingTo(null);
+            }}
           >
             <div className="comment-modal" onClick={(e) => e.stopPropagation()}>
               <div className="comment-modal-header">
-                <h3>댓글 작성</h3>
+                <h3>{replyingTo ? "답글 작성" : "댓글 작성"}</h3>
                 <button
                   className="comment-modal-close"
-                  onClick={() => setShowCommentModal(false)}
+                  onClick={() => {
+                    setShowCommentModal(false);
+                    setReplyingTo(null);
+                  }}
                 >
                   ×
                 </button>
@@ -434,6 +460,15 @@ const PostDetailScreen: React.FC = () => {
                 className="comment-modal-form"
                 onSubmit={handleCommentSubmit}
               >
+                {replyingTo && (
+                  <div className="comment-modal-reply-info">
+                    <span>
+                      {comments.find((c) => c.id === replyingTo)?.author ||
+                        "사용자"}
+                      님에게 답글
+                    </span>
+                  </div>
+                )}
                 <div className="comment-modal-checkbox">
                   <label className="anonymous-checkbox">
                     <input
@@ -448,7 +483,9 @@ const PostDetailScreen: React.FC = () => {
                   className="comment-modal-input"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="댓글을 입력하세요..."
+                  placeholder={
+                    replyingTo ? "답글을 입력하세요..." : "댓글을 입력하세요..."
+                  }
                   rows={5}
                   autoFocus
                 />
@@ -460,6 +497,7 @@ const PostDetailScreen: React.FC = () => {
                       setShowCommentModal(false);
                       setNewComment("");
                       setIsAnonymous(false);
+                      setReplyingTo(null);
                     }}
                   >
                     취소

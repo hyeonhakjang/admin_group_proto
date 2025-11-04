@@ -423,6 +423,17 @@
   overflow-y: auto;
 }
 
+.comment-modal-reply-info {
+  background: #fff5f0;
+  border-radius: 8px;
+  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 14px);
+  margin-bottom: clamp(12px, 3vw, 16px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #c34e00;
+  font-weight: 500;
+}
+
 .comment-modal-checkbox {
   margin-bottom: clamp(8px, 2vw, 10px);
 }
