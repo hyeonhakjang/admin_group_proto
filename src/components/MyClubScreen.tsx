@@ -219,16 +219,20 @@ const MyClubScreen: React.FC = () => {
     {
       id: 1,
       author: "김홍익",
-      avatar: "/profile-icon.png",
+      authorAvatar: "/profile-icon.png",
       content: "참여하겠습니다!",
-      time: "오늘 18:30",
+      createdAt: "오늘 18:30",
+      likes: 3,
+      isLiked: false,
     },
     {
       id: 2,
       author: "이동아리",
-      avatar: "/profile-icon.png",
+      authorAvatar: "/profile-icon.png",
       content: "노트북 필수인가요?",
-      time: "오늘 18:25",
+      createdAt: "오늘 18:25",
+      likes: 1,
+      isLiked: false,
     },
   ]);
 
@@ -237,13 +241,29 @@ const MyClubScreen: React.FC = () => {
       const comment = {
         id: comments.length + 1,
         author: "홍익대 HICC",
-        avatar: "/profile-icon.png",
+        authorAvatar: "/profile-icon.png",
         content: newComment,
-        time: "방금 전",
+        createdAt: "방금 전",
+        likes: 0,
+        isLiked: false,
       };
       setComments([comment, ...comments]);
       setNewComment("");
     }
+  };
+
+  const handleCommentLike = (commentId: number) => {
+    setComments(
+      comments.map((comment) =>
+        comment.id === commentId
+          ? {
+              ...comment,
+              isLiked: !comment.isLiked,
+              likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
+            }
+          : comment
+      )
+    );
   };
 
   // 일정이 있는 날짜들 (샘플 데이터)
@@ -979,28 +999,44 @@ const MyClubScreen: React.FC = () => {
                               {/* 댓글 리스트 */}
                               <div className="comments-list">
                                 {comments.map((comment) => (
-                                  <div
-                                    key={comment.id}
-                                    className="comment-item"
-                                  >
-                                    <div className="comment-avatar">
-                                      <img
-                                        src={comment.avatar}
-                                        alt={comment.author}
-                                      />
-                                    </div>
-                                    <div className="comment-content-wrapper">
-                                      <div className="comment-header">
+                                  <div key={comment.id} className="comment-item">
+                                    <div className="comment-header">
+                                      <div className="comment-author-info">
+                                        <img
+                                          src={
+                                            comment.authorAvatar ||
+                                            "/profile-icon.png"
+                                          }
+                                          alt={comment.author}
+                                          className="comment-author-avatar"
+                                        />
                                         <span className="comment-author">
                                           {comment.author}
                                         </span>
-                                        <span className="comment-time">
-                                          {comment.time}
-                                        </span>
                                       </div>
-                                      <p className="comment-text">
+                                      <div className="comment-actions">
+                                        <button
+                                          className={`comment-like-btn ${
+                                            comment.isLiked ? "active" : ""
+                                          }`}
+                                          onClick={() =>
+                                            handleCommentLike(comment.id)
+                                          }
+                                        >
+                                          좋아요 {comment.likes}
+                                        </button>
+                                        <button className="comment-reply-btn">
+                                          답글
+                                        </button>
+                                      </div>
+                                    </div>
+                                    <div className="comment-body">
+                                      <p className="comment-content">
                                         {comment.content}
                                       </p>
+                                      <span className="comment-date">
+                                        {comment.createdAt}
+                                      </span>
                                     </div>
                                   </div>
                                 ))}
@@ -1148,7 +1184,9 @@ const MyClubScreen: React.FC = () => {
           {/* Booking/Purchase Tab */}
           <Link
             to="/booking"
-            className={`tab ${location.pathname === "/booking" ? "active" : ""}`}
+            className={`tab ${
+              location.pathname === "/booking" ? "active" : ""
+            }`}
             data-name="tab4?"
             data-node-id="12:3081"
           >
@@ -1393,17 +1431,36 @@ const MyClubScreen: React.FC = () => {
                 <div className="comments-list">
                   {comments.map((comment) => (
                     <div key={comment.id} className="comment-item">
-                      <div className="comment-avatar">
-                        <img src={comment.avatar} alt={comment.author} />
-                      </div>
-                      <div className="comment-content-wrapper">
-                        <div className="comment-header">
+                      <div className="comment-header">
+                        <div className="comment-author-info">
+                          <img
+                            src={
+                              comment.authorAvatar || "/profile-icon.png"
+                            }
+                            alt={comment.author}
+                            className="comment-author-avatar"
+                          />
                           <span className="comment-author">
                             {comment.author}
                           </span>
-                          <span className="comment-time">{comment.time}</span>
                         </div>
-                        <p className="comment-text">{comment.content}</p>
+                        <div className="comment-actions">
+                          <button
+                            className={`comment-like-btn ${
+                              comment.isLiked ? "active" : ""
+                            }`}
+                            onClick={() => handleCommentLike(comment.id)}
+                          >
+                            좋아요 {comment.likes}
+                          </button>
+                          <button className="comment-reply-btn">답글</button>
+                        </div>
+                      </div>
+                      <div className="comment-body">
+                        <p className="comment-content">{comment.content}</p>
+                        <span className="comment-date">
+                          {comment.createdAt}
+                        </span>
                       </div>
                     </div>
                   ))}
