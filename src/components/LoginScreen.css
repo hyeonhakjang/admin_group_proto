@@ -1,14 +1,13 @@
 /* 로그인 화면 */
 .login-screen {
   background-color: #fffcfa;
-  min-height: 100vh;
+  min-height: calc(100vh + 100px);
   font-family: "Inter", "Noto Sans KR", sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: clamp(40px, 10vw, 60px) clamp(20px, 5vw, 40px);
   padding-bottom: calc(100px + clamp(40px, 10vw, 60px));
-  overflow-y: auto; /* 스크롤 가능하도록 */
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;

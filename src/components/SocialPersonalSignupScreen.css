@@ -1,10 +1,9 @@
 /* 소셜 로그인 미가입자 개인 계정 회원가입 화면 */
 .social-personal-signup-screen {
   background-color: #fffcfa;
-  min-height: 100vh;
+  min-height: calc(100vh + 100px);
   font-family: "Inter", "Noto Sans KR", sans-serif;
   padding-bottom: calc(100px + 16px);
-  overflow-y: auto; /* 스크롤 가능하도록 */
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
