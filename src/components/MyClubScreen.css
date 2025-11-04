@@ -1561,6 +1561,264 @@
   margin-bottom: clamp(12px, 3vw, 16px);
 }
 
+/* 섹션 B, C: 카테고리 및 정렬 필터 행 */
+.posts-filter-row {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+  margin-bottom: clamp(16px, 4vw, 20px);
+  align-items: center;
+}
+
+.filter-wrapper {
+  position: relative;
+}
+
+.filter-btn {
+  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 16px);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #28201b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  background: #f5f5f5;
+  border-color: #c34e00;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 120px;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  padding: clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 20px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #28201b;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: #f5f5f5;
+}
+
+.dropdown-item:first-child {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* 더보기 메뉴 */
+.post-more-wrapper {
+  position: relative;
+}
+
+.post-more-btn {
+  background: transparent;
+  border: none;
+  font-size: clamp(20px, 5vw, 24px);
+  color: #666666;
+  cursor: pointer;
+  padding: clamp(4px, 1vw, 6px);
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.post-more-btn:hover {
+  color: #28201b;
+}
+
+.more-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 120px;
+  overflow: hidden;
+}
+
+.more-menu-item {
+  display: block;
+  width: 100%;
+  padding: clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 20px);
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #28201b;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.more-menu-item:hover {
+  background: #f5f5f5;
+}
+
+.more-menu-item:not(:last-child) {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* 게시글 하단 섹션 (좋아요/댓글 수, 카테고리) */
+.post-footer-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: clamp(8px, 2vw, 12px);
+  padding-top: clamp(8px, 2vw, 12px);
+  border-top: 1px solid #e0e0e0;
+}
+
+.post-engagement-counts {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+  align-items: center;
+}
+
+.engagement-count {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666666;
+}
+
+.post-category {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #c34e00;
+  background: #fff5f0;
+  padding: clamp(4px, 1vw, 6px) clamp(10px, 2.5vw, 12px);
+  border-radius: 6px;
+}
+
+/* 게시글 상세 모달 */
+.post-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: clamp(16px, 4vw, 24px);
+}
+
+.post-modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.post-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(16px, 4vw, 20px);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.post-modal-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(18px, 4.5vw, 20px);
+  color: #28201b;
+  margin: 0;
+  flex: 1;
+}
+
+.post-modal-close {
+  background: none;
+  border: none;
+  font-size: clamp(24px, 6vw, 28px);
+  color: #888888;
+  cursor: pointer;
+  padding: 0;
+  width: clamp(32px, 8vw, 36px);
+  height: clamp(32px, 8vw, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.post-modal-close:hover {
+  color: #28201b;
+}
+
+.post-modal-body {
+  padding: clamp(16px, 4vw, 20px);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.post-modal-author {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.5vw, 12px);
+  margin-bottom: clamp(16px, 4vw, 20px);
+}
+
+.post-modal-author-avatar {
+  width: clamp(40px, 10vw, 48px);
+  height: clamp(40px, 10vw, 48px);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-modal-author-name {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+}
+
+.post-modal-date {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #888888;
+  margin-left: auto;
+}
+
+.post-modal-content {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 .toggle-switch {
   display: flex;
   align-items: center;

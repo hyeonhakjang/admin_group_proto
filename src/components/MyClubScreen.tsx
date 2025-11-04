@@ -147,6 +147,82 @@ const MyClubScreen: React.FC = () => {
 
   // 공지글만 보기 토글 상태
   const [showNoticeOnly, setShowNoticeOnly] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedSort, setSelectedSort] = useState("최신순");
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<any>(null);
+  const [showMoreMenu, setShowMoreMenu] = useState<number | null>(null);
+  const [posts, setPosts] = useState([
+    {
+      id: 1,
+      author: "홍익대 HICC",
+      authorAvatar: "/profile-icon.png",
+      createdAt: "오늘 18:41",
+      title: "9월 7일 정기 세션 안내 및 참여 신청",
+      content: "이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해 다룹니다.",
+      isNotice: true,
+      category: "모집",
+      likes: 2321,
+      comments: 5321,
+      views: 5321,
+      isAuthor: false,
+      isAdmin: false,
+    },
+    {
+      id: 2,
+      author: "홍익대 HICC",
+      authorAvatar: "/profile-icon.png",
+      createdAt: "오늘 18:41",
+      title: "이번 달 회비 납부 관련 안내",
+      content: "이번 달 회비 납부 안내입니다. 아래 결제 수단으로 송금하신 후, 하단의 송금 완료 버튼을 눌러 확인 요청을 진행해주세요.",
+      isNotice: true,
+      category: "홍보",
+      likes: 1856,
+      comments: 342,
+      views: 2156,
+      isAuthor: false,
+      isAdmin: false,
+    },
+    {
+      id: 3,
+      author: "홍익대 HICC",
+      authorAvatar: "/profile-icon.png",
+      createdAt: "어제 15:30",
+      title: "프로젝트 팀 구성 및 역할 배정 투표",
+      content: "프로젝트 팀 구성 및 역할 배정에 대한 투표를 진행합니다.",
+      isNotice: false,
+      category: "잡담",
+      likes: 892,
+      comments: 156,
+      views: 1234,
+      isAuthor: true,
+      isAdmin: false,
+    },
+  ]);
+
+  const categories = ["잡담", "모집", "홍보"];
+  const sortOptions = ["최신순", "인기순"];
+
+  // 게시글 필터링 및 정렬
+  const filteredAndSortedPosts = posts
+    .filter((post) => {
+      // 공지글 필터
+      if (showNoticeOnly && !post.isNotice) return false;
+      // 카테고리 필터
+      if (selectedCategory && post.category !== selectedCategory) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (selectedSort === "최신순") {
+        // 날짜 기준 정렬 (간단한 예시)
+        return b.id - a.id;
+      } else if (selectedSort === "인기순") {
+        return b.likes + b.comments - (a.likes + a.comments);
+      }
+      return 0;
+    });
 
   // 멤버 검색 상태
   const [memberSearchQuery, setMemberSearchQuery] = useState("");
@@ -621,7 +697,7 @@ const MyClubScreen: React.FC = () => {
       >
         {activeTab === "posts" && (
           <div className="posts-content">
-            {/* 공지글만 보기 토글 */}
+            {/* 섹션 A: 공지글만 보기 토글 */}
             <div className="posts-filter-bar">
               <label className="toggle-switch">
                 <input
@@ -633,143 +709,199 @@ const MyClubScreen: React.FC = () => {
                 <span className="toggle-slider"></span>
               </label>
             </div>
-            {/* 게시글 리스트 */}
+
+            {/* 섹션 B, C: 카테고리 및 정렬 필터 */}
+            <div className="posts-filter-row">
+              {/* 섹션 B: 카테고리 필터 */}
+              <div className="filter-wrapper">
+                <button
+                  className="filter-btn"
+                  onClick={() => {
+                    setShowCategoryDropdown(!showCategoryDropdown);
+                    setShowSortDropdown(false);
+                  }}
+                >
+                  {selectedCategory || "카테고리"} ▼
+                </button>
+                {showCategoryDropdown && (
+                  <div className="dropdown-menu">
+                    <div
+                      className="dropdown-item"
+                      onClick={() => {
+                        setSelectedCategory(null);
+                        setShowCategoryDropdown(false);
+                      }}
+                    >
+                      전체
+                    </div>
+                    {categories.map((category) => (
+                      <div
+                        key={category}
+                        className="dropdown-item"
+                        onClick={() => {
+                          setSelectedCategory(category);
+                          setShowCategoryDropdown(false);
+                        }}
+                      >
+                        {category}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 섹션 C: 정렬 필터 */}
+              <div className="filter-wrapper">
+                <button
+                  className="filter-btn"
+                  onClick={() => {
+                    setShowSortDropdown(!showSortDropdown);
+                    setShowCategoryDropdown(false);
+                  }}
+                >
+                  정렬: {selectedSort} ▼
+                </button>
+                {showSortDropdown && (
+                  <div className="dropdown-menu">
+                    {sortOptions.map((option) => (
+                      <div
+                        key={option}
+                        className="dropdown-item"
+                        onClick={() => {
+                          setSelectedSort(option);
+                          setShowSortDropdown(false);
+                        }}
+                      >
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 섹션 D: 게시글 리스트 */}
             <div className="posts-list">
-              {/* 게시글 1 - 공지글 */}
-              {(!showNoticeOnly || true) && (
+              {filteredAndSortedPosts.map((post) => (
                 <div
+                  key={post.id}
                   className="club-post-card"
-                  onClick={() => {
-                    setSelectedPostType("session");
-                    setAttendanceChoice(null);
-                    setIsRemittanceChecking(false);
-                    setShowPostDetail(true);
+                  onClick={(e) => {
+                    // 더보기 메뉴 클릭 시에는 모달 열지 않음
+                    if (
+                      (e.target as HTMLElement).closest(".post-more-btn") ||
+                      (e.target as HTMLElement).closest(".more-menu")
+                    ) {
+                      return;
+                    }
+                    setSelectedPost(post);
+                    setShowPostModal(true);
                   }}
                   style={{ cursor: "pointer" }}
                 >
+                  {/* 섹션 D-A: 프로필 이미지, 이름, 작성 날짜 */}
                   <div className="post-header">
-                    <div className="post-author-section">
+                    <div
+                      className="post-author-section"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // 개인 프로필 페이지로 이동 (현재는 주석 처리)
+                        // navigate(`/profile/${post.author}`);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
                       <div className="post-author-avatar">
-                        <img src="/profile-icon.png" alt="작성자 프로필" />
+                        <img
+                          src={post.authorAvatar}
+                          alt="작성자 프로필"
+                        />
                       </div>
                       <div className="post-author-info">
                         <div className="author-name-row">
-                          <span className="author-name">홍익대 HICC</span>
+                          <span className="author-name">{post.author}</span>
                           <span className="verified-badge">✓</span>
                         </div>
-                        <span className="post-time">오늘 18:41</span>
+                        <span className="post-time">{post.createdAt}</span>
                       </div>
                     </div>
-                    <button className="post-more-btn">⋯</button>
-                  </div>
-                  <div className="post-title-section">
-                    <div className="post-topic-icons">
-                      <span className="topic-icon">📊</span>
-                      <span className="topic-icon">💡</span>
-                    </div>
-                    <h3 className="post-title">
-                      9월 7일 정기 세션 안내 및 참여 신청
-                    </h3>
-                    <div className="post-topic-icons-right">
-                      <span className="topic-icon">📈</span>
-                      <span className="topic-icon">💰</span>
-                    </div>
-                  </div>
-                  <div className="post-engagement-section">
-                    <button className="engagement-btn">👍 2,321</button>
-                    <button className="engagement-btn">💬 5,321</button>
-                    <button className="engagement-btn">🔗</button>
-                    <span className="engagement-views">👁 5,321</span>
-                  </div>
-                </div>
-              )}
-
-              {/* 게시글 2 - 공지글 */}
-              {(!showNoticeOnly || true) && (
-                <div
-                  className="club-post-card"
-                  onClick={() => {
-                    setSelectedPostType("dues");
-                    setAttendanceChoice(null);
-                    setIsRemittanceChecking(false);
-                    setShowPostDetail(true);
-                  }}
-                  style={{ cursor: "pointer" }}
-                >
-                  <div className="post-header">
-                    <div className="post-author-section">
-                      <div className="post-author-avatar">
-                        <img src="/profile-icon.png" alt="작성자 프로필" />
-                      </div>
-                      <div className="post-author-info">
-                        <div className="author-name-row">
-                          <span className="author-name">홍익대 HICC</span>
-                          <span className="verified-badge">✓</span>
+                    {/* 섹션 D-B: 더보기 메뉴 */}
+                    <div className="post-more-wrapper">
+                      <button
+                        className="post-more-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowMoreMenu(
+                            showMoreMenu === post.id ? null : post.id
+                          );
+                        }}
+                      >
+                        ⋯
+                      </button>
+                      {showMoreMenu === post.id && (
+                        <div className="more-menu">
+                          {post.isAuthor && (
+                            <button
+                              className="more-menu-item"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // 글 수정 기능
+                                setShowMoreMenu(null);
+                              }}
+                            >
+                              글 수정
+                            </button>
+                          )}
+                          {(post.isAuthor || post.isAdmin) && (
+                            <button
+                              className="more-menu-item"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // 글 삭제 기능
+                                setPosts(posts.filter((p) => p.id !== post.id));
+                                setShowMoreMenu(null);
+                              }}
+                            >
+                              글 삭제
+                            </button>
+                          )}
+                          <button
+                            className="more-menu-item"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // 신고 기능
+                              setShowMoreMenu(null);
+                            }}
+                          >
+                            신고
+                          </button>
+                          <button
+                            className="more-menu-item"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // 공유 기능
+                              setShowMoreMenu(null);
+                            }}
+                          >
+                            공유
+                          </button>
                         </div>
-                        <span className="post-time">오늘 18:41</span>
-                      </div>
+                      )}
                     </div>
-                    <button className="post-more-btn">⋯</button>
                   </div>
+                  {/* 섹션 D-C: 글 제목 영역 */}
                   <div className="post-title-section">
-                    <h3 className="post-title">이번 달 회비 납부 관련 안내</h3>
-                    <div className="post-topic-icons-right">
-                      <span className="topic-icon">🏢</span>
-                      <span className="topic-icon">📈</span>
-                    </div>
+                    <h3 className="post-title">{post.title}</h3>
                   </div>
-                  <div className="post-engagement-section">
-                    <button className="engagement-btn">👍 1,856</button>
-                    <button className="engagement-btn">💬 342</button>
-                    <button className="engagement-btn">🔗</button>
-                    <span className="engagement-views">👁 2,156</span>
+                  {/* 섹션 D-D, D-E: 좋아요/댓글 수와 카테고리 */}
+                  <div className="post-footer-section">
+                    <div className="post-engagement-counts">
+                      <span className="engagement-count">👍 {post.likes.toLocaleString()}</span>
+                      <span className="engagement-count">💬 {post.comments.toLocaleString()}</span>
+                    </div>
+                    <span className="post-category">{post.category}</span>
                   </div>
                 </div>
-              )}
-
-              {/* 게시글 3 - 일반글 */}
-              {(!showNoticeOnly || false) && (
-                <div
-                  className="club-post-card"
-                  onClick={() => {
-                    setSelectedPostType("general");
-                    setAttendanceChoice(null);
-                    setIsRemittanceChecking(false);
-                    setShowPostDetail(true);
-                  }}
-                  style={{ cursor: "pointer" }}
-                >
-                  <div className="post-header">
-                    <div className="post-author-section">
-                      <div className="post-author-avatar">
-                        <img src="/profile-icon.png" alt="작성자 프로필" />
-                      </div>
-                      <div className="post-author-info">
-                        <div className="author-name-row">
-                          <span className="author-name">홍익대 HICC</span>
-                          <span className="verified-badge">✓</span>
-                          <span className="post-time">어제 15:30</span>
-                        </div>
-                      </div>
-                    </div>
-                    <button className="post-more-btn">⋯</button>
-                  </div>
-                  <div className="post-title-section">
-                    <div className="post-topic-icons">
-                      <span className="topic-icon">📋</span>
-                    </div>
-                    <h3 className="post-title">
-                      프로젝트 팀 구성 및 역할 배정 투표
-                    </h3>
-                  </div>
-                  <div className="post-engagement-section">
-                    <button className="engagement-btn">👍 892</button>
-                    <button className="engagement-btn">💬 156</button>
-                    <button className="engagement-btn">🔗</button>
-                    <span className="engagement-views">👁 1,234</span>
-                  </div>
-                </div>
-              )}
+              ))}
             </div>
           </div>
         )}
@@ -999,7 +1131,10 @@ const MyClubScreen: React.FC = () => {
                               {/* 댓글 리스트 */}
                               <div className="comments-list">
                                 {comments.map((comment) => (
-                                  <div key={comment.id} className="comment-item">
+                                  <div
+                                    key={comment.id}
+                                    className="comment-item"
+                                  >
                                     <div className="comment-header">
                                       <div className="comment-author-info">
                                         <img
@@ -1111,6 +1246,47 @@ const MyClubScreen: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* 게시글 상세 모달 */}
+      {showPostModal && selectedPost && (
+        <>
+          <div
+            className="post-modal-overlay"
+            onClick={() => {
+              setShowPostModal(false);
+              setSelectedPost(null);
+            }}
+          ></div>
+          <div className="post-modal">
+            <div className="post-modal-header">
+              <h3 className="post-modal-title">{selectedPost.title}</h3>
+              <button
+                className="post-modal-close"
+                onClick={() => {
+                  setShowPostModal(false);
+                  setSelectedPost(null);
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="post-modal-body">
+              <div className="post-modal-author">
+                <img
+                  src={selectedPost.authorAvatar}
+                  alt={selectedPost.author}
+                  className="post-modal-author-avatar"
+                />
+                <span className="post-modal-author-name">
+                  {selectedPost.author}
+                </span>
+                <span className="post-modal-date">{selectedPost.createdAt}</span>
+              </div>
+              <div className="post-modal-content">{selectedPost.content}</div>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Bottom Tab Bar */}
       <div
@@ -1434,9 +1610,7 @@ const MyClubScreen: React.FC = () => {
                       <div className="comment-header">
                         <div className="comment-author-info">
                           <img
-                            src={
-                              comment.authorAvatar || "/profile-icon.png"
-                            }
+                            src={comment.authorAvatar || "/profile-icon.png"}
                             alt={comment.author}
                             className="comment-author-avatar"
                           />
