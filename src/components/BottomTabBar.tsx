@@ -85,8 +85,18 @@ const BottomTabBar: React.FC = () => {
           className={`tab ${location.pathname === "/booking" ? "active" : ""}`}
           data-name="tab4?"
           data-node-id="9:499"
-          onClick={() => navigate("/booking")}
-          style={{ cursor: "pointer" }}
+          onClick={(e) => {
+            e.preventDefault();
+            navigate("/booking");
+          }}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              navigate("/booking");
+            }
+          }}
         >
           <div className="tab-icon" data-name="Icon" data-node-id="9:508">
             <img
@@ -110,8 +120,18 @@ const BottomTabBar: React.FC = () => {
           className={`tab ${location.pathname === "/chat" ? "active" : ""}`}
           data-name="tab5?"
           data-node-id="9:479"
-          onClick={() => navigate("/chat")}
-          style={{ cursor: "pointer" }}
+          onClick={(e) => {
+            e.preventDefault();
+            navigate("/chat");
+          }}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              navigate("/chat");
+            }
+          }}
         >
           <div className="tab-icon" data-name="Icon" data-node-id="9:486">
             <img
