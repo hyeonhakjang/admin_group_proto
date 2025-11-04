@@ -375,7 +375,9 @@ const PostDetailScreen: React.FC = () => {
                   </div>
                   <div className="comment-actions">
                     <button
-                      className={`comment-like-btn ${comment.isLiked ? "active" : ""}`}
+                      className={`comment-like-btn ${
+                        comment.isLiked ? "active" : ""
+                      }`}
                       onClick={() => handleCommentLike(comment.id)}
                     >
                       좋아요 {comment.likes}
@@ -383,8 +385,10 @@ const PostDetailScreen: React.FC = () => {
                     <button className="comment-reply-btn">답글</button>
                   </div>
                 </div>
-                <p className="comment-content">{comment.content}</p>
-                <span className="comment-date">{comment.createdAt}</span>
+                <div className="comment-body">
+                  <p className="comment-content">{comment.content}</p>
+                  <span className="comment-date">{comment.createdAt}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -412,11 +416,11 @@ const PostDetailScreen: React.FC = () => {
 
         {/* 댓글 작성 모달 */}
         {showCommentModal && (
-          <div className="comment-modal-overlay" onClick={() => setShowCommentModal(false)}>
-            <div
-              className="comment-modal"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <div
+            className="comment-modal-overlay"
+            onClick={() => setShowCommentModal(false)}
+          >
+            <div className="comment-modal" onClick={(e) => e.stopPropagation()}>
               <div className="comment-modal-header">
                 <h3>댓글 작성</h3>
                 <button
@@ -426,7 +430,10 @@ const PostDetailScreen: React.FC = () => {
                   ×
                 </button>
               </div>
-              <form className="comment-modal-form" onSubmit={handleCommentSubmit}>
+              <form
+                className="comment-modal-form"
+                onSubmit={handleCommentSubmit}
+              >
                 <div className="comment-modal-checkbox">
                   <label className="anonymous-checkbox">
                     <input

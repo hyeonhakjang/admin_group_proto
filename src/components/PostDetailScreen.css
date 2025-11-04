@@ -206,6 +206,8 @@
   border-radius: 12px;
   padding: clamp(12px, 3vw, 16px);
   border: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
 }
 
 .comment-header {
@@ -213,12 +215,14 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: clamp(10px, 2.5vw, 12px);
+  width: 100%;
 }
 
 .comment-author-info {
   display: flex;
   align-items: center;
   gap: clamp(8px, 2vw, 10px);
+  flex-shrink: 0;
 }
 
 .comment-author-avatar {
@@ -235,26 +239,29 @@
   font-weight: 600;
   font-size: clamp(13px, 3.25vw, 15px);
   color: #28201b;
+  white-space: nowrap;
 }
 
 .comment-actions {
   display: flex;
-  gap: clamp(8px, 2vw, 10px);
+  gap: clamp(6px, 1.5vw, 8px);
   align-items: center;
+  flex-shrink: 0;
 }
 
 .comment-like-btn,
 .comment-reply-btn {
-  padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 10px);
+  padding: clamp(4px, 1vw, 5px) clamp(8px, 2vw, 10px);
   border: 1px solid #e0e0e0;
   border-radius: 6px;
   background: white;
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 400;
-  font-size: clamp(11px, 2.75vw, 12px);
+  font-size: clamp(10px, 2.5vw, 11px);
   color: #666666;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .comment-like-btn:hover,
@@ -269,19 +276,26 @@
   color: #c34e00;
 }
 
+.comment-body {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 10px);
+}
+
 .comment-content {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 400;
   font-size: clamp(13px, 3.25vw, 15px);
   color: #28201b;
   line-height: 1.6;
-  margin: 0 0 clamp(8px, 2vw, 10px) 0;
+  margin: 0;
+  word-wrap: break-word;
 }
 
 .comment-date {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 400;
-  font-size: clamp(11px, 2.75vw, 13px);
+  font-size: clamp(11px, 2.75vw, 12px);
   color: #888888;
 }
 
