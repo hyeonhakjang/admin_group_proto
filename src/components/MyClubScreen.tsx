@@ -228,13 +228,13 @@ const MyClubScreen: React.FC = () => {
     });
 
   // 더보기 메뉴 외부 클릭 시 닫기
-  const moreMenuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      // 더보기 버튼이나 메뉴 내부가 아닌 경우에만 닫기
       if (
-        moreMenuRef.current &&
-        !moreMenuRef.current.contains(event.target as Node) &&
-        !(event.target as HTMLElement).closest(".post-more-btn")
+        !target.closest(".post-more-btn") &&
+        !target.closest(".more-menu")
       ) {
         setShowMoreMenu(null);
       }
@@ -777,13 +777,13 @@ const MyClubScreen: React.FC = () => {
                   <div className="dropdown-menu">
                     <div
                       className="dropdown-item"
-                  onClick={() => {
+                      onClick={() => {
                         setSelectedCategory(null);
                         setShowCategoryDropdown(false);
                       }}
                     >
                       전체
-                      </div>
+                    </div>
                     {categories.map((category) => (
                       <div
                         key={category}
@@ -794,10 +794,10 @@ const MyClubScreen: React.FC = () => {
                         }}
                       >
                         {category}
-                        </div>
+                      </div>
                     ))}
-                </div>
-              )}
+                  </div>
+                )}
               </div>
 
               {/* 섹션 C: 정렬 필터 */}
@@ -817,7 +817,7 @@ const MyClubScreen: React.FC = () => {
                       <div
                         key={option}
                         className="dropdown-item"
-                  onClick={() => {
+                        onClick={() => {
                           setSelectedSort(option);
                           setShowSortDropdown(false);
                         }}
@@ -825,10 +825,10 @@ const MyClubScreen: React.FC = () => {
                         {option}
                       </div>
                     ))}
-                        </div>
+                  </div>
                 )}
-                      </div>
-                    </div>
+              </div>
+            </div>
 
             {/* 섹션 D: 게시글 리스트 */}
             <div className="posts-list">
@@ -837,10 +837,12 @@ const MyClubScreen: React.FC = () => {
                   key={post.id}
                   className="club-post-card"
                   onClick={(e) => {
-                    // 더보기 메뉴 클릭 시에는 모달 열지 않음
+                    const target = e.target as HTMLElement;
+                    // 더보기 메뉴나 버튼 클릭 시에는 모달 열지 않음
                     if (
-                      (e.target as HTMLElement).closest(".post-more-btn") ||
-                      (e.target as HTMLElement).closest(".more-menu")
+                      target.closest(".post-more-btn") ||
+                      target.closest(".more-menu") ||
+                      target.closest(".post-more-wrapper")
                     ) {
                       return;
                     }
@@ -872,7 +874,7 @@ const MyClubScreen: React.FC = () => {
                       </div>
                     </div>
                     {/* 섹션 D-B: 더보기 메뉴 */}
-                    <div className="post-more-wrapper" ref={moreMenuRef}>
+                    <div className="post-more-wrapper">
                       <button
                         className="post-more-btn"
                         onClick={(e) => {
@@ -931,14 +933,14 @@ const MyClubScreen: React.FC = () => {
                           >
                             공유
                           </button>
-                  </div>
+                        </div>
                       )}
                     </div>
                   </div>
                   {/* 섹션 D-C: 글 제목 영역 */}
                   <div className="post-title-section">
                     <h3 className="post-title">{post.title}</h3>
-                    </div>
+                  </div>
                   {/* 섹션 D-D, D-E: 좋아요/댓글 수와 카테고리 */}
                   <div className="post-footer-section">
                     <div className="post-engagement-counts">
@@ -948,7 +950,7 @@ const MyClubScreen: React.FC = () => {
                       <span className="engagement-count">
                         💬 {post.comments.toLocaleString()}
                       </span>
-                  </div>
+                    </div>
                     <span className="post-category">{post.category}</span>
                   </div>
                 </div>
@@ -1188,14 +1190,14 @@ const MyClubScreen: React.FC = () => {
                                   >
                                     <div className="comment-header">
                                       <div className="comment-author-info">
-                                      <img
+                                        <img
                                           src={
                                             comment.authorAvatar ||
                                             "/profile-icon.png"
                                           }
-                                        alt={comment.author}
+                                          alt={comment.author}
                                           className="comment-author-avatar"
-                                      />
+                                        />
                                         <span className="comment-author">
                                           {comment.author}
                                         </span>
@@ -1671,7 +1673,7 @@ const MyClubScreen: React.FC = () => {
                 <div className="comments-list">
                   {comments.map((comment) => (
                     <div key={comment.id} className="comment-item">
-                        <div className="comment-header">
+                      <div className="comment-header">
                         <div className="comment-author-info">
                           <img
                             src={comment.authorAvatar || "/profile-icon.png"}
