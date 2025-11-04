@@ -384,7 +384,9 @@ const CommunityScreen: React.FC = () => {
                           {post.clubAffiliation}
                         </span>
                         <div className="post-stats">
-                          <span className="post-likes">좋아요 {post.likes}</span>
+                          <span className="post-likes">
+                            좋아요 {post.likes}
+                          </span>
                           <span className="post-comments">
                             댓글 {post.comments}
                           </span>
@@ -438,7 +440,9 @@ const CommunityScreen: React.FC = () => {
                           {post.clubAffiliation}
                         </span>
                         <div className="post-stats">
-                          <span className="post-likes">좋아요 {post.likes}</span>
+                          <span className="post-likes">
+                            좋아요 {post.likes}
+                          </span>
                           <span className="post-comments">
                             댓글 {post.comments}
                           </span>
@@ -487,7 +491,9 @@ const CommunityScreen: React.FC = () => {
                           {post.clubAffiliation}
                         </span>
                         <div className="post-stats">
-                          <span className="post-likes">좋아요 {post.likes}</span>
+                          <span className="post-likes">
+                            좋아요 {post.likes}
+                          </span>
                           <span className="post-comments">
                             댓글 {post.comments}
                           </span>
@@ -495,7 +501,7 @@ const CommunityScreen: React.FC = () => {
                       </div>
                     </div>
                   ))}
-          </div>
+              </div>
             </section>
           </>
         )}

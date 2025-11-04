@@ -673,11 +673,7 @@ const MyClubScreen: React.FC = () => {
               data-name="profileIcon"
               data-node-id="9:641"
             >
-              <img
-                alt="Menu Icon"
-                className="icon"
-                src="/hamburger-menu.png"
-              />
+              <img alt="Menu Icon" className="icon" src="/hamburger-menu.png" />
             </div>
           </div>
         </div>

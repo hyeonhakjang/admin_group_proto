@@ -65,6 +65,19 @@
   border-color: #c34e00;
 }
 
+.login-error {
+  width: 100%;
+  padding: clamp(10px, 2.5vw, 12px);
+  background: #fff5f0;
+  border: 1px solid #ffd6c2;
+  border-radius: 8px;
+  color: #c34e00;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  text-align: center;
+  margin-bottom: clamp(8px, 2vw, 12px);
+}
+
 .login-btn {
   width: 100%;
   padding: clamp(14px, 3.5vw, 16px);

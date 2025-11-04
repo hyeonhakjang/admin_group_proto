@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 import "./LoginScreen.css";
 
 const LoginScreen: React.FC = () => {
@@ -7,11 +8,103 @@ const LoginScreen: React.FC = () => {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [keepLogin, setKeepLogin] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 로그인 로직 구현 예정
-    console.log("로그인 시도:", { userId, password, keepLogin });
+    setError("");
+    setLoading(true);
+
+    try {
+      // 개인 사용자 확인
+      const { data: personalUser, error: personalError } = await supabase
+        .from("personal_user")
+        .select("id, personal_user_name, password, personal_name, email")
+        .eq("personal_user_name", userId)
+        .single();
+
+      if (!personalError && personalUser) {
+        // 비밀번호 확인 (실제로는 해시된 비밀번호와 비교해야 함)
+        if (personalUser.password === password) {
+          // 로그인 성공 - 세션 저장
+          const userData = {
+            type: "personal",
+            id: personalUser.id,
+            username: personalUser.personal_user_name,
+            name: personalUser.personal_name,
+            email: personalUser.email,
+          };
+          if (keepLogin) {
+            localStorage.setItem("user", JSON.stringify(userData));
+          } else {
+            sessionStorage.setItem("user", JSON.stringify(userData));
+          }
+          navigate("/");
+          return;
+        }
+      }
+
+      // 클럽 사용자 확인
+      const { data: clubUser, error: clubError } = await supabase
+        .from("club_user")
+        .select("id, club_user_name, password, club_name, club_email")
+        .eq("club_user_name", userId)
+        .single();
+
+      if (!clubError && clubUser) {
+        if (clubUser.password === password) {
+          const userData = {
+            type: "club",
+            id: clubUser.id,
+            username: clubUser.club_user_name,
+            name: clubUser.club_name,
+            email: clubUser.club_email,
+          };
+          if (keepLogin) {
+            localStorage.setItem("user", JSON.stringify(userData));
+          } else {
+            sessionStorage.setItem("user", JSON.stringify(userData));
+          }
+          navigate("/");
+          return;
+        }
+      }
+
+      // 그룹 사용자 확인
+      const { data: groupUser, error: groupError } = await supabase
+        .from("group_user")
+        .select("id, group_user_name, password, group_name, group_email")
+        .eq("group_user_name", userId)
+        .single();
+
+      if (!groupError && groupUser) {
+        if (groupUser.password === password) {
+          const userData = {
+            type: "group",
+            id: groupUser.id,
+            username: groupUser.group_user_name,
+            name: groupUser.group_name,
+            email: groupUser.group_email,
+          };
+          if (keepLogin) {
+            localStorage.setItem("user", JSON.stringify(userData));
+          } else {
+            sessionStorage.setItem("user", JSON.stringify(userData));
+          }
+          navigate("/");
+          return;
+        }
+      }
+
+      // 모든 확인 실패
+      setError("아이디 또는 비밀번호가 올바르지 않습니다.");
+    } catch (err) {
+      console.error("로그인 오류:", err);
+      setError("로그인 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSocialLogin = (provider: "kakao" | "naver" | "google") => {
@@ -48,8 +141,9 @@ const LoginScreen: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit" className="login-btn">
-            로그인
+          {error && <div className="login-error">{error}</div>}
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? "로그인 중..." : "로그인"}
           </button>
 
           <div className="login-options">

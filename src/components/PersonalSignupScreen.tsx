@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 import "./PersonalSignupScreen.css";
 
 const PersonalSignupScreen: React.FC = () => {
@@ -22,6 +23,8 @@ const PersonalSignupScreen: React.FC = () => {
   const [showPhoneVerification, setShowPhoneVerification] = useState(false);
   const [emailVerificationCode, setEmailVerificationCode] = useState("");
   const [phoneVerificationCode, setPhoneVerificationCode] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -56,10 +59,87 @@ const PersonalSignupScreen: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("개인 계정 가입:", formData);
-    navigate("/login");
+    setError("");
+    setLoading(true);
+
+    // 이메일 및 휴대폰 인증 확인
+    if (!formData.emailVerified) {
+      setError("이메일 인증을 완료해주세요.");
+      setLoading(false);
+      return;
+    }
+
+    if (!formData.phoneVerified) {
+      setError("휴대폰 인증을 완료해주세요.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // 대학교 ID 찾기 (university 테이블에서)
+      let univId: number | null = null;
+      if (formData.university) {
+        const { data: univData } = await supabase
+          .from("university")
+          .select("id")
+          .eq("univ_name", formData.university)
+          .single();
+
+        if (univData) {
+          univId = univData.id;
+        } else {
+          // 대학교가 없으면 새로 생성
+          const { data: newUniv, error: univError } = await supabase
+            .from("university")
+            .insert({ univ_name: formData.university })
+            .select("id")
+            .single();
+
+          if (newUniv && !univError) {
+            univId = newUniv.id;
+          }
+        }
+      }
+
+      // 개인 사용자 등록
+      const { data, error: insertError } = await supabase
+        .from("personal_user")
+        .insert({
+          personal_user_name: formData.userId,
+          password: formData.password, // 실제로는 해시된 비밀번호를 저장해야 함
+          email: formData.email,
+          personal_name: formData.name,
+          university: formData.university,
+          student_num: formData.studentId,
+          department: formData.department,
+          phone_num: formData.phone,
+          birthdate: formData.birthDate || null,
+          univ_id: univId,
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        if (insertError.code === "23505") {
+          // Unique constraint violation
+          setError("이미 사용 중인 아이디 또는 이메일입니다.");
+        } else {
+          setError("회원가입 중 오류가 발생했습니다.");
+          console.error("회원가입 오류:", insertError);
+        }
+      } else {
+        // 회원가입 성공
+        alert("회원가입이 완료되었습니다.");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("회원가입 오류:", err);
+      setError("회원가입 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -217,8 +297,9 @@ const PersonalSignupScreen: React.FC = () => {
             />
           </div>
 
-          <button type="submit" className="submit-btn">
-            회원가입
+          {error && <div className="signup-error">{error}</div>}
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? "가입 중..." : "회원가입"}
           </button>
         </form>
       </div>

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 import "./CampusOfficialSignupScreen.css";
 
 const CampusOfficialSignupScreen: React.FC = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     userId: "",
     password: "",
@@ -20,12 +23,49 @@ const CampusOfficialSignupScreen: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 회원가입 로직 구현 예정
-    console.log("캠퍼스 공식 계정 가입:", formData);
-    // 회원가입 완료 후 로그인 페이지로 이동
-    navigate("/login");
+    setError("");
+    setLoading(true);
+
+    try {
+      // 그룹 사용자 등록 (approved는 true로 고정)
+      const { error: insertError } = await supabase
+        .from("group_user")
+        .insert({
+          group_user_name: formData.userId,
+          password: formData.password, // 실제로는 해시된 비밀번호를 저장해야 함
+          group_name: formData.groupName,
+          group_email: formData.groupEmail,
+          manager_name: formData.managerName,
+          manager_phone_num: formData.contact,
+          manager_student_num: formData.studentId,
+          manager_department: formData.department,
+          approved: true, // true로 고정
+          univ_id: null, // 폼에 학교 선택이 없으므로 null
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        if (insertError.code === "23505") {
+          // Unique constraint violation
+          setError("이미 사용 중인 아이디 또는 이메일입니다.");
+        } else {
+          setError("회원가입 중 오류가 발생했습니다.");
+          console.error("회원가입 오류:", insertError);
+        }
+      } else {
+        // 회원가입 성공
+        alert("회원가입이 완료되었습니다.");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("회원가입 오류:", err);
+      setError("회원가입 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -145,8 +185,9 @@ const CampusOfficialSignupScreen: React.FC = () => {
             />
           </div>
 
-          <button type="submit" className="submit-btn">
-            회원가입
+          {error && <div className="signup-error">{error}</div>}
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? "가입 중..." : "회원가입"}
           </button>
         </form>
       </div>

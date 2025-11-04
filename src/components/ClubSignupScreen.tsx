@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 import "./ClubSignupScreen.css";
 
 const ClubSignupScreen: React.FC = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     userId: "",
     password: "",
@@ -75,10 +78,64 @@ const ClubSignupScreen: React.FC = () => {
     setGroupSearch("");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("클럽 계정 가입:", formData);
-    navigate("/login");
+    setError("");
+    setLoading(true);
+
+    try {
+      // 그룹 사용자 찾기 (affiliatedGroup이 있으면)
+      let groupUserId: number | null = null;
+      if (!formData.noUniversity && formData.affiliatedGroup && formData.affiliatedGroup !== "없음") {
+        // group_user 테이블에서 찾기
+        const { data: groupUser } = await supabase
+          .from("group_user")
+          .select("id")
+          .eq("group_name", formData.affiliatedGroup)
+          .single();
+
+        if (groupUser) {
+          groupUserId = groupUser.id;
+        }
+      }
+
+      // 클럽 사용자 등록 (approved는 1로 고정)
+      const { error: insertError } = await supabase
+        .from("club_user")
+        .insert({
+          club_user_name: formData.userId,
+          password: formData.password, // 실제로는 해시된 비밀번호를 저장해야 함
+          club_name: formData.groupName,
+          club_email: formData.email,
+          manager_name: formData.managerName,
+          manager_phone_num: formData.contact,
+          manager_student_num: undefined, // 폼에 없음
+          manager_department: undefined, // 폼에 없음
+          approved: 1, // true로 고정
+          group_user_id: groupUserId,
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        if (insertError.code === "23505") {
+          // Unique constraint violation
+          setError("이미 사용 중인 아이디 또는 이메일입니다.");
+        } else {
+          setError("회원가입 중 오류가 발생했습니다.");
+          console.error("회원가입 오류:", insertError);
+        }
+      } else {
+        // 회원가입 성공
+        alert("회원가입이 완료되었습니다.");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("회원가입 오류:", err);
+      setError("회원가입 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -333,8 +390,9 @@ const ClubSignupScreen: React.FC = () => {
             )}
           </div>
 
-          <button type="submit" className="submit-btn">
-            회원가입
+          {error && <div className="signup-error">{error}</div>}
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? "가입 중..." : "회원가입"}
           </button>
         </form>
       </div>
