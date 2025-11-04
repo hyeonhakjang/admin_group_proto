@@ -192,6 +192,15 @@ const samplePostDetails: { [key: number]: Post } = {
   },
 };
 
+// 댓글 인터페이스
+interface Comment {
+  id: number;
+  author: string;
+  content: string;
+  createdAt: string;
+  isAnonymous: boolean;
+}
+
 const PostDetailScreen: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -199,6 +208,52 @@ const PostDetailScreen: React.FC = () => {
   const [post, setPost] = useState<Post | null>(
     samplePostDetails[postId] || null
   );
+  const [isLiked, setIsLiked] = useState(false);
+  const [isScrapped, setIsScrapped] = useState(false);
+  const [likeCount, setLikeCount] = useState(post?.likes || 0);
+  const [comments, setComments] = useState<Comment[]>([
+    {
+      id: 1,
+      author: "익명",
+      content: "좋은 정보 감사합니다!",
+      createdAt: "2024-01-15",
+      isAnonymous: true,
+    },
+    {
+      id: 2,
+      author: "홍익대생",
+      content: "참여하고 싶어요!",
+      createdAt: "2024-01-15",
+      isAnonymous: false,
+    },
+  ]);
+  const [newComment, setNewComment] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(false);
+
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+  };
+
+  const handleScrap = () => {
+    setIsScrapped(!isScrapped);
+  };
+
+  const handleCommentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newComment.trim()) {
+      const comment: Comment = {
+        id: comments.length + 1,
+        author: isAnonymous ? "익명" : "사용자",
+        content: newComment,
+        createdAt: new Date().toISOString().split("T")[0],
+        isAnonymous,
+      };
+      setComments([...comments, comment]);
+      setNewComment("");
+      setIsAnonymous(false);
+    }
+  };
 
   if (!post) {
     return (
@@ -218,46 +273,95 @@ const PostDetailScreen: React.FC = () => {
       <Header />
 
       <div className="post-detail-content">
-        {/* 게시글 헤더 (동아리 정보) */}
+        {/* 게시글 헤더 (동아리 로고 + 이름) */}
         <div className="post-detail-header">
-          <div className="post-detail-club-info">
+          <div
+            className="post-detail-club-info"
+            onClick={() => navigate(`/community/club/${post.clubId}`)}
+            style={{ cursor: "pointer" }}
+          >
             <img
               src={post.clubLogo}
               alt={post.clubName}
               className="post-detail-club-logo"
             />
-            <span className="post-detail-club-name">{post.clubName}</span>
+            <div className="post-detail-club-text">
+              <span className="post-detail-club-name">{post.clubName}</span>
+              <span className="post-detail-date">{post.createdAt}</span>
+            </div>
           </div>
         </div>
 
         {/* 게시글 제목 */}
         <h1 className="post-detail-title">{post.title}</h1>
 
-        {/* 게시글 메타 정보 */}
-        <div className="post-detail-meta">
-          <span className="post-detail-date">{post.createdAt}</span>
-          <div className="post-detail-stats">
-            <span className="post-detail-views">조회 {post.views}</span>
-            <span className="post-detail-likes">좋아요 {post.likes}</span>
-          </div>
-        </div>
-
         {/* 게시글 내용 */}
         <div className="post-detail-body">
           <pre className="post-detail-content-text">{post.fullContent}</pre>
         </div>
 
-        {/* 게시글 액션 버튼 */}
+        {/* 게시글 액션 버튼 (좋아요, 스크랩) */}
         <div className="post-detail-actions">
-          <button className="post-detail-action-btn like-btn">
-            좋아요 {post.likes}
+          <button
+            className={`post-detail-action-btn like-btn ${isLiked ? "active" : ""}`}
+            onClick={handleLike}
+          >
+            좋아요 {likeCount}
           </button>
           <button
-            className="post-detail-action-btn club-btn"
-            onClick={() => navigate(`/community/club/${post.clubId}`)}
+            className={`post-detail-action-btn scrap-btn ${isScrapped ? "active" : ""}`}
+            onClick={handleScrap}
           >
-            동아리 보기
+            {isScrapped ? "스크랩됨" : "스크랩"}
           </button>
+        </div>
+
+        {/* 댓글 섹션 */}
+        <div className="post-detail-comments">
+          <h2 className="comments-title">댓글 {comments.length}</h2>
+
+          {/* 댓글 목록 */}
+          <div className="comments-list">
+            {comments.map((comment) => (
+              <div key={comment.id} className="comment-item">
+                <div className="comment-header">
+                  <span className="comment-author">{comment.author}</span>
+                  <span className="comment-date">{comment.createdAt}</span>
+                </div>
+                <p className="comment-content">{comment.content}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* 댓글 작성 폼 */}
+          <form className="comment-form" onSubmit={handleCommentSubmit}>
+            <div className="comment-form-header">
+              <label className="anonymous-checkbox">
+                <input
+                  type="checkbox"
+                  checked={isAnonymous}
+                  onChange={(e) => setIsAnonymous(e.target.checked)}
+                />
+                <span>익명</span>
+              </label>
+            </div>
+            <div className="comment-input-wrapper">
+              <textarea
+                className="comment-input"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="댓글을 입력하세요..."
+                rows={3}
+              />
+              <button
+                type="submit"
+                className="comment-submit-btn"
+                disabled={!newComment.trim()}
+              >
+                등록
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
