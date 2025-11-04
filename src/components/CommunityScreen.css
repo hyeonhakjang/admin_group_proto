@@ -60,7 +60,8 @@
   flex: 1;
   width: 100%;
   padding: clamp(16px, 4vw, 24px);
-  padding-bottom: calc(80px + clamp(16px, 4vw, 24px));
+  padding-bottom: calc(100px + clamp(16px, 4vw, 24px));
+  overflow-y: auto; /* 스크롤 가능하도록 */
 }
 
 .community-section {

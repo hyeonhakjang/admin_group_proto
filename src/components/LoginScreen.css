@@ -7,7 +7,8 @@
   flex-direction: column;
   align-items: center;
   padding: clamp(40px, 10vw, 60px) clamp(20px, 5vw, 40px);
-  padding-bottom: calc(80px + clamp(40px, 10vw, 60px));
+  padding-bottom: calc(100px + clamp(40px, 10vw, 60px));
+  overflow-y: auto; /* 스크롤 가능하도록 */
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
