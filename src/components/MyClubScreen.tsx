@@ -155,12 +155,12 @@ const MyClubScreen: React.FC = () => {
   const [showPostModal, setShowPostModal] = useState(false);
   const [selectedPost, setSelectedPost] = useState<any>(null);
   const [showMoreMenu, setShowMoreMenu] = useState<number | null>(null);
-  
+
   // 모달용 좋아요/스크랩 상태
   const [modalIsLiked, setModalIsLiked] = useState(false);
   const [modalIsScrapped, setModalIsScrapped] = useState(false);
   const [modalLikeCount, setModalLikeCount] = useState(0);
-  
+
   // 모달용 댓글 상태
   const [modalComments, setModalComments] = useState<any[]>([]);
   const [modalNewComment, setModalNewComment] = useState("");
@@ -429,7 +429,9 @@ const MyClubScreen: React.FC = () => {
     e.preventDefault();
     if (modalNewComment.trim()) {
       const commentContent = replyingTo
-        ? `@${modalComments.find((c) => c.id === replyingTo)?.author || "사용자"} ${modalNewComment}`
+        ? `@${
+            modalComments.find((c) => c.id === replyingTo)?.author || "사용자"
+          } ${modalNewComment}`
         : modalNewComment;
 
       const comment = {
@@ -859,13 +861,13 @@ const MyClubScreen: React.FC = () => {
                   <div className="dropdown-menu">
                     <div
                       className="dropdown-item"
-                  onClick={() => {
+                      onClick={() => {
                         setSelectedCategory(null);
                         setShowCategoryDropdown(false);
                       }}
                     >
                       전체
-                      </div>
+                    </div>
                     {categories.map((category) => (
                       <div
                         key={category}
@@ -876,10 +878,10 @@ const MyClubScreen: React.FC = () => {
                         }}
                       >
                         {category}
-                        </div>
+                      </div>
                     ))}
-                </div>
-              )}
+                  </div>
+                )}
               </div>
 
               {/* 섹션 C: 정렬 필터 */}
@@ -899,7 +901,7 @@ const MyClubScreen: React.FC = () => {
                       <div
                         key={option}
                         className="dropdown-item"
-                  onClick={() => {
+                        onClick={() => {
                           setSelectedSort(option);
                           setShowSortDropdown(false);
                         }}
@@ -907,10 +909,10 @@ const MyClubScreen: React.FC = () => {
                         {option}
                       </div>
                     ))}
-                        </div>
+                  </div>
                 )}
-                      </div>
-                    </div>
+              </div>
+            </div>
 
             {/* 섹션 D: 게시글 리스트 */}
             <div className="posts-list">
@@ -1015,14 +1017,14 @@ const MyClubScreen: React.FC = () => {
                           >
                             공유
                           </button>
-                  </div>
+                        </div>
                       )}
                     </div>
                   </div>
                   {/* 섹션 D-C: 글 제목 영역 */}
                   <div className="post-title-section">
                     <h3 className="post-title">{post.title}</h3>
-                    </div>
+                  </div>
                   {/* 섹션 D-D, D-E: 좋아요/댓글 수와 카테고리 */}
                   <div className="post-footer-section">
                     <div className="post-engagement-counts">
@@ -1032,7 +1034,7 @@ const MyClubScreen: React.FC = () => {
                       <span className="engagement-count">
                         💬 {post.comments.toLocaleString()}
                       </span>
-                  </div>
+                    </div>
                     <span className="post-category">{post.category}</span>
                   </div>
                 </div>
@@ -1272,14 +1274,14 @@ const MyClubScreen: React.FC = () => {
                                   >
                                     <div className="comment-header">
                                       <div className="comment-author-info">
-                                      <img
+                                        <img
                                           src={
                                             comment.authorAvatar ||
                                             "/profile-icon.png"
                                           }
-                                        alt={comment.author}
+                                          alt={comment.author}
                                           className="comment-author-avatar"
-                                      />
+                                        />
                                         <span className="comment-author">
                                           {comment.author}
                                         </span>
@@ -1384,13 +1386,14 @@ const MyClubScreen: React.FC = () => {
 
       {/* 게시글 상세 모달 */}
       {showPostModal && selectedPost && (
-        <div
-          className="post-modal-overlay"
-          onClick={() => {
-            setShowPostModal(false);
-            setSelectedPost(null);
-          }}
-        >
+        <>
+          <div
+            className="post-modal-overlay"
+            onClick={() => {
+              setShowPostModal(false);
+              setSelectedPost(null);
+            }}
+          ></div>
           <div className="post-modal" onClick={(e) => e.stopPropagation()}>
             {/* 모달 헤더: 뒤로가기 버튼 */}
             <div className="post-modal-header-back">
@@ -1481,9 +1484,7 @@ const MyClubScreen: React.FC = () => {
                             className={`post-modal-comment-like-btn ${
                               comment.isLiked ? "active" : ""
                             }`}
-                            onClick={() =>
-                              handleModalCommentLike(comment.id)
-                            }
+                            onClick={() => handleModalCommentLike(comment.id)}
                           >
                             좋아요 {comment.likes}
                           </button>
@@ -1620,7 +1621,7 @@ const MyClubScreen: React.FC = () => {
               </div>
             )}
           </div>
-        </div>
+        </>
       )}
 
       {/* 글 작성 플로팅 버튼 */}
@@ -1953,7 +1954,7 @@ const MyClubScreen: React.FC = () => {
                 <div className="comments-list">
                   {comments.map((comment) => (
                     <div key={comment.id} className="comment-item">
-                        <div className="comment-header">
+                      <div className="comment-header">
                         <div className="comment-author-info">
                           <img
                             src={comment.authorAvatar || "/profile-icon.png"}
