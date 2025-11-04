@@ -305,6 +305,9 @@
   border: 1px solid #e0e0e0;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .post-card:hover {
@@ -348,6 +351,9 @@
   color: #28201b;
   margin: 0 0 clamp(8px, 2vw, 10px) 0;
   line-height: 1.4;
+  display: block;
+  width: 100%;
+  word-wrap: break-word;
 }
 
 /* 게시글 내용 */
@@ -364,6 +370,8 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
+  word-wrap: break-word;
 }
 
 /* 반응형 */
