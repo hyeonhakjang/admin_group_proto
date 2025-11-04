@@ -212,7 +212,22 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: clamp(8px, 2vw, 10px);
+  margin-bottom: clamp(10px, 2.5vw, 12px);
+}
+
+.comment-author-info {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 10px);
+}
+
+.comment-author-avatar {
+  width: clamp(32px, 8vw, 40px);
+  height: clamp(32px, 8vw, 40px);
+  border-radius: 50%;
+  object-fit: cover;
+  background: #f5f5f5;
+  flex-shrink: 0;
 }
 
 .comment-author {
@@ -222,11 +237,36 @@
   color: #28201b;
 }
 
-.comment-date {
+.comment-actions {
+  display: flex;
+  gap: clamp(8px, 2vw, 10px);
+  align-items: center;
+}
+
+.comment-like-btn,
+.comment-reply-btn {
+  padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 10px);
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 400;
-  font-size: clamp(11px, 2.75vw, 13px);
-  color: #888888;
+  font-size: clamp(11px, 2.75vw, 12px);
+  color: #666666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.comment-like-btn:hover,
+.comment-reply-btn:hover {
+  background: #f5f5f5;
+  border-color: #c34e00;
+}
+
+.comment-like-btn.active {
+  background: #fff5f0;
+  border-color: #c34e00;
+  color: #c34e00;
 }
 
 .comment-content {
@@ -235,19 +275,25 @@
   font-size: clamp(13px, 3.25vw, 15px);
   color: #28201b;
   line-height: 1.6;
-  margin: 0;
+  margin: 0 0 clamp(8px, 2vw, 10px) 0;
 }
 
-/* 댓글 작성 폼 */
-.comment-form {
+.comment-date {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(11px, 2.75vw, 13px);
+  color: #888888;
+}
+
+/* 댓글 작성 영역 */
+.comment-write-area {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
   background: white;
   border-radius: 12px;
-  padding: clamp(16px, 4vw, 20px);
+  padding: clamp(12px, 3vw, 16px);
   border: 1px solid #e0e0e0;
-}
-
-.comment-form-header {
-  margin-bottom: clamp(12px, 3vw, 16px);
 }
 
 .anonymous-checkbox {
@@ -259,6 +305,7 @@
   font-size: clamp(13px, 3.25vw, 15px);
   color: #666666;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .anonymous-checkbox input[type="checkbox"] {
@@ -268,13 +315,104 @@
   accent-color: #c34e00;
 }
 
-.comment-input-wrapper {
+.comment-input-area {
+  flex: 1;
+  padding: clamp(10px, 2.5vw, 12px);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: clamp(40px, 10vw, 48px);
+  display: flex;
+  align-items: center;
+}
+
+.comment-input-area:hover {
+  border-color: #c34e00;
+  background: #fff5f0;
+}
+
+.comment-input-placeholder {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #999999;
+}
+
+/* 댓글 작성 모달 */
+.comment-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: clamp(16px, 4vw, 24px);
+}
+
+.comment-modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.comment-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(16px, 4vw, 20px);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.comment-modal-header h3 {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(18px, 4.5vw, 20px);
+  color: #28201b;
+  margin: 0;
+}
+
+.comment-modal-close {
+  background: none;
+  border: none;
+  font-size: clamp(24px, 6vw, 28px);
+  color: #888888;
+  cursor: pointer;
+  padding: 0;
+  width: clamp(32px, 8vw, 36px);
+  height: clamp(32px, 8vw, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.comment-modal-close:hover {
+  color: #28201b;
+}
+
+.comment-modal-form {
+  padding: clamp(16px, 4vw, 20px);
   display: flex;
   flex-direction: column;
   gap: clamp(12px, 3vw, 16px);
+  overflow-y: auto;
 }
 
-.comment-input {
+.comment-modal-checkbox {
+  margin-bottom: clamp(8px, 2vw, 10px);
+}
+
+.comment-modal-input {
   width: 100%;
   padding: clamp(12px, 3vw, 14px);
   border: 1px solid #e0e0e0;
@@ -283,21 +421,27 @@
   font-size: clamp(13px, 3.25vw, 15px);
   color: #28201b;
   resize: vertical;
-  min-height: clamp(80px, 20vw, 100px);
+  min-height: clamp(120px, 30vw, 150px);
+  line-height: 1.6;
 }
 
-.comment-input:focus {
+.comment-modal-input:focus {
   outline: none;
   border-color: #c34e00;
 }
 
-.comment-submit-btn {
-  align-self: flex-end;
+.comment-modal-actions {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+  justify-content: flex-end;
+  margin-top: clamp(8px, 2vw, 10px);
+}
+
+.comment-modal-cancel,
+.comment-modal-submit {
   padding: clamp(10px, 2.5vw, 12px) clamp(20px, 5vw, 24px);
-  background: #c34e00;
-  color: white;
-  border: none;
   border-radius: 8px;
+  border: none;
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 600;
   font-size: clamp(13px, 3.25vw, 15px);
@@ -305,11 +449,25 @@
   transition: all 0.2s ease;
 }
 
-.comment-submit-btn:hover:not(:disabled) {
+.comment-modal-cancel {
+  background: #f5f5f5;
+  color: #666666;
+}
+
+.comment-modal-cancel:hover {
+  background: #e8e8e8;
+}
+
+.comment-modal-submit {
+  background: #c34e00;
+  color: white;
+}
+
+.comment-modal-submit:hover:not(:disabled) {
   background: #a03f00;
 }
 
-.comment-submit-btn:disabled {
+.comment-modal-submit:disabled {
   background: #e0e0e0;
   color: #999999;
   cursor: not-allowed;
@@ -334,8 +492,8 @@
     padding: 12px;
   }
 
-  .comment-form {
-    padding: 16px;
+  .comment-write-area {
+    padding: 12px;
   }
 }
 
@@ -362,8 +520,8 @@
     padding: 10px;
   }
 
-  .comment-form {
-    padding: 12px;
+  .comment-write-area {
+    padding: 10px;
   }
 }
 
@@ -393,8 +551,7 @@
     padding: 8px;
   }
 
-  .comment-form {
-    padding: 10px;
+  .comment-write-area {
+    padding: 8px;
   }
 }
-

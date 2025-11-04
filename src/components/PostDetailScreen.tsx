@@ -26,7 +26,8 @@ const samplePostDetails: { [key: number]: Post } = {
     clubName: "HICC",
     clubLogo: "/profile-icon.png",
     title: "2024년 신입 부원 모집합니다!",
-    content: "HICC에서 함께 성장할 신입 부원을 모집합니다. 웹 개발과 알고리즘에 관심이 있는 분들을 환영합니다.",
+    content:
+      "HICC에서 함께 성장할 신입 부원을 모집합니다. 웹 개발과 알고리즘에 관심이 있는 분들을 환영합니다.",
     fullContent: `안녕하세요, HICC입니다!
 
 2024년 신입 부원을 모집합니다. HICC는 홍익대학교 컴퓨터공학 동아리로, 웹 개발, 알고리즘, 프로젝트 등 다양한 활동을 진행하고 있습니다.
@@ -85,7 +86,8 @@ const samplePostDetails: { [key: number]: Post } = {
     clubName: "VOERA",
     clubLogo: "/profile-icon.png",
     title: "공연 연습 일정 공지",
-    content: "다음 주 공연을 위한 연습 일정을 공지드립니다. 모든 부원분들의 참석 부탁드립니다.",
+    content:
+      "다음 주 공연을 위한 연습 일정을 공지드립니다. 모든 부원분들의 참석 부탁드립니다.",
     fullContent: `안녕하세요, VOERA입니다!
 
 다음 주 공연을 위한 연습 일정을 공지드립니다.
@@ -139,7 +141,8 @@ const samplePostDetails: { [key: number]: Post } = {
     clubName: "브레인스워즈",
     clubLogo: "/profile-icon.png",
     title: "학술 세미나 개최",
-    content: "이번 주 금요일에 학술 세미나를 개최합니다. 주제는 '현대 경제학'입니다.",
+    content:
+      "이번 주 금요일에 학술 세미나를 개최합니다. 주제는 '현대 경제학'입니다.",
     fullContent: `안녕하세요, 브레인스워즈입니다!
 
 이번 주 금요일에 학술 세미나를 개최합니다.
@@ -196,9 +199,12 @@ const samplePostDetails: { [key: number]: Post } = {
 interface Comment {
   id: number;
   author: string;
+  authorAvatar?: string;
   content: string;
   createdAt: string;
   isAnonymous: boolean;
+  likes: number;
+  isLiked: boolean;
 }
 
 const PostDetailScreen: React.FC = () => {
@@ -215,20 +221,27 @@ const PostDetailScreen: React.FC = () => {
     {
       id: 1,
       author: "익명",
+      authorAvatar: "/profile-icon.png",
       content: "좋은 정보 감사합니다!",
       createdAt: "2024-01-15",
       isAnonymous: true,
+      likes: 5,
+      isLiked: false,
     },
     {
       id: 2,
       author: "홍익대생",
+      authorAvatar: "/profile-icon.png",
       content: "참여하고 싶어요!",
       createdAt: "2024-01-15",
       isAnonymous: false,
+      likes: 3,
+      isLiked: false,
     },
   ]);
   const [newComment, setNewComment] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [showCommentModal, setShowCommentModal] = useState(false);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -239,20 +252,43 @@ const PostDetailScreen: React.FC = () => {
     setIsScrapped(!isScrapped);
   };
 
+  const handleCommentLike = (commentId: number) => {
+    setComments(
+      comments.map((comment) => {
+        if (comment.id === commentId) {
+          return {
+            ...comment,
+            isLiked: !comment.isLiked,
+            likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
+          };
+        }
+        return comment;
+      })
+    );
+  };
+
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (newComment.trim()) {
       const comment: Comment = {
         id: comments.length + 1,
         author: isAnonymous ? "익명" : "사용자",
+        authorAvatar: "/profile-icon.png",
         content: newComment,
         createdAt: new Date().toISOString().split("T")[0],
         isAnonymous,
+        likes: 0,
+        isLiked: false,
       };
       setComments([...comments, comment]);
       setNewComment("");
       setIsAnonymous(false);
+      setShowCommentModal(false);
     }
+  };
+
+  const handleCommentAreaClick = () => {
+    setShowCommentModal(true);
   };
 
   if (!post) {
@@ -303,13 +339,17 @@ const PostDetailScreen: React.FC = () => {
         {/* 게시글 액션 버튼 (좋아요, 스크랩) */}
         <div className="post-detail-actions">
           <button
-            className={`post-detail-action-btn like-btn ${isLiked ? "active" : ""}`}
+            className={`post-detail-action-btn like-btn ${
+              isLiked ? "active" : ""
+            }`}
             onClick={handleLike}
           >
             좋아요 {likeCount}
           </button>
           <button
-            className={`post-detail-action-btn scrap-btn ${isScrapped ? "active" : ""}`}
+            className={`post-detail-action-btn scrap-btn ${
+              isScrapped ? "active" : ""
+            }`}
             onClick={handleScrap}
           >
             {isScrapped ? "스크랩됨" : "스크랩"}
@@ -325,44 +365,110 @@ const PostDetailScreen: React.FC = () => {
             {comments.map((comment) => (
               <div key={comment.id} className="comment-item">
                 <div className="comment-header">
-                  <span className="comment-author">{comment.author}</span>
-                  <span className="comment-date">{comment.createdAt}</span>
+                  <div className="comment-author-info">
+                    <img
+                      src={comment.authorAvatar || "/profile-icon.png"}
+                      alt={comment.author}
+                      className="comment-author-avatar"
+                    />
+                    <span className="comment-author">{comment.author}</span>
+                  </div>
+                  <div className="comment-actions">
+                    <button
+                      className={`comment-like-btn ${comment.isLiked ? "active" : ""}`}
+                      onClick={() => handleCommentLike(comment.id)}
+                    >
+                      좋아요 {comment.likes}
+                    </button>
+                    <button className="comment-reply-btn">답글</button>
+                  </div>
                 </div>
                 <p className="comment-content">{comment.content}</p>
+                <span className="comment-date">{comment.createdAt}</span>
               </div>
             ))}
           </div>
 
-          {/* 댓글 작성 폼 */}
-          <form className="comment-form" onSubmit={handleCommentSubmit}>
-            <div className="comment-form-header">
-              <label className="anonymous-checkbox">
-                <input
-                  type="checkbox"
-                  checked={isAnonymous}
-                  onChange={(e) => setIsAnonymous(e.target.checked)}
-                />
-                <span>익명</span>
-              </label>
-            </div>
-            <div className="comment-input-wrapper">
-              <textarea
-                className="comment-input"
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="댓글을 입력하세요..."
-                rows={3}
+          {/* 댓글 작성 영역 */}
+          <div className="comment-write-area">
+            <label className="anonymous-checkbox">
+              <input
+                type="checkbox"
+                checked={isAnonymous}
+                onChange={(e) => setIsAnonymous(e.target.checked)}
               />
-              <button
-                type="submit"
-                className="comment-submit-btn"
-                disabled={!newComment.trim()}
-              >
-                등록
-              </button>
+              <span>익명</span>
+            </label>
+            <div
+              className="comment-input-area"
+              onClick={handleCommentAreaClick}
+            >
+              <span className="comment-input-placeholder">
+                댓글을 입력하세요...
+              </span>
             </div>
-          </form>
+          </div>
         </div>
+
+        {/* 댓글 작성 모달 */}
+        {showCommentModal && (
+          <div className="comment-modal-overlay" onClick={() => setShowCommentModal(false)}>
+            <div
+              className="comment-modal"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="comment-modal-header">
+                <h3>댓글 작성</h3>
+                <button
+                  className="comment-modal-close"
+                  onClick={() => setShowCommentModal(false)}
+                >
+                  ×
+                </button>
+              </div>
+              <form className="comment-modal-form" onSubmit={handleCommentSubmit}>
+                <div className="comment-modal-checkbox">
+                  <label className="anonymous-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={isAnonymous}
+                      onChange={(e) => setIsAnonymous(e.target.checked)}
+                    />
+                    <span>익명</span>
+                  </label>
+                </div>
+                <textarea
+                  className="comment-modal-input"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="댓글을 입력하세요..."
+                  rows={5}
+                  autoFocus
+                />
+                <div className="comment-modal-actions">
+                  <button
+                    type="button"
+                    className="comment-modal-cancel"
+                    onClick={() => {
+                      setShowCommentModal(false);
+                      setNewComment("");
+                      setIsAnonymous(false);
+                    }}
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="submit"
+                    className="comment-modal-submit"
+                    disabled={!newComment.trim()}
+                  >
+                    등록
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
 
       <BottomTabBar />
@@ -371,4 +477,3 @@ const PostDetailScreen: React.FC = () => {
 };
 
 export default PostDetailScreen;
-
