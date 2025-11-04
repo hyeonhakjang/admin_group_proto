@@ -2458,6 +2458,46 @@
   }
 }
 
+/* 글 작성 플로팅 버튼 */
+.floating-write-btn {
+  position: fixed;
+  bottom: calc(80px + clamp(16px, 4vw, 24px)); /* BottomTabBar 높이(80px) + 여백 */
+  left: 50%;
+  /* 예약/구매와 채팅 탭 사이 위치 조정 (BottomTabBar의 중앙에서 약간 오른쪽) */
+  transform: translateX(calc(-50% + clamp(60px, 15vw, 80px)));
+  width: clamp(56px, 14vw, 64px);
+  height: clamp(56px, 14vw, 64px);
+  border-radius: 50%;
+  background: #c34e00;
+  border: none;
+  box-shadow: 0 4px 12px rgba(195, 78, 0, 0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.floating-write-btn:hover {
+  background: #a03f00;
+  transform: translateX(calc(-50% + clamp(60px, 15vw, 80px))) scale(1.1);
+  box-shadow: 0 6px 16px rgba(195, 78, 0, 0.4);
+}
+
+.floating-write-btn:active {
+  transform: translateX(calc(-50% + clamp(60px, 15vw, 80px))) scale(0.95);
+}
+
+.floating-write-icon {
+  color: white;
+  font-size: clamp(32px, 8vw, 36px);
+  font-weight: 300;
+  line-height: 1;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+}
+
 /* 멤버 콘텐츠 스타일 */
 .members-content {
   width: 100%;

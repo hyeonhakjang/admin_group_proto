@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./MyClubScreen.css";
 
 // 이미지 상수들 (피그마에서 다운로드한 실제 아이콘들)
@@ -13,6 +13,7 @@ const imgIcon4 = "/chat.png"; // 채팅 아이콘
 
 const MyClubScreen: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<
     "posts" | "statistics" | "schedule" | "members" | "archive"
   >("posts");
@@ -252,7 +253,8 @@ const MyClubScreen: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       // 현재 스크롤 위치
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
       // 문서 전체 높이
       const scrollHeight = document.documentElement.scrollHeight;
       // 화면 높이
@@ -775,13 +777,13 @@ const MyClubScreen: React.FC = () => {
                   <div className="dropdown-menu">
                     <div
                       className="dropdown-item"
-                      onClick={() => {
+                  onClick={() => {
                         setSelectedCategory(null);
                         setShowCategoryDropdown(false);
                       }}
                     >
                       전체
-                    </div>
+                      </div>
                     {categories.map((category) => (
                       <div
                         key={category}
@@ -792,10 +794,10 @@ const MyClubScreen: React.FC = () => {
                         }}
                       >
                         {category}
-                      </div>
+                        </div>
                     ))}
-                  </div>
-                )}
+                </div>
+              )}
               </div>
 
               {/* 섹션 C: 정렬 필터 */}
@@ -815,7 +817,7 @@ const MyClubScreen: React.FC = () => {
                       <div
                         key={option}
                         className="dropdown-item"
-                        onClick={() => {
+                  onClick={() => {
                           setSelectedSort(option);
                           setShowSortDropdown(false);
                         }}
@@ -823,10 +825,10 @@ const MyClubScreen: React.FC = () => {
                         {option}
                       </div>
                     ))}
-                  </div>
+                        </div>
                 )}
-              </div>
-            </div>
+                      </div>
+                    </div>
 
             {/* 섹션 D: 게시글 리스트 */}
             <div className="posts-list">
@@ -929,14 +931,14 @@ const MyClubScreen: React.FC = () => {
                           >
                             공유
                           </button>
-                        </div>
+                  </div>
                       )}
                     </div>
                   </div>
                   {/* 섹션 D-C: 글 제목 영역 */}
                   <div className="post-title-section">
                     <h3 className="post-title">{post.title}</h3>
-                  </div>
+                    </div>
                   {/* 섹션 D-D, D-E: 좋아요/댓글 수와 카테고리 */}
                   <div className="post-footer-section">
                     <div className="post-engagement-counts">
@@ -946,7 +948,7 @@ const MyClubScreen: React.FC = () => {
                       <span className="engagement-count">
                         💬 {post.comments.toLocaleString()}
                       </span>
-                    </div>
+                  </div>
                     <span className="post-category">{post.category}</span>
                   </div>
                 </div>
@@ -1186,14 +1188,14 @@ const MyClubScreen: React.FC = () => {
                                   >
                                     <div className="comment-header">
                                       <div className="comment-author-info">
-                                        <img
+                                      <img
                                           src={
                                             comment.authorAvatar ||
                                             "/profile-icon.png"
                                           }
-                                          alt={comment.author}
+                                        alt={comment.author}
                                           className="comment-author-avatar"
-                                        />
+                                      />
                                         <span className="comment-author">
                                           {comment.author}
                                         </span>
@@ -1337,6 +1339,17 @@ const MyClubScreen: React.FC = () => {
             </div>
           </div>
         </>
+      )}
+
+      {/* 글 작성 플로팅 버튼 */}
+      {activeTab === "posts" && (
+        <button
+          className="floating-write-btn"
+          onClick={() => navigate("/myclub/post/write")}
+          aria-label="글 작성"
+        >
+          <span className="floating-write-icon">+</span>
+        </button>
       )}
 
       {/* Bottom Tab Bar */}
@@ -1658,7 +1671,7 @@ const MyClubScreen: React.FC = () => {
                 <div className="comments-list">
                   {comments.map((comment) => (
                     <div key={comment.id} className="comment-item">
-                      <div className="comment-header">
+                        <div className="comment-header">
                         <div className="comment-author-info">
                           <img
                             src={comment.authorAvatar || "/profile-icon.png"}

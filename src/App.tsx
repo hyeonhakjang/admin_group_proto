@@ -61,6 +61,10 @@ function App() {
             element={<ComingSoonScreen title="예약/구매" />}
           />
           <Route path="/chat" element={<ComingSoonScreen title="채팅" />} />
+          <Route
+            path="/myclub/post/write"
+            element={<ComingSoonScreen title="글 작성" />}
+          />
         </Routes>
       </div>
     </BrowserRouter>
