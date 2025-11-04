@@ -161,7 +161,8 @@ const MyClubScreen: React.FC = () => {
       authorAvatar: "/profile-icon.png",
       createdAt: "오늘 18:41",
       title: "9월 7일 정기 세션 안내 및 참여 신청",
-      content: "이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해 다룹니다.",
+      content:
+        "이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해 다룹니다.",
       isNotice: true,
       category: "모집",
       likes: 2321,
@@ -176,7 +177,8 @@ const MyClubScreen: React.FC = () => {
       authorAvatar: "/profile-icon.png",
       createdAt: "오늘 18:41",
       title: "이번 달 회비 납부 관련 안내",
-      content: "이번 달 회비 납부 안내입니다. 아래 결제 수단으로 송금하신 후, 하단의 송금 완료 버튼을 눌러 확인 요청을 진행해주세요.",
+      content:
+        "이번 달 회비 납부 안내입니다. 아래 결제 수단으로 송금하신 후, 하단의 송금 완료 버튼을 눌러 확인 요청을 진행해주세요.",
       isNotice: true,
       category: "홍보",
       likes: 1856,
@@ -246,29 +248,27 @@ const MyClubScreen: React.FC = () => {
     };
   }, [showMoreMenu]);
 
-  // 무한 스크롤을 위한 ref
-  const postsListRef = useRef<HTMLDivElement>(null);
+  // 무한 스크롤 (페이지 전체 스크롤)
   useEffect(() => {
     const handleScroll = () => {
-      if (!postsListRef.current) return;
+      // 현재 스크롤 위치
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      // 문서 전체 높이
+      const scrollHeight = document.documentElement.scrollHeight;
+      // 화면 높이
+      const clientHeight = document.documentElement.clientHeight;
 
-      const { scrollTop, scrollHeight, clientHeight } = postsListRef.current;
-      // 스크롤이 맨 아래에서 100px 이내일 때
-      if (scrollHeight - scrollTop - clientHeight < 100) {
+      // 스크롤이 맨 아래에서 200px 이내일 때
+      if (scrollHeight - scrollTop - clientHeight < 200) {
         // 더 많은 게시글 로드 (현재는 샘플 데이터만 있으므로 실제로는 API 호출)
         // 예: loadMorePosts();
+        // console.log("더 많은 게시글 로드 필요");
       }
     };
 
-    const listElement = postsListRef.current;
-    if (listElement) {
-      listElement.addEventListener("scroll", handleScroll);
-    }
-
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      if (listElement) {
-        listElement.removeEventListener("scroll", handleScroll);
-      }
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [filteredAndSortedPosts]);
 
@@ -775,13 +775,13 @@ const MyClubScreen: React.FC = () => {
                   <div className="dropdown-menu">
                     <div
                       className="dropdown-item"
-                  onClick={() => {
+                      onClick={() => {
                         setSelectedCategory(null);
                         setShowCategoryDropdown(false);
                       }}
                     >
                       전체
-                      </div>
+                    </div>
                     {categories.map((category) => (
                       <div
                         key={category}
@@ -792,10 +792,10 @@ const MyClubScreen: React.FC = () => {
                         }}
                       >
                         {category}
-                        </div>
+                      </div>
                     ))}
-                </div>
-              )}
+                  </div>
+                )}
               </div>
 
               {/* 섹션 C: 정렬 필터 */}
@@ -815,7 +815,7 @@ const MyClubScreen: React.FC = () => {
                       <div
                         key={option}
                         className="dropdown-item"
-                  onClick={() => {
+                        onClick={() => {
                           setSelectedSort(option);
                           setShowSortDropdown(false);
                         }}
@@ -823,13 +823,13 @@ const MyClubScreen: React.FC = () => {
                         {option}
                       </div>
                     ))}
-                        </div>
+                  </div>
                 )}
-                      </div>
-                    </div>
+              </div>
+            </div>
 
             {/* 섹션 D: 게시글 리스트 */}
-            <div className="posts-list" ref={postsListRef}>
+            <div className="posts-list">
               {filteredAndSortedPosts.map((post) => (
                 <div
                   key={post.id}
@@ -859,10 +859,7 @@ const MyClubScreen: React.FC = () => {
                       style={{ cursor: "pointer" }}
                     >
                       <div className="post-author-avatar">
-                        <img
-                          src={post.authorAvatar}
-                          alt="작성자 프로필"
-                        />
+                        <img src={post.authorAvatar} alt="작성자 프로필" />
                       </div>
                       <div className="post-author-info">
                         <div className="author-name-row">
@@ -932,20 +929,24 @@ const MyClubScreen: React.FC = () => {
                           >
                             공유
                           </button>
-                  </div>
+                        </div>
                       )}
                     </div>
                   </div>
                   {/* 섹션 D-C: 글 제목 영역 */}
                   <div className="post-title-section">
                     <h3 className="post-title">{post.title}</h3>
-                    </div>
+                  </div>
                   {/* 섹션 D-D, D-E: 좋아요/댓글 수와 카테고리 */}
                   <div className="post-footer-section">
                     <div className="post-engagement-counts">
-                      <span className="engagement-count">👍 {post.likes.toLocaleString()}</span>
-                      <span className="engagement-count">💬 {post.comments.toLocaleString()}</span>
-                  </div>
+                      <span className="engagement-count">
+                        👍 {post.likes.toLocaleString()}
+                      </span>
+                      <span className="engagement-count">
+                        💬 {post.comments.toLocaleString()}
+                      </span>
+                    </div>
                     <span className="post-category">{post.category}</span>
                   </div>
                 </div>
@@ -1185,14 +1186,14 @@ const MyClubScreen: React.FC = () => {
                                   >
                                     <div className="comment-header">
                                       <div className="comment-author-info">
-                                      <img
+                                        <img
                                           src={
                                             comment.authorAvatar ||
                                             "/profile-icon.png"
                                           }
-                                        alt={comment.author}
+                                          alt={comment.author}
                                           className="comment-author-avatar"
-                                      />
+                                        />
                                         <span className="comment-author">
                                           {comment.author}
                                         </span>
@@ -1328,7 +1329,9 @@ const MyClubScreen: React.FC = () => {
                 <span className="post-modal-author-name">
                   {selectedPost.author}
                 </span>
-                <span className="post-modal-date">{selectedPost.createdAt}</span>
+                <span className="post-modal-date">
+                  {selectedPost.createdAt}
+                </span>
               </div>
               <div className="post-modal-content">{selectedPost.content}</div>
             </div>
@@ -1655,7 +1658,7 @@ const MyClubScreen: React.FC = () => {
                 <div className="comments-list">
                   {comments.map((comment) => (
                     <div key={comment.id} className="comment-item">
-                        <div className="comment-header">
+                      <div className="comment-header">
                         <div className="comment-author-info">
                           <img
                             src={comment.authorAvatar || "/profile-icon.png"}
