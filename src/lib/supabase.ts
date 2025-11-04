@@ -1,13 +1,21 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 // 환경 변수에서 Supabase URL과 키 가져오기
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || "";
+const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || "";
+
+// 디버깅: 환경 변수 확인
+console.log("Supabase URL:", supabaseUrl ? "설정됨" : "없음");
+console.log("Supabase Key:", supabaseAnonKey ? "설정됨" : "없음");
+console.log("모든 환경 변수:", Object.keys(process.env).filter(key => key.startsWith("REACT_APP_")));
 
 // 환경 변수 검증
 if (!supabaseUrl || !supabaseAnonKey) {
-  const errorMessage = 'Supabase 환경 변수가 설정되지 않았습니다. .env 파일을 확인해주세요.';
+  const errorMessage =
+    "Supabase 환경 변수가 설정되지 않았습니다. .env 파일을 확인하고 개발 서버를 재시작해주세요.";
   console.error(errorMessage);
+  console.error("현재 REACT_APP_SUPABASE_URL:", process.env.REACT_APP_SUPABASE_URL);
+  console.error("현재 REACT_APP_SUPABASE_ANON_KEY:", process.env.REACT_APP_SUPABASE_ANON_KEY ? "설정됨" : "없음");
   throw new Error(errorMessage);
 }
 
@@ -59,4 +67,3 @@ export interface GroupUser {
   refresh_token?: string;
   univ_id?: number;
 }
-
