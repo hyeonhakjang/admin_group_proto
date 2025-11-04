@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Header from "./Header";
 import BottomTabBar from "./BottomTabBar";
 import "./PostDetailScreen.css";
 
@@ -272,7 +271,9 @@ const PostDetailScreen: React.FC = () => {
     e.preventDefault();
     if (newComment.trim()) {
       const commentContent = replyingTo
-        ? `@${comments.find((c) => c.id === replyingTo)?.author || "사용자"} ${newComment}`
+        ? `@${
+            comments.find((c) => c.id === replyingTo)?.author || "사용자"
+          } ${newComment}`
         : newComment;
 
       const comment: Comment = {
@@ -306,7 +307,11 @@ const PostDetailScreen: React.FC = () => {
   if (!post) {
     return (
       <div className="post-detail-screen" data-name="게시글 상세 화면">
-        <Header />
+        <div className="post-detail-header-back">
+          <button className="back-btn" onClick={() => navigate(-1)}>
+            ← 뒤로가기
+          </button>
+        </div>
         <div className="post-not-found">
           <p>게시글을 찾을 수 없습니다.</p>
           <button onClick={() => navigate("/community")}>목록으로</button>
@@ -318,7 +323,12 @@ const PostDetailScreen: React.FC = () => {
 
   return (
     <div className="post-detail-screen" data-name="게시글 상세 화면">
-      <Header />
+      {/* 헤더: 뒤로가기 버튼 */}
+      <div className="post-detail-header-back">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          ← 뒤로가기
+        </button>
+      </div>
 
       <div className="post-detail-content">
         {/* 게시글 헤더 (동아리 로고 + 이름) */}

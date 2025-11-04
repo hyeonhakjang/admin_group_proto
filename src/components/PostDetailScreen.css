@@ -12,6 +12,40 @@
   overflow-x: hidden;
 }
 
+/* 헤더 (뒤로가기 버튼) */
+.post-detail-header-back {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fffcfa;
+  z-index: 100;
+  padding: clamp(12px, 3vw, 16px);
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  pointer-events: none;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  cursor: pointer;
+  padding: 8px 0;
+  pointer-events: auto;
+}
+
+.back-btn:hover {
+  color: #c34e00;
+}
+
 /* 게시글 상세 콘텐츠 */
 .post-detail-content {
   flex: 1;
