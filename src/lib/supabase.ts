@@ -2,20 +2,13 @@ import { createClient } from "@supabase/supabase-js";
 
 // 환경 변수에서 Supabase URL과 키 가져오기
 // 개발 서버 재시작 후 환경 변수가 로드됩니다
+// 환경 변수가 없을 경우 기본값 사용 (개발 편의용)
 const supabaseUrl =
   process.env.REACT_APP_SUPABASE_URL ||
   "https://rcabqtxdauddztzulclu.supabase.co";
 const supabaseAnonKey =
   process.env.REACT_APP_SUPABASE_ANON_KEY ||
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjYWJxdHhkYXVkZHp0enVsY2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNTg4ODQsImV4cCI6MjA3NzgzNDg4NH0.AGcQTnZ8dlRnACxERBNBWaypx-jAr0MFUKLww-1lA4M";
-
-// 환경 변수 검증 (기본값이 설정되어 있으므로 항상 통과)
-if (!supabaseUrl || !supabaseAnonKey) {
-  const errorMessage =
-    "Supabase 환경 변수가 설정되지 않았습니다. .env 파일을 확인하고 개발 서버를 재시작해주세요.";
-  console.error(errorMessage);
-  throw new Error(errorMessage);
-}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
