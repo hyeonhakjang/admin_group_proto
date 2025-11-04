@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./MyClubScreen.css";
 
@@ -223,6 +223,54 @@ const MyClubScreen: React.FC = () => {
       }
       return 0;
     });
+
+  // 더보기 메뉴 외부 클릭 시 닫기
+  const moreMenuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        moreMenuRef.current &&
+        !moreMenuRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement).closest(".post-more-btn")
+      ) {
+        setShowMoreMenu(null);
+      }
+    };
+
+    if (showMoreMenu !== null) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showMoreMenu]);
+
+  // 무한 스크롤을 위한 ref
+  const postsListRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!postsListRef.current) return;
+
+      const { scrollTop, scrollHeight, clientHeight } = postsListRef.current;
+      // 스크롤이 맨 아래에서 100px 이내일 때
+      if (scrollHeight - scrollTop - clientHeight < 100) {
+        // 더 많은 게시글 로드 (현재는 샘플 데이터만 있으므로 실제로는 API 호출)
+        // 예: loadMorePosts();
+      }
+    };
+
+    const listElement = postsListRef.current;
+    if (listElement) {
+      listElement.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (listElement) {
+        listElement.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [filteredAndSortedPosts]);
 
   // 멤버 검색 상태
   const [memberSearchQuery, setMemberSearchQuery] = useState("");
@@ -727,13 +775,13 @@ const MyClubScreen: React.FC = () => {
                   <div className="dropdown-menu">
                     <div
                       className="dropdown-item"
-                      onClick={() => {
+                  onClick={() => {
                         setSelectedCategory(null);
                         setShowCategoryDropdown(false);
                       }}
                     >
                       전체
-                    </div>
+                      </div>
                     {categories.map((category) => (
                       <div
                         key={category}
@@ -744,10 +792,10 @@ const MyClubScreen: React.FC = () => {
                         }}
                       >
                         {category}
-                      </div>
+                        </div>
                     ))}
-                  </div>
-                )}
+                </div>
+              )}
               </div>
 
               {/* 섹션 C: 정렬 필터 */}
@@ -767,7 +815,7 @@ const MyClubScreen: React.FC = () => {
                       <div
                         key={option}
                         className="dropdown-item"
-                        onClick={() => {
+                  onClick={() => {
                           setSelectedSort(option);
                           setShowSortDropdown(false);
                         }}
@@ -775,13 +823,13 @@ const MyClubScreen: React.FC = () => {
                         {option}
                       </div>
                     ))}
-                  </div>
+                        </div>
                 )}
-              </div>
-            </div>
+                      </div>
+                    </div>
 
             {/* 섹션 D: 게시글 리스트 */}
-            <div className="posts-list">
+            <div className="posts-list" ref={postsListRef}>
               {filteredAndSortedPosts.map((post) => (
                 <div
                   key={post.id}
@@ -825,7 +873,7 @@ const MyClubScreen: React.FC = () => {
                       </div>
                     </div>
                     {/* 섹션 D-B: 더보기 메뉴 */}
-                    <div className="post-more-wrapper">
+                    <div className="post-more-wrapper" ref={moreMenuRef}>
                       <button
                         className="post-more-btn"
                         onClick={(e) => {
@@ -884,20 +932,20 @@ const MyClubScreen: React.FC = () => {
                           >
                             공유
                           </button>
-                        </div>
+                  </div>
                       )}
                     </div>
                   </div>
                   {/* 섹션 D-C: 글 제목 영역 */}
                   <div className="post-title-section">
                     <h3 className="post-title">{post.title}</h3>
-                  </div>
+                    </div>
                   {/* 섹션 D-D, D-E: 좋아요/댓글 수와 카테고리 */}
                   <div className="post-footer-section">
                     <div className="post-engagement-counts">
                       <span className="engagement-count">👍 {post.likes.toLocaleString()}</span>
                       <span className="engagement-count">💬 {post.comments.toLocaleString()}</span>
-                    </div>
+                  </div>
                     <span className="post-category">{post.category}</span>
                   </div>
                 </div>
@@ -1137,14 +1185,14 @@ const MyClubScreen: React.FC = () => {
                                   >
                                     <div className="comment-header">
                                       <div className="comment-author-info">
-                                        <img
+                                      <img
                                           src={
                                             comment.authorAvatar ||
                                             "/profile-icon.png"
                                           }
-                                          alt={comment.author}
+                                        alt={comment.author}
                                           className="comment-author-avatar"
-                                        />
+                                      />
                                         <span className="comment-author">
                                           {comment.author}
                                         </span>
@@ -1607,7 +1655,7 @@ const MyClubScreen: React.FC = () => {
                 <div className="comments-list">
                   {comments.map((comment) => (
                     <div key={comment.id} className="comment-item">
-                      <div className="comment-header">
+                        <div className="comment-header">
                         <div className="comment-author-info">
                           <img
                             src={comment.authorAvatar || "/profile-icon.png"}
