@@ -29,6 +29,23 @@ const CampusOfficialSignupScreen: React.FC = () => {
     setLoading(true);
 
     try {
+      // 단체명에서 대학교 이름 추출하여 univ_id 찾기
+      let univId: number | null = null;
+      
+      // 단체명에서 대학교 이름 추출 (예: "홍익대학교 컴퓨터공학과" -> "홍익대학교")
+      const universityNames = await supabase
+        .from("university")
+        .select("id, univ_name");
+      
+      if (universityNames.data) {
+        for (const univ of universityNames.data) {
+          if (formData.groupName.includes(univ.univ_name)) {
+            univId = univ.id;
+            break;
+          }
+        }
+      }
+
       // 그룹 사용자 등록 (approved는 false로 설정 - 관리자 승인 필요)
       const { error: insertError } = await supabase
         .from("group_user")
@@ -42,7 +59,7 @@ const CampusOfficialSignupScreen: React.FC = () => {
           manager_student_num: formData.studentId,
           manager_department: formData.department,
           approved: false, // 관리자 승인 대기 상태
-          univ_id: null, // 폼에 학교 선택이 없으므로 null
+          univ_id: univId, // 단체명에서 추출한 대학교 ID
         })
         .select()
         .single();
