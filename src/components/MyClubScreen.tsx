@@ -71,7 +71,6 @@ const MyClubScreen: React.FC = () => {
     if (!userData) return;
 
     try {
-
       if (userData.type === "personal") {
         // 개인 계정: 승인된 동아리 목록 로드
         const { data: clubPersonals, error } = await supabase
@@ -144,8 +143,32 @@ const MyClubScreen: React.FC = () => {
     }
   }, [userData, loadClubs]);
 
+  // 날짜 포맷팅 헬퍼 함수
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (days === 0) {
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      if (hours === 0) {
+        const minutes = Math.floor(diff / (1000 * 60));
+        return minutes <= 0 ? "방금 전" : `${minutes}분 전`;
+      }
+      return `오늘 ${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`;
+    } else if (days === 1) {
+      return `어제 ${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`;
+    } else if (days < 7) {
+      return `${days}일 전`;
+    } else {
+      return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+    }
+  };
+
   const loadPosts = React.useCallback(async () => {
-    if (!selectedClub?.club_user_id) return;
+    if (!selectedClub?.club_user_id || !userData) return;
 
     try {
       // club_personal을 통해 club_user_id로 필터링한 후 게시글 로드
@@ -161,6 +184,7 @@ const MyClubScreen: React.FC = () => {
       }
 
       if (!clubPersonals || clubPersonals.length === 0) {
+        setPosts([]);
         return;
       }
 
@@ -191,15 +215,63 @@ const MyClubScreen: React.FC = () => {
 
       if (error) {
         console.error("게시글 로드 오류:", error);
+        setPosts([]);
       } else if (articles) {
-        // TODO: 게시글 데이터를 posts 상태에 설정
-        // 현재는 샘플 데이터 구조와 맞추기 위해 변환 필요
-        console.log("게시글 데이터:", articles);
+        // 게시글 데이터 변환 및 좋아요/댓글 수 로드
+        const transformedPosts = await Promise.all(
+          articles.map(async (article: any) => {
+            // 좋아요 수 로드
+            const { count: likeCount } = await supabase
+              .from("club_personal_like")
+              .select("*", { count: "exact", head: true })
+              .eq("club_personal_article_id", article.id);
+
+            // 댓글 수 로드
+            const { count: commentCount } = await supabase
+              .from("club_personal_comment")
+              .select("*", { count: "exact", head: true })
+              .eq("club_personal_article_id", article.id);
+
+            const authorName =
+              article.club_personal?.personal_user?.personal_name ||
+              selectedClub?.name ||
+              "작성자";
+            const authorAvatar =
+              article.club_personal?.personal_user?.profile_image_url ||
+              "/profile-icon.png";
+
+            // 작성자 확인 (현재 사용자가 작성자인지)
+            const isAuthor =
+              userData.type === "personal" &&
+              article.club_personal?.personal_user?.id === userData.id;
+
+            return {
+              id: article.id,
+              author: authorName,
+              authorAvatar: authorAvatar,
+              createdAt: formatDate(article.created_at || article.written_date),
+              title: article.title || "",
+              content: article.content || "",
+              isNotice: false, // TODO: 공지글 여부는 별도 필드 필요
+              category: "잡담", // TODO: 카테고리는 별도 필드 필요
+              likes: likeCount || 0,
+              comments: commentCount || 0,
+              views: 0, // TODO: 조회수는 별도 필드 필요
+              isAuthor: isAuthor,
+              isAdmin: userData.type === "club" || false,
+            };
+          })
+        );
+
+        setPosts(transformedPosts);
+      } else {
+        setPosts([]);
       }
     } catch (error) {
       console.error("게시글 로드 중 오류:", error);
+      setPosts([]);
     }
-  }, [selectedClub]);
+  }, [selectedClub, userData]);
 
   const loadSchedules = React.useCallback(async () => {
     if (!selectedClub?.club_user_id) return;
@@ -214,8 +286,7 @@ const MyClubScreen: React.FC = () => {
       if (error) {
         console.error("일정 로드 오류:", error);
       } else if (schedules) {
-        // TODO: 일정 데이터를 상태에 설정
-        console.log("일정 데이터:", schedules);
+        setSchedules(schedules || []);
       }
     } catch (error) {
       console.error("일정 로드 중 오류:", error);
@@ -247,8 +318,16 @@ const MyClubScreen: React.FC = () => {
       if (error) {
         console.error("멤버 로드 오류:", error);
       } else if (members) {
-        // TODO: 멤버 데이터를 상태에 설정
-        console.log("멤버 데이터:", members);
+        const transformedMembers = members.map((member: any) => ({
+          id: member.personal_user?.id || member.id,
+          name: member.personal_user?.personal_name || "이름 없음",
+          email: member.personal_user?.email || "",
+          role: member.role || "동아리원",
+          isOwner: member.role === "회장" || member.role === "관리자",
+          avatar: member.personal_user?.profile_image_url || "/profile-icon.png",
+        }));
+
+        setMembers(transformedMembers);
       }
     } catch (error) {
       console.error("멤버 로드 중 오류:", error);
@@ -280,7 +359,6 @@ const MyClubScreen: React.FC = () => {
       loadClubData();
     }
   }, [selectedClub, activeTab, loadClubData]);
-
 
   const handleClubSelect = (club: Club) => {
     if (!isDragging) {
@@ -401,55 +479,7 @@ const MyClubScreen: React.FC = () => {
   const [modalIsAnonymous, setModalIsAnonymous] = useState(false);
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      author: "홍익대 HICC",
-      authorAvatar: "/profile-icon.png",
-      createdAt: "오늘 18:41",
-      title: "9월 7일 정기 세션 안내 및 참여 신청",
-      content:
-        "이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해 다룹니다.",
-      isNotice: true,
-      category: "모집",
-      likes: 2321,
-      comments: 5321,
-      views: 5321,
-      isAuthor: false,
-      isAdmin: false,
-    },
-    {
-      id: 2,
-      author: "홍익대 HICC",
-      authorAvatar: "/profile-icon.png",
-      createdAt: "오늘 18:41",
-      title: "이번 달 회비 납부 관련 안내",
-      content:
-        "이번 달 회비 납부 안내입니다. 아래 결제 수단으로 송금하신 후, 하단의 송금 완료 버튼을 눌러 확인 요청을 진행해주세요.",
-      isNotice: true,
-      category: "홍보",
-      likes: 1856,
-      comments: 342,
-      views: 2156,
-      isAuthor: false,
-      isAdmin: false,
-    },
-    {
-      id: 3,
-      author: "홍익대 HICC",
-      authorAvatar: "/profile-icon.png",
-      createdAt: "어제 15:30",
-      title: "프로젝트 팀 구성 및 역할 배정 투표",
-      content: "프로젝트 팀 구성 및 역할 배정에 대한 투표를 진행합니다.",
-      isNotice: false,
-      category: "잡담",
-      likes: 892,
-      comments: 156,
-      views: 1234,
-      isAuthor: true,
-      isAdmin: false,
-    },
-  ]);
+  const [posts, setPosts] = useState<any[]>([]);
 
   const categories = ["잡담", "모집", "홍보"];
   const sortOptions = ["최신순", "인기순"];
@@ -519,51 +549,13 @@ const MyClubScreen: React.FC = () => {
 
   // 멤버 검색 상태
   const [memberSearchQuery, setMemberSearchQuery] = useState("");
-
-  // 멤버 데이터
-  const members = [
-    {
-      id: 1,
-      name: "Karthi Rajasekar",
-      email: "karthirajasekar23@gmail.com",
-      role: "회장",
-      isOwner: true,
-    },
-    {
-      id: 2,
-      name: "Jane Cooper",
-      email: "jane@gmail.com",
-      role: "부회장",
-      isOwner: false,
-    },
-    {
-      id: 3,
-      name: "Robert Fox",
-      email: "robertfox@gmail.com",
-      role: "임원",
-      isOwner: false,
-    },
-    {
-      id: 4,
-      name: "Darrell",
-      email: "darrell@gmail.com",
-      role: "동아리원",
-      isOwner: false,
-    },
-    {
-      id: 5,
-      name: "Calvin",
-      email: "calvin@gmail.com",
-      role: "동아리원",
-      isOwner: false,
-    },
-  ];
+  const [members, setMembers] = useState<any[]>([]);
 
   // 검색 필터링된 멤버
   const filteredMembers = members.filter(
     (member) =>
-      member.name.toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
-      member.email.toLowerCase().includes(memberSearchQuery.toLowerCase())
+      (member.name || "").toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
+      (member.email || "").toLowerCase().includes(memberSearchQuery.toLowerCase())
   );
 
   // 달력 관련 상태
@@ -573,9 +565,6 @@ const MyClubScreen: React.FC = () => {
 
   // 공지 상세 및 참석/불참 모달 상태
   const [showPostDetail, setShowPostDetail] = useState(false);
-  const [selectedPostType, setSelectedPostType] = useState<
-    "session" | "dues" | "general"
-  >("session");
   const [attendanceChoice, setAttendanceChoice] = useState<
     "attend" | "absent" | null
   >(null);
@@ -584,26 +573,7 @@ const MyClubScreen: React.FC = () => {
 
   // 댓글 상태
   const [newComment, setNewComment] = useState("");
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      author: "김홍익",
-      authorAvatar: "/profile-icon.png",
-      content: "참여하겠습니다!",
-      createdAt: "오늘 18:30",
-      likes: 3,
-      isLiked: false,
-    },
-    {
-      id: 2,
-      author: "이동아리",
-      authorAvatar: "/profile-icon.png",
-      content: "노트북 필수인가요?",
-      createdAt: "오늘 18:25",
-      likes: 1,
-      isLiked: false,
-    },
-  ]);
+  const [comments, setComments] = useState<any[]>([]);
 
   const handleAddComment = () => {
     if (newComment.trim()) {
@@ -710,33 +680,20 @@ const MyClubScreen: React.FC = () => {
     }
   }, [showPostModal, selectedPost]);
 
-  // 일정이 있는 날짜들 (샘플 데이터)
-  const eventsDates = [
-    new Date(2024, 8, 7), // 9월 7일
-    new Date(2024, 8, 14), // 9월 14일
-    new Date(2024, 8, 21), // 9월 21일
-    new Date(2024, 8, 28), // 9월 28일
-  ];
+  // 일정 데이터
+  const [schedules, setSchedules] = useState<any[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
-  // 선택된 날짜의 일정 정보
-  const selectedEvent = selectedDate
-    ? {
-        title: "HICC 정기 세션",
-        group: "HICC",
-        participants: 21,
-        date: selectedDate,
-        time: "오후 01:00 ~ 오후 05:00",
-        location: "홍익대학교 공학관 301호",
-        description:
-          "이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해 다룹니다. 초보자도 참여 가능하며, 실습 시간도 포함되어 있습니다. 노트북을 지참해 주시기 바랍니다.",
-        agenda: [
-          "14:00 - 14:30: 웹 개발 기초 강의",
-          "14:30 - 15:30: React 소개 및 환경 설정",
-          "15:30 - 16:00: 실습 시간",
-          "16:00 - 17:00: Q&A 및 네트워킹",
-        ],
+  // 일정이 있는 날짜들 계산
+  const eventsDates = schedules
+    .map((schedule) => {
+      if (schedule.date) {
+        const date = new Date(schedule.date);
+        return date;
       }
-    : null;
+      return null;
+    })
+    .filter((date): date is Date => date !== null);
 
   const handleTabClick = (
     tab: "posts" | "statistics" | "schedule" | "members" | "archive"
@@ -815,6 +772,46 @@ const MyClubScreen: React.FC = () => {
       day
     );
     setSelectedDate(clickedDate);
+
+    // 해당 날짜의 일정 찾기
+    const eventOnDate = schedules.find((schedule) => {
+      if (!schedule.date) return false;
+      const scheduleDate = new Date(schedule.date);
+      return (
+        scheduleDate.getFullYear() === clickedDate.getFullYear() &&
+        scheduleDate.getMonth() === clickedDate.getMonth() &&
+        scheduleDate.getDate() === clickedDate.getDate()
+      );
+    });
+
+    if (eventOnDate) {
+      // 참가자 수 로드
+      const loadParticipants = async () => {
+        const { count } = await supabase
+          .from("club_personal_participant")
+          .select("*", { count: "exact", head: true })
+          .eq("schedule_id", eventOnDate.id)
+          .eq("status", "attend");
+
+        setSelectedEvent({
+          id: eventOnDate.id,
+          title: eventOnDate.title || "",
+          group: selectedClub?.name || "",
+          participants: count || 0,
+          date: clickedDate,
+          time: eventOnDate.started_at && eventOnDate.ended_at
+            ? `${formatTime(eventOnDate.started_at)} ~ ${formatTime(eventOnDate.ended_at)}`
+            : "시간 미정",
+          location: "", // TODO: 장소 필드 추가 필요
+          description: eventOnDate.content || "",
+          agenda: [], // TODO: 일정표 필드 추가 필요
+        });
+      };
+
+      loadParticipants();
+    } else {
+      setSelectedEvent(null);
+    }
   };
 
   const goToPreviousMonth = () => {
@@ -848,6 +845,16 @@ const MyClubScreen: React.FC = () => {
     const dayName = getKoreanDayName(date.getDay());
     return `${month}월 ${day}일 ${dayName}`;
   };
+
+  // 시간 포맷팅 헬퍼 함수
+  const formatTime = React.useCallback((timeString: string) => {
+    if (!timeString) return "";
+    const [hours, minutes] = timeString.split(":");
+    const hour = parseInt(hours);
+    const period = hour >= 12 ? "오후" : "오전";
+    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+    return `${period} ${displayHour}:${minutes}`;
+  }, []);
 
   return (
     <div
@@ -1460,9 +1467,13 @@ const MyClubScreen: React.FC = () => {
                                 일정표
                               </h5>
                               <ul className="event-agenda-list">
-                                {selectedEvent.agenda.map((item, index) => (
+                                {selectedEvent.agenda && selectedEvent.agenda.length > 0 ? (
+                                  selectedEvent.agenda.map((item: string, index: number) => (
                                   <li key={index}>{item}</li>
-                                ))}
+                                  ))
+                                ) : (
+                                  <li>일정표 정보가 없습니다.</li>
+                                )}
                               </ul>
                             </div>
 
@@ -2056,7 +2067,11 @@ const MyClubScreen: React.FC = () => {
                   }}
                 >
                   <div className="club-modal-avatar">
-                    <img src={club.avatar} alt={club.name} draggable={false} />
+                      <img
+                        src={club.avatar}
+                        alt={club.name}
+                        draggable={false}
+                      />
                   </div>
                   <div className="club-modal-name">{club.name}</div>
                   <div className="club-modal-role">{club.role}</div>
@@ -2084,33 +2099,17 @@ const MyClubScreen: React.FC = () => {
                 ← 뒤로가기
               </button>
               <h4 className="post-detail-title">
-                {selectedPostType === "dues"
-                  ? "이번 달 회비 납부 관련 안내"
-                  : selectedPostType === "session"
-                  ? "9월 7일 정기 세션 안내 및 참여 신청"
-                  : "공지 상세"}
+                {selectedPost?.title || "공지 상세"}
               </h4>
               <div className="post-detail-meta">
                 <div className="post-detail-author">홍익대 HICC ✓</div>
                 <div className="post-detail-time">오늘 18:41</div>
               </div>
               <div className="post-detail-body">
-                {selectedPostType === "dues" ? (
-                  <>
-                    이번 달 회비 납부 안내입니다. 아래 결제 수단으로 송금하신
-                    후, 하단의 송금 완료 버튼을 눌러 확인 요청을 진행해주세요.
-                    납부 기한을 꼭 지켜주세요.
-                  </>
-                ) : (
-                  <>
-                    이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해
-                    다룹니다. 초보자도 참여 가능하며, 실습 시간도 포함되어
-                    있습니다. 노트북 지참 바랍니다.
-                  </>
-                )}
+                {selectedPost?.content || "내용이 없습니다."}
               </div>
 
-              {selectedPostType === "dues" ? (
+              {false ? (
                 <div className="dues-section">
                   <div className="dues-title">송금 방법 선택</div>
                   <div className="dues-methods">
