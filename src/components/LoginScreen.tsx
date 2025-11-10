@@ -76,12 +76,17 @@ const LoginScreen: React.FC = () => {
       // 클럽 사용자 확인
       const { data: clubUser, error: clubError } = await supabase
         .from("club_user")
-        .select("id, club_user_name, password, club_name, club_email")
+        .select("id, club_user_name, password, club_name, club_email, approved")
         .eq("club_user_name", userId)
         .single();
 
       if (!clubError && clubUser) {
         if (clubUser.password === password) {
+          // 승인 상태 확인 (approved가 0이면 미승인)
+          if (clubUser.approved === 0) {
+            setError("아직 승인되지 않은 계정입니다.\n캠퍼스 공식 계정의 승인을 기다려주세요.");
+            return;
+          }
           const userData = {
             type: "club",
             id: clubUser.id,
@@ -102,12 +107,17 @@ const LoginScreen: React.FC = () => {
       // 그룹 사용자 확인
       const { data: groupUser, error: groupError } = await supabase
         .from("group_user")
-        .select("id, group_user_name, password, group_name, group_email")
+        .select("id, group_user_name, password, group_name, group_email, approved")
         .eq("group_user_name", userId)
         .single();
 
       if (!groupError && groupUser) {
         if (groupUser.password === password) {
+          // 승인 상태 확인 (approved가 false이면 미승인)
+          if (groupUser.approved === false) {
+            setError("아직 승인되지 않은 계정입니다.\n관리자의 승인을 기다려주세요.");
+            return;
+          }
           const userData = {
             type: "group",
             id: groupUser.id,

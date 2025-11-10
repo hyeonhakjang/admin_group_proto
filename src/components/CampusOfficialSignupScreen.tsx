@@ -29,7 +29,7 @@ const CampusOfficialSignupScreen: React.FC = () => {
     setLoading(true);
 
     try {
-      // 그룹 사용자 등록 (approved는 true로 고정)
+      // 그룹 사용자 등록 (approved는 false로 설정 - 관리자 승인 필요)
       const { error: insertError } = await supabase
         .from("group_user")
         .insert({
@@ -41,7 +41,7 @@ const CampusOfficialSignupScreen: React.FC = () => {
           manager_phone_num: formData.contact,
           manager_student_num: formData.studentId,
           manager_department: formData.department,
-          approved: true, // true로 고정
+          approved: false, // 관리자 승인 대기 상태
           univ_id: null, // 폼에 학교 선택이 없으므로 null
         })
         .select()
@@ -57,7 +57,9 @@ const CampusOfficialSignupScreen: React.FC = () => {
         }
       } else {
         // 회원가입 성공
-        alert("회원가입이 완료되었습니다.");
+        alert(
+          "회원가입이 완료되었습니다.\n관리자 승인 후 로그인할 수 있습니다."
+        );
         navigate("/login");
       }
     } catch (err) {

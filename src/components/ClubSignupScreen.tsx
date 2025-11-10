@@ -86,7 +86,11 @@ const ClubSignupScreen: React.FC = () => {
     try {
       // 그룹 사용자 찾기 (affiliatedGroup이 있으면)
       let groupUserId: number | null = null;
-      if (!formData.noUniversity && formData.affiliatedGroup && formData.affiliatedGroup !== "없음") {
+      if (
+        !formData.noUniversity &&
+        formData.affiliatedGroup &&
+        formData.affiliatedGroup !== "없음"
+      ) {
         // group_user 테이블에서 찾기
         const { data: groupUser } = await supabase
           .from("group_user")
@@ -99,7 +103,7 @@ const ClubSignupScreen: React.FC = () => {
         }
       }
 
-      // 클럽 사용자 등록 (approved는 1로 고정)
+      // 클럽 사용자 등록 (approved는 0으로 설정 - 캠퍼스 계정 승인 필요)
       const { error: insertError } = await supabase
         .from("club_user")
         .insert({
@@ -111,7 +115,7 @@ const ClubSignupScreen: React.FC = () => {
           manager_phone_num: formData.contact,
           manager_student_num: undefined, // 폼에 없음
           manager_department: undefined, // 폼에 없음
-          approved: 1, // true로 고정
+          approved: 0, // 캠퍼스 계정 승인 대기 상태
           group_user_id: groupUserId,
         })
         .select()
@@ -127,7 +131,9 @@ const ClubSignupScreen: React.FC = () => {
         }
       } else {
         // 회원가입 성공
-        alert("회원가입이 완료되었습니다.");
+        alert(
+          "회원가입이 완료되었습니다.\n캠퍼스 공식 계정 승인 후 로그인할 수 있습니다."
+        );
         navigate("/login");
       }
     } catch (err) {
