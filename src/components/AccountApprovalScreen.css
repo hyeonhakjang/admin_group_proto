@@ -176,6 +176,8 @@
   box-sizing: border-box;
   gap: clamp(12px, 3vw, 16px);
   transition: all 0.2s ease;
+  min-height: 60px;
+  overflow: hidden;
 }
 
 .approval-account-item:active {
@@ -197,6 +199,10 @@
   min-height: 44px;
   display: flex;
   align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .approval-account-name:active {
@@ -207,6 +213,7 @@
   display: flex;
   gap: clamp(8px, 2vw, 12px);
   flex-shrink: 0;
+  align-items: center;
 }
 
 .approval-button {
@@ -391,13 +398,31 @@
     padding-right: 16px;
   }
 
+  .approval-account-item {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .approval-account-name {
+    flex: 1 1 100%;
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+
   .approval-account-actions {
-    flex-direction: column;
-    width: 100%;
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    gap: 8px;
   }
 
   .approval-button {
-    width: 100%;
+    flex: 1;
+    min-width: 80px;
+    max-width: 120px;
   }
 }
 
@@ -410,18 +435,27 @@
   .approval-account-item {
     flex-direction: column;
     align-items: flex-start;
+    gap: 12px;
   }
 
   .approval-account-name {
     width: 100%;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.4;
   }
 
   .approval-account-actions {
     width: 100%;
+    justify-content: flex-end;
+  }
+
+  .approval-button {
+    flex: 1;
+    min-width: 70px;
   }
 
   .approval-settings-button {
     width: 100%;
   }
 }
-
