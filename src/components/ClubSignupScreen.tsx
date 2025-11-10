@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import "./ClubSignupScreen.css";
+
+interface GroupUser {
+  id: number;
+  group_name: string;
+  group_user_name: string;
+}
 
 const ClubSignupScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -15,38 +21,81 @@ const ClubSignupScreen: React.FC = () => {
     managerName: "",
     contact: "",
     university: "",
+    universityId: null as number | null,
     noUniversity: false,
     affiliatedGroup: "",
+    affiliatedGroupId: null as number | null,
   });
   const [showUniversitySearch, setShowUniversitySearch] = useState(false);
   const [showGroupSearch, setShowGroupSearch] = useState(false);
   const [universitySearch, setUniversitySearch] = useState("");
   const [groupSearch, setGroupSearch] = useState("");
+  const [universities, setUniversities] = useState<string[]>([]);
+  const [campusGroups, setCampusGroups] = useState<GroupUser[]>([]);
+  const [loadingGroups, setLoadingGroups] = useState(false);
 
-  // 샘플 데이터
-  const universities = [
-    "홍익대학교",
-    "서울대학교",
-    "연세대학교",
-    "고려대학교",
-    "한국과학기술원",
-  ];
+  // 대학 목록 로드
+  useEffect(() => {
+    const loadUniversities = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("university")
+          .select("univ_name")
+          .order("univ_name", { ascending: true });
 
-  const campusGroups = formData.university
-    ? [
-        "총동아리연합회",
-        "경영대학 학생회",
-        "공과대학 학생회",
-        "문과대학 학생회",
-      ]
-    : [];
+        if (error) {
+          console.error("대학 목록 로드 오류:", error);
+        } else {
+          setUniversities((data || []).map((u) => u.univ_name));
+        }
+      } catch (err) {
+        console.error("대학 목록 로드 오류:", err);
+      }
+    };
+
+    loadUniversities();
+  }, []);
+
+  // 선택한 대학의 승인된 캠퍼스 공식 단체 로드
+  useEffect(() => {
+    const loadCampusGroups = async () => {
+      if (!formData.university || !formData.universityId || formData.noUniversity) {
+        setCampusGroups([]);
+        return;
+      }
+
+      setLoadingGroups(true);
+      try {
+        const { data, error } = await supabase
+          .from("group_user")
+          .select("id, group_name, group_user_name")
+          .eq("univ_id", formData.universityId)
+          .eq("approved", true)
+          .order("group_name", { ascending: true });
+
+        if (error) {
+          console.error("캠퍼스 단체 목록 로드 오류:", error);
+          setCampusGroups([]);
+        } else {
+          setCampusGroups(data || []);
+        }
+      } catch (err) {
+        console.error("캠퍼스 단체 목록 로드 오류:", err);
+        setCampusGroups([]);
+      } finally {
+        setLoadingGroups(false);
+      }
+    };
+
+    loadCampusGroups();
+  }, [formData.university, formData.universityId, formData.noUniversity]);
 
   const filteredUniversities = universities.filter((univ) =>
     univ.toLowerCase().includes(universitySearch.toLowerCase())
   );
 
   const filteredGroups = campusGroups.filter((group) =>
-    group.toLowerCase().includes(groupSearch.toLowerCase())
+    group.group_name.toLowerCase().includes(groupSearch.toLowerCase())
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,24 +105,56 @@ const ClubSignupScreen: React.FC = () => {
         ...prev,
         [name]: checked,
         university: checked ? "" : prev.university,
+        universityId: checked ? null : prev.universityId,
         affiliatedGroup: checked ? "없음" : prev.affiliatedGroup,
+        affiliatedGroupId: checked ? null : prev.affiliatedGroupId,
       }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
       if (name === "university" && !value) {
-        setFormData((prev) => ({ ...prev, affiliatedGroup: "없음" }));
+        setFormData((prev) => ({
+          ...prev,
+          affiliatedGroup: "없음",
+          affiliatedGroupId: null,
+        }));
       }
     }
   };
 
-  const handleUniversitySelect = (university: string) => {
-    setFormData((prev) => ({ ...prev, university }));
+  const handleUniversitySelect = async (university: string) => {
+    // 대학 ID 찾기
+    let univId: number | null = null;
+    try {
+      const { data: univData } = await supabase
+        .from("university")
+        .select("id")
+        .eq("univ_name", university)
+        .single();
+
+      if (univData) {
+        univId = univData.id;
+      }
+    } catch (err) {
+      console.error("대학 ID 찾기 오류:", err);
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      university,
+      universityId: univId,
+      affiliatedGroup: "",
+      affiliatedGroupId: null,
+    }));
     setShowUniversitySearch(false);
     setUniversitySearch("");
   };
 
-  const handleGroupSelect = (group: string) => {
-    setFormData((prev) => ({ ...prev, affiliatedGroup: group }));
+  const handleGroupSelect = (group: GroupUser) => {
+    setFormData((prev) => ({
+      ...prev,
+      affiliatedGroup: group.group_name,
+      affiliatedGroupId: group.id,
+    }));
     setShowGroupSearch(false);
     setGroupSearch("");
   };
@@ -84,24 +165,8 @@ const ClubSignupScreen: React.FC = () => {
     setLoading(true);
 
     try {
-      // 그룹 사용자 찾기 (affiliatedGroup이 있으면)
-      let groupUserId: number | null = null;
-      if (
-        !formData.noUniversity &&
-        formData.affiliatedGroup &&
-        formData.affiliatedGroup !== "없음"
-      ) {
-        // group_user 테이블에서 찾기
-        const { data: groupUser } = await supabase
-          .from("group_user")
-          .select("id")
-          .eq("group_name", formData.affiliatedGroup)
-          .single();
-
-        if (groupUser) {
-          groupUserId = groupUser.id;
-        }
-      }
+      // 그룹 사용자 ID 사용 (이미 선택된 affiliatedGroupId 사용)
+      const groupUserId = formData.affiliatedGroupId;
 
       // 클럽 사용자 등록 (approved는 0으로 설정 - 캠퍼스 계정 승인 필요)
       const { error: insertError } = await supabase
@@ -375,18 +440,24 @@ const ClubSignupScreen: React.FC = () => {
                         autoFocus
                       />
                       <div className="search-results">
-                        {filteredGroups.length > 0 ? (
+                        {loadingGroups ? (
+                          <div className="no-results">로딩 중...</div>
+                        ) : filteredGroups.length > 0 ? (
                           filteredGroups.map((group) => (
                             <div
-                              key={group}
+                              key={group.id}
                               className="search-result-item"
                               onClick={() => handleGroupSelect(group)}
                             >
-                              {group}
+                              {group.group_name}
                             </div>
                           ))
                         ) : (
-                          <div className="no-results">검색 결과가 없습니다</div>
+                          <div className="no-results">
+                            {formData.university
+                              ? "승인된 캠퍼스 공식 단체가 없습니다."
+                              : "검색 결과가 없습니다"}
+                          </div>
                         )}
                       </div>
                     </div>
