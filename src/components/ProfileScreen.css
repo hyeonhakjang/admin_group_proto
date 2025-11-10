@@ -357,7 +357,7 @@
   padding: clamp(24px, 6vw, 32px) clamp(16px, 4vw, 20px);
   box-sizing: border-box;
   border-top: 1px solid rgba(40, 32, 27, 0.1);
-  padding-bottom: clamp(40px, 10vw, 60px);
+  padding-bottom: clamp(24px, 6vw, 32px);
 }
 
 .info-menu-list {
@@ -388,6 +388,40 @@
   border-color: #c34e00;
 }
 
+/* 섹션 G: 로그아웃 */
+.profile-section-g {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(24px, 6vw, 32px) clamp(16px, 4vw, 20px);
+  box-sizing: border-box;
+  border-top: 1px solid rgba(40, 32, 27, 0.1);
+  padding-bottom: clamp(40px, 10vw, 60px);
+}
+
+.logout-button {
+  width: 100%;
+  max-width: 400px;
+  background-color: transparent;
+  color: #c34e00;
+  border: 1px solid #c34e00;
+  border-radius: clamp(8px, 2vw, 12px);
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  text-align: center;
+  min-height: 44px;
+  transition: all 0.2s ease;
+}
+
+.logout-button:active {
+  background-color: #c34e00;
+  color: #fffcfa;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 480px) {
   .profile-header {
@@ -406,7 +440,8 @@
   }
 
   .profile-section-e,
-  .profile-section-f {
+  .profile-section-f,
+  .profile-section-g {
     padding: 24px 16px;
   }
 }
@@ -421,4 +456,3 @@
     width: 100%;
   }
 }
-

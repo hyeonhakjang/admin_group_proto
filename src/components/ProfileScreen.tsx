@@ -28,12 +28,13 @@ const ProfileScreen: React.FC = () => {
   // 사용자 정보 로드
   useEffect(() => {
     const loadUserData = () => {
-      const storedUser = localStorage.getItem("user") || sessionStorage.getItem("user");
+      const storedUser =
+        localStorage.getItem("user") || sessionStorage.getItem("user");
       if (storedUser) {
         const user = JSON.parse(storedUser);
         setUserData(user);
         setNickname(user.name || "");
-        
+
         // 프로필 이미지 로드 (데이터베이스에서 가져오기)
         loadProfileImage(user);
       }
@@ -46,7 +47,7 @@ const ProfileScreen: React.FC = () => {
   const loadProfileImage = async (user: UserData) => {
     try {
       let imageUrl = null;
-      
+
       if (user.type === "personal") {
         const { data } = await supabase
           .from("personal_user")
@@ -64,7 +65,7 @@ const ProfileScreen: React.FC = () => {
         // 관리자는 프로필 이미지가 없을 수 있음
         imageUrl = null;
       }
-      
+
       setProfileImage(imageUrl);
     } catch (error) {
       console.error("프로필 이미지 로드 오류:", error);
@@ -162,6 +163,17 @@ const ProfileScreen: React.FC = () => {
     alert(`${menu} 기능은 준비 중입니다.`);
   };
 
+  // 로그아웃
+  const handleLogout = () => {
+    if (window.confirm("로그아웃 하시겠습니까?")) {
+      // localStorage와 sessionStorage에서 사용자 정보 제거
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
+      // 로그인 페이지로 리다이렉트
+      navigate("/login");
+    }
+  };
+
   if (!userData) {
     return (
       <div className="profile-screen">
@@ -187,11 +199,7 @@ const ProfileScreen: React.FC = () => {
           onClick={() => alert("설정 기능은 준비 중입니다.")}
           data-name="settingsButton"
         >
-          <img
-            alt="Settings"
-            className="settings-icon"
-            src={imgSettingsIcon}
-          />
+          <img alt="Settings" className="settings-icon" src={imgSettingsIcon} />
         </button>
       </div>
 
@@ -272,12 +280,17 @@ const ProfileScreen: React.FC = () => {
 
       {/* 섹션 D: 승인 관리 (조건부) */}
       {(userData.type === "admin" || userData.type === "group") && (
-        <div className="profile-section-d" data-name="Approval Management Section">
+        <div
+          className="profile-section-d"
+          data-name="Approval Management Section"
+        >
           <button
             className="approval-management-button"
             onClick={handleApprovalManagement}
           >
-            {userData.type === "admin" ? "캠퍼스 계정 승인" : "동아리 계정 승인"}
+            {userData.type === "admin"
+              ? "캠퍼스 계정 승인"
+              : "동아리 계정 승인"}
           </button>
         </div>
       )}
@@ -337,9 +350,15 @@ const ProfileScreen: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* 섹션 G: 로그아웃 */}
+      <div className="profile-section-g" data-name="Logout Section">
+        <button className="logout-button" onClick={handleLogout}>
+          로그아웃
+        </button>
+      </div>
     </div>
   );
 };
 
 export default ProfileScreen;
-
