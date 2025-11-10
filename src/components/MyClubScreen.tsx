@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 import "./MyClubScreen.css";
 
 // 이미지 상수들 (피그마에서 다운로드한 실제 아이콘들)
@@ -11,6 +12,23 @@ const imgIcon2 = "/myclub.png"; // 내 클럽 아이콘
 const imgIcon3 = "/booking.png"; // 예약/구매 아이콘
 const imgIcon4 = "/chat.png"; // 채팅 아이콘
 
+interface UserData {
+  type: "personal" | "club" | "group" | "admin";
+  id: number;
+  username: string;
+  name: string;
+  email: string;
+}
+
+interface Club {
+  id: number;
+  name: string;
+  avatar: string;
+  role: string;
+  club_user_id?: number;
+  club_personal_id?: number;
+}
+
 const MyClubScreen: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,39 +36,255 @@ const MyClubScreen: React.FC = () => {
     "posts" | "statistics" | "schedule" | "members" | "archive"
   >("posts");
 
+  // 사용자 정보 상태
+  const [userData, setUserData] = useState<UserData | null>(null);
+
   // 동아리 선택 모달 상태
-  const [selectedClub, setSelectedClub] = useState("HICC");
+  const [selectedClub, setSelectedClub] = useState<Club | null>(null);
   const [showClubModal, setShowClubModal] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  // 가입된 동아리 목록 (샘플 데이터)
-  const [clubs, setClubs] = useState([
-    {
-      id: 1,
-      name: "HICC",
-      avatar: "/club1-image.png",
-      role: "회장",
-    },
-    {
-      id: 2,
-      name: "브레인스워즈",
-      avatar: "/club2-image.png",
-      role: "동아리원",
-    },
-    {
-      id: 3,
-      name: "VOERA",
-      avatar: "/club3-image.png",
-      role: "부회장",
-    },
-  ]);
+  // 가입된 동아리 목록
+  const [clubs, setClubs] = useState<Club[]>([]);
 
-  const handleClubSelect = (club: (typeof clubs)[0]) => {
+  // 사용자 정보 로드
+  useEffect(() => {
+    const loadUserData = () => {
+      const storedUser =
+        localStorage.getItem("user") || sessionStorage.getItem("user");
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        setUserData(user);
+      } else {
+        // 로그인하지 않은 경우 로그인 페이지로 리다이렉트
+        navigate("/login");
+      }
+    };
+
+    loadUserData();
+  }, [navigate]);
+
+  const loadClubs = React.useCallback(async () => {
+    if (!userData) return;
+
+    try {
+
+      if (userData.type === "personal") {
+        // 개인 계정: 승인된 동아리 목록 로드
+        const { data: clubPersonals, error } = await supabase
+          .from("club_personal")
+          .select(
+            `
+            id,
+            role,
+            approved,
+            club_user:club_user_id (
+              id,
+              club_name
+            )
+          `
+          )
+          .eq("personal_user_id", userData.id)
+          .eq("approved", true);
+
+        if (error) {
+          console.error("동아리 목록 로드 오류:", error);
+        } else if (clubPersonals) {
+          const clubsList: Club[] = clubPersonals.map((cp: any) => ({
+            id: cp.club_user?.id || 0,
+            name: cp.club_user?.club_name || "",
+            avatar: "/profile-icon.png", // 기본 아바타
+            role: cp.role || "동아리원",
+            club_user_id: cp.club_user?.id,
+            club_personal_id: cp.id,
+          }));
+
+          setClubs(clubsList);
+
+          // 첫 번째 동아리를 기본 선택
+          if (clubsList.length > 0 && !selectedClub) {
+            setSelectedClub(clubsList[0]);
+          }
+        }
+      } else if (userData.type === "club") {
+        // 클럽 계정: 본인 동아리만 표시
+        const { data: clubUser, error } = await supabase
+          .from("club_user")
+          .select("id, club_name")
+          .eq("id", userData.id)
+          .single();
+
+        if (error) {
+          console.error("동아리 정보 로드 오류:", error);
+        } else if (clubUser) {
+          const club: Club = {
+            id: clubUser.id,
+            name: clubUser.club_name,
+            avatar: "/profile-icon.png",
+            role: "관리자",
+            club_user_id: clubUser.id,
+          };
+
+          setClubs([club]);
+          setSelectedClub(club);
+        }
+      }
+    } catch (error) {
+      console.error("동아리 목록 로드 중 오류:", error);
+    }
+  }, [userData, selectedClub]);
+
+  // 동아리 목록 로드
+  useEffect(() => {
+    if (userData) {
+      loadClubs();
+    }
+  }, [userData, loadClubs]);
+
+  const loadPosts = React.useCallback(async () => {
+    if (!selectedClub?.club_user_id) return;
+
+    try {
+      // club_personal을 통해 club_user_id로 필터링한 후 게시글 로드
+      const { data: clubPersonals, error: cpError } = await supabase
+        .from("club_personal")
+        .select("id")
+        .eq("club_user_id", selectedClub.club_user_id)
+        .eq("approved", true);
+
+      if (cpError) {
+        console.error("club_personal 조회 오류:", cpError);
+        return;
+      }
+
+      if (!clubPersonals || clubPersonals.length === 0) {
+        return;
+      }
+
+      const clubPersonalIds = clubPersonals.map((cp) => cp.id);
+
+      const { data: articles, error } = await supabase
+        .from("club_personal_article")
+        .select(
+          `
+          id,
+          title,
+          content,
+          written_date,
+          created_at,
+          club_personal:club_personal_id (
+            id,
+            role,
+            personal_user:personal_user_id (
+              id,
+              personal_name,
+              profile_image_url
+            )
+          )
+        `
+        )
+        .in("club_personal_id", clubPersonalIds)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("게시글 로드 오류:", error);
+      } else if (articles) {
+        // TODO: 게시글 데이터를 posts 상태에 설정
+        // 현재는 샘플 데이터 구조와 맞추기 위해 변환 필요
+        console.log("게시글 데이터:", articles);
+      }
+    } catch (error) {
+      console.error("게시글 로드 중 오류:", error);
+    }
+  }, [selectedClub]);
+
+  const loadSchedules = React.useCallback(async () => {
+    if (!selectedClub?.club_user_id) return;
+
+    try {
+      const { data: schedules, error } = await supabase
+        .from("club_personal_schedule")
+        .select("*")
+        .eq("club_user_id", selectedClub.club_user_id)
+        .order("date", { ascending: true });
+
+      if (error) {
+        console.error("일정 로드 오류:", error);
+      } else if (schedules) {
+        // TODO: 일정 데이터를 상태에 설정
+        console.log("일정 데이터:", schedules);
+      }
+    } catch (error) {
+      console.error("일정 로드 중 오류:", error);
+    }
+  }, [selectedClub]);
+
+  const loadMembers = React.useCallback(async () => {
+    if (!selectedClub?.club_user_id) return;
+
+    try {
+      const { data: members, error } = await supabase
+        .from("club_personal")
+        .select(
+          `
+          id,
+          role,
+          approved,
+          personal_user:personal_user_id (
+            id,
+            personal_name,
+            email,
+            profile_image_url
+          )
+        `
+        )
+        .eq("club_user_id", selectedClub.club_user_id)
+        .eq("approved", true);
+
+      if (error) {
+        console.error("멤버 로드 오류:", error);
+      } else if (members) {
+        // TODO: 멤버 데이터를 상태에 설정
+        console.log("멤버 데이터:", members);
+      }
+    } catch (error) {
+      console.error("멤버 로드 중 오류:", error);
+    }
+  }, [selectedClub]);
+
+  const loadClubData = React.useCallback(async () => {
+    if (!selectedClub || !selectedClub.club_user_id) return;
+
+    try {
+      if (activeTab === "posts") {
+        // 게시글 로드
+        await loadPosts();
+      } else if (activeTab === "schedule") {
+        // 일정 로드
+        await loadSchedules();
+      } else if (activeTab === "members") {
+        // 멤버 로드
+        await loadMembers();
+      }
+    } catch (error) {
+      console.error("데이터 로드 오류:", error);
+    }
+  }, [selectedClub, activeTab, loadPosts, loadSchedules, loadMembers]);
+
+  // 선택된 동아리 변경 시 데이터 로드
+  useEffect(() => {
+    if (selectedClub) {
+      loadClubData();
+    }
+  }, [selectedClub, activeTab, loadClubData]);
+
+
+  const handleClubSelect = (club: Club) => {
     if (!isDragging) {
-      setSelectedClub(club.name);
+      setSelectedClub(club);
       setShowClubModal(false);
     }
   };
@@ -633,14 +867,21 @@ const MyClubScreen: React.FC = () => {
           data-name="Navigation Bar"
           data-node-id="12:3017"
         >
+          {userData?.type !== "club" && (
           <p
             className="nav-title"
             data-node-id="12:3019"
             onClick={() => setShowClubModal(true)}
             style={{ cursor: "pointer" }}
           >
-            {selectedClub} ▼
-          </p>
+              {selectedClub?.name || "동아리 선택"} ▼
+            </p>
+          )}
+          {userData?.type === "club" && (
+            <p className="nav-title" data-node-id="12:3019">
+              {selectedClub?.name || "내 동아리"}
+            </p>
+          )}
           <div
             className="trailing-icons"
             data-name="Trailing Icon"
@@ -1774,14 +2015,19 @@ const MyClubScreen: React.FC = () => {
               </button>
             </div>
             <div className="club-list">
-              {clubs.map((club, index) => (
+              {clubs.length === 0 ? (
+                <div className="no-clubs-message">
+                  가입된 동아리가 없습니다.
+                </div>
+              ) : (
+                clubs.map((club, index) => (
                 <div
                   key={club.id}
                   data-index={index}
                   className={`club-modal-item ${
                     draggedIndex === index ? "dragging" : ""
                   } ${dragOverIndex === index ? "drag-over" : ""}`}
-                  draggable={true}
+                    draggable={userData?.type !== "club"}
                   onDragStart={(e) => handleDragStart(e, index)}
                   onDragOver={(e) => handleDragOver(e, index)}
                   onDragEnter={(e) => {
@@ -1802,7 +2048,9 @@ const MyClubScreen: React.FC = () => {
                   }}
                   style={{
                     cursor:
-                      isDragging && draggedIndex === index
+                        userData?.type === "club"
+                          ? "default"
+                          : isDragging && draggedIndex === index
                         ? "grabbing"
                         : "grab",
                   }}
@@ -1813,7 +2061,8 @@ const MyClubScreen: React.FC = () => {
                   <div className="club-modal-name">{club.name}</div>
                   <div className="club-modal-role">{club.role}</div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </>
