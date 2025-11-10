@@ -17,6 +17,34 @@ const LoginScreen: React.FC = () => {
     setLoading(true);
 
     try {
+      // 관리자 계정 확인 (가장 먼저 확인)
+      const { data: adminUser, error: adminError } = await supabase
+        .from("admin_user")
+        .select("id, admin_user_name, password, admin_name, email")
+        .eq("admin_user_name", userId)
+        .single();
+
+      if (!adminError && adminUser) {
+        // 비밀번호 확인
+        if (adminUser.password === password) {
+          // 관리자 로그인 성공 - 세션 저장
+          const userData = {
+            type: "admin",
+            id: adminUser.id,
+            username: adminUser.admin_user_name,
+            name: adminUser.admin_name,
+            email: adminUser.email,
+          };
+          if (keepLogin) {
+            localStorage.setItem("user", JSON.stringify(userData));
+          } else {
+            sessionStorage.setItem("user", JSON.stringify(userData));
+          }
+          navigate("/");
+          return;
+        }
+      }
+
       // 개인 사용자 확인
       const { data: personalUser, error: personalError } = await supabase
         .from("personal_user")

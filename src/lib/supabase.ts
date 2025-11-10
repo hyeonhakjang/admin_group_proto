@@ -58,3 +58,13 @@ export interface GroupUser {
   refresh_token?: string;
   univ_id?: number;
 }
+
+export interface AdminUser {
+  id?: number;
+  admin_user_name: string;
+  password: string;
+  admin_name: string;
+  email: string;
+  created_at?: string;
+  updated_at?: string;
+}
