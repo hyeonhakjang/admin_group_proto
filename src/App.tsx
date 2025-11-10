@@ -16,6 +16,7 @@ import PersonalSignupScreen from "./components/PersonalSignupScreen";
 import SocialPersonalSignupScreen from "./components/SocialPersonalSignupScreen";
 import PostDetailScreen from "./components/PostDetailScreen";
 import ComingSoonScreen from "./components/ComingSoonScreen";
+import ProfileScreen from "./components/ProfileScreen";
 import "./App.css";
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
             path="/myclub/post/write"
             element={<ComingSoonScreen title="글 작성" />}
           />
+          <Route path="/profile" element={<ProfileScreen />} />
         </Routes>
       </div>
     </BrowserRouter>

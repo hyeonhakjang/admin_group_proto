@@ -1,0 +1,424 @@
+/* 프로필 화면 전체 컨테이너 */
+.profile-screen {
+  background-color: #fffcfa;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  overflow-x: hidden;
+}
+
+/* 로딩 상태 */
+.profile-loading {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(16px, 4vw, 18px);
+  color: #28201b;
+}
+
+/* 헤더 */
+.profile-header {
+  background-color: #fffcfa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid rgba(40, 32, 27, 0.1);
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: clamp(20px, 5vw, 24px);
+  color: #28201b;
+  cursor: pointer;
+  padding: clamp(4px, 1vw, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.profile-header-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 18px);
+  color: #28201b;
+  margin: 0;
+  flex: 1;
+  text-align: center;
+  letter-spacing: -0.34px;
+}
+
+.settings-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: clamp(4px, 1vw, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.settings-icon {
+  width: clamp(20px, 5vw, 24px);
+  height: clamp(20px, 5vw, 24px);
+  filter: brightness(0) saturate(100%) invert(35%) sepia(100%) saturate(2000%)
+    hue-rotate(15deg) brightness(90%) contrast(100%); /* #c34e00 색상 */
+}
+
+/* 섹션 A: 프로필 이미지 */
+.profile-section-a {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(24px, 6vw, 32px) clamp(16px, 4vw, 20px);
+  box-sizing: border-box;
+}
+
+.profile-image-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.profile-image {
+  width: clamp(100px, 25vw, 120px);
+  height: clamp(100px, 25vw, 120px);
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #c34e00;
+  background-color: #fff;
+}
+
+.profile-image-edit-button {
+  background-color: #c34e00;
+  color: #fffcfa;
+  border: none;
+  border-radius: clamp(8px, 2vw, 12px);
+  padding: clamp(8px, 2vw, 12px) clamp(16px, 4vw, 20px);
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  min-height: 44px;
+  transition: background-color 0.2s ease;
+}
+
+.profile-image-edit-button:active {
+  background-color: #a03d00;
+}
+
+/* 섹션 B: 닉네임 */
+.profile-section-b {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 clamp(16px, 4vw, 20px) clamp(24px, 6vw, 32px);
+  box-sizing: border-box;
+}
+
+.nickname-display-container {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
+  width: 100%;
+  max-width: 400px;
+  justify-content: center;
+}
+
+.nickname-text {
+  font-size: clamp(18px, 4.5vw, 22px);
+  font-weight: 700;
+  color: #28201b;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  letter-spacing: -0.34px;
+}
+
+.nickname-edit-button {
+  background-color: transparent;
+  color: #c34e00;
+  border: 1px solid #c34e00;
+  border-radius: clamp(6px, 1.5vw, 8px);
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  min-height: 44px;
+  transition: all 0.2s ease;
+}
+
+.nickname-edit-button:active {
+  background-color: #c34e00;
+  color: #fffcfa;
+}
+
+.nickname-edit-container {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 12px);
+  width: 100%;
+  max-width: 400px;
+  justify-content: center;
+}
+
+.nickname-input {
+  flex: 1;
+  border: 1px solid rgba(40, 32, 27, 0.2);
+  border-radius: clamp(6px, 1.5vw, 8px);
+  padding: clamp(10px, 2.5vw, 12px) clamp(12px, 3vw, 16px);
+  font-size: clamp(16px, 4vw, 18px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  color: #28201b;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.nickname-input:focus {
+  outline: none;
+  border-color: #c34e00;
+}
+
+.nickname-save-button {
+  background-color: #c34e00;
+  color: #fffcfa;
+  border: none;
+  border-radius: clamp(6px, 1.5vw, 8px);
+  padding: clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 20px);
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  min-height: 44px;
+  transition: background-color 0.2s ease;
+}
+
+.nickname-save-button:active:not(:disabled) {
+  background-color: #a03d00;
+}
+
+.nickname-save-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nickname-cancel-button {
+  background-color: transparent;
+  color: #28201b;
+  border: 1px solid rgba(40, 32, 27, 0.2);
+  border-radius: clamp(6px, 1.5vw, 8px);
+  padding: clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 20px);
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  min-height: 44px;
+  transition: all 0.2s ease;
+}
+
+.nickname-cancel-button:active {
+  background-color: rgba(40, 32, 27, 0.1);
+}
+
+/* 섹션 C: 비밀번호 변경 */
+.profile-section-c {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 clamp(16px, 4vw, 20px) clamp(16px, 4vw, 20px);
+  box-sizing: border-box;
+}
+
+.password-change-button {
+  width: 100%;
+  max-width: 400px;
+  background-color: transparent;
+  color: #28201b;
+  border: 1px solid rgba(40, 32, 27, 0.2);
+  border-radius: clamp(8px, 2vw, 12px);
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  text-align: left;
+  min-height: 44px;
+  transition: all 0.2s ease;
+}
+
+.password-change-button:active {
+  background-color: rgba(40, 32, 27, 0.05);
+  border-color: #c34e00;
+}
+
+/* 섹션 D: 승인 관리 */
+.profile-section-d {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 clamp(16px, 4vw, 20px) clamp(16px, 4vw, 20px);
+  box-sizing: border-box;
+}
+
+.approval-management-button {
+  width: 100%;
+  max-width: 400px;
+  background-color: #c34e00;
+  color: #fffcfa;
+  border: none;
+  border-radius: clamp(8px, 2vw, 12px);
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  text-align: left;
+  min-height: 44px;
+  transition: background-color 0.2s ease;
+}
+
+.approval-management-button:active {
+  background-color: #a03d00;
+}
+
+/* 섹션 E: 커뮤니티 영역 */
+.profile-section-e {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 6vw, 32px) clamp(16px, 4vw, 20px);
+  box-sizing: border-box;
+  border-top: 1px solid rgba(40, 32, 27, 0.1);
+}
+
+.section-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 18px);
+  color: #28201b;
+  margin: 0 0 clamp(16px, 4vw, 20px) 0;
+  letter-spacing: -0.34px;
+}
+
+.community-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+  width: 100%;
+}
+
+.community-menu-item {
+  width: 100%;
+  background-color: transparent;
+  color: #28201b;
+  border: 1px solid rgba(40, 32, 27, 0.2);
+  border-radius: clamp(8px, 2vw, 12px);
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  text-align: left;
+  min-height: 44px;
+  transition: all 0.2s ease;
+}
+
+.community-menu-item:active {
+  background-color: rgba(195, 78, 0, 0.1);
+  border-color: #c34e00;
+}
+
+/* 섹션 F: 이용 안내 영역 */
+.profile-section-f {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 6vw, 32px) clamp(16px, 4vw, 20px);
+  box-sizing: border-box;
+  border-top: 1px solid rgba(40, 32, 27, 0.1);
+  padding-bottom: clamp(40px, 10vw, 60px);
+}
+
+.info-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+  width: 100%;
+}
+
+.info-menu-item {
+  width: 100%;
+  background-color: transparent;
+  color: #28201b;
+  border: 1px solid rgba(40, 32, 27, 0.2);
+  border-radius: clamp(8px, 2vw, 12px);
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  text-align: left;
+  min-height: 44px;
+  transition: all 0.2s ease;
+}
+
+.info-menu-item:active {
+  background-color: rgba(195, 78, 0, 0.1);
+  border-color: #c34e00;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  .profile-header {
+    padding: 12px 16px;
+  }
+
+  .profile-section-a {
+    padding: 24px 16px;
+  }
+
+  .profile-section-b,
+  .profile-section-c,
+  .profile-section-d {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .profile-section-e,
+  .profile-section-f {
+    padding: 24px 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .nickname-edit-container {
+    flex-direction: column;
+  }
+
+  .nickname-save-button,
+  .nickname-cancel-button {
+    width: 100%;
+  }
+}
+

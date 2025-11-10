@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Header.css";
 
 // 이미지 상수들
@@ -6,6 +7,7 @@ const imgTrailingIcon2 = "/search-icon.png"; // 검색 아이콘
 const imgTrailingIcon1 = "/alarm-icon.png"; // 알림 아이콘
 
 const Header: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedUniversity, setSelectedUniversity] = useState("홍익대");
   const [showUniversityModal, setShowUniversityModal] = useState(false);
   const [universitySearch, setUniversitySearch] = useState("");
@@ -97,6 +99,8 @@ const Header: React.FC = () => {
               className="profile-icon"
               data-name="profileIcon"
               data-node-id="9:641"
+              onClick={() => navigate("/profile")}
+              style={{ cursor: "pointer" }}
             >
               <img
                 alt="Profile Icon"
