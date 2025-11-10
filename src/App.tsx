@@ -17,6 +17,7 @@ import SocialPersonalSignupScreen from "./components/SocialPersonalSignupScreen"
 import PostDetailScreen from "./components/PostDetailScreen";
 import ComingSoonScreen from "./components/ComingSoonScreen";
 import ProfileScreen from "./components/ProfileScreen";
+import AccountApprovalScreen from "./components/AccountApprovalScreen";
 import "./App.css";
 
 function App() {
@@ -67,6 +68,10 @@ function App() {
             element={<ComingSoonScreen title="글 작성" />}
           />
           <Route path="/profile" element={<ProfileScreen />} />
+          <Route
+            path="/account-approval"
+            element={<AccountApprovalScreen />}
+          />
         </Routes>
       </div>
     </BrowserRouter>

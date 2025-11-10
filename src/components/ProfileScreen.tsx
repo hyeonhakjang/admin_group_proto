@@ -4,7 +4,6 @@ import { supabase } from "../lib/supabase";
 import "./ProfileScreen.css";
 
 // 이미지 상수
-const imgBackIcon = "/search-icon.png"; // 뒤로가기 아이콘 (임시)
 const imgSettingsIcon = "/cogwheel.png"; // 톱니바퀴 아이콘
 const imgProfilePlaceholder = "/profile-icon.png"; // 프로필 이미지 플레이스홀더
 
@@ -142,12 +141,8 @@ const ProfileScreen: React.FC = () => {
 
   // 승인 관리 (관리자 또는 캠퍼스 계정)
   const handleApprovalManagement = () => {
-    if (userData?.type === "admin") {
-      // TODO: 캠퍼스 계정 승인 페이지로 이동
-      alert("캠퍼스 계정 승인 기능은 준비 중입니다.");
-    } else if (userData?.type === "group") {
-      // TODO: 동아리 계정 승인 페이지로 이동
-      alert("동아리 계정 승인 기능은 준비 중입니다.");
+    if (userData?.type === "admin" || userData?.type === "group") {
+      navigate("/account-approval");
     }
   };
 
