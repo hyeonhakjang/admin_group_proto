@@ -671,8 +671,8 @@ const MyClubScreen: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
   // 일정 댓글 로드 함수
-  const loadScheduleComments = React.useCallback(async () => {
-    if (!selectedEvent?.id || !selectedClub?.club_personal_id) return;
+  const loadScheduleComments = React.useCallback(async (scheduleId: number) => {
+    if (!scheduleId || !selectedClub?.club_personal_id) return;
 
     try {
       const { data: scheduleComments, error } = await supabase
@@ -691,7 +691,7 @@ const MyClubScreen: React.FC = () => {
           )
         `
         )
-        .eq("schedule_id", selectedEvent.id)
+        .eq("schedule_id", scheduleId)
         .order("commented_date", { ascending: false });
 
       if (error) {
@@ -722,23 +722,25 @@ const MyClubScreen: React.FC = () => {
     } catch (err) {
       console.error("댓글 로드 중 오류:", err);
     }
-  }, [selectedEvent?.id, selectedClub?.club_personal_id]);
+  }, [selectedClub?.club_personal_id]);
 
   // 일정 댓글 추가 함수
   const handleAddComment = async () => {
-    if (!newComment.trim() || !selectedEvent?.id || !selectedClub?.club_personal_id) {
+    if (
+      !newComment.trim() ||
+      !selectedEvent?.id ||
+      !selectedClub?.club_personal_id
+    ) {
       return;
     }
 
     try {
-      const { error } = await supabase
-        .from("schedule_comment")
-        .insert({
-          schedule_id: selectedEvent.id,
-          club_personal_id: selectedClub.club_personal_id,
-          content: newComment.trim(),
-          commented_date: new Date().toISOString().split("T")[0],
-        });
+      const { error } = await supabase.from("schedule_comment").insert({
+        schedule_id: selectedEvent.id,
+        club_personal_id: selectedClub.club_personal_id,
+        content: newComment.trim(),
+        commented_date: new Date().toISOString().split("T")[0],
+      });
 
       if (error) {
         console.error("댓글 등록 오류:", error);
@@ -747,7 +749,7 @@ const MyClubScreen: React.FC = () => {
       }
 
       // 댓글 목록 새로고침
-      await loadScheduleComments();
+      await loadScheduleComments(selectedEvent.id);
       setNewComment("");
     } catch (err) {
       console.error("댓글 등록 중 오류:", err);
@@ -758,7 +760,7 @@ const MyClubScreen: React.FC = () => {
   // selectedEvent가 변경될 때 댓글 로드
   useEffect(() => {
     if (selectedEvent?.id) {
-      loadScheduleComments();
+      loadScheduleComments(selectedEvent.id);
     } else {
       setComments([]);
     }
