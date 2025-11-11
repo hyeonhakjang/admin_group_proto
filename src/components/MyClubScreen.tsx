@@ -1991,10 +1991,12 @@ const MyClubScreen: React.FC = () => {
                     <div style={{ position: "relative" }}>
                       <button
                         className={`member-role-btn ${
-                          member.isOwner ? "owner-role" : ""
+                          member.role === "관리자" ? "owner-role" : ""
                         }`}
                         onClick={() => {
-                          if (userData?.type === "club" && !member.isOwner) {
+                          // club_user 계정이고, 관리자가 아닌 경우에만 역할 변경 가능
+                          // 회장도 역할 변경 가능하도록 수정
+                          if (userData?.type === "club" && member.role !== "관리자") {
                             setSelectedMemberForRole(
                               selectedMemberForRole === member.clubPersonalId
                                 ? null
@@ -2002,15 +2004,16 @@ const MyClubScreen: React.FC = () => {
                             );
                           }
                         }}
-                        disabled={member.isOwner}
+                        disabled={member.role === "관리자"}
                       >
                         {member.role}
-                        {!member.isOwner && userData?.type === "club" && (
+                        {member.role !== "관리자" && userData?.type === "club" && (
                           <span className="dropdown-icon">▼</span>
                         )}
                       </button>
                       {selectedMemberForRole === member.clubPersonalId &&
-                        userData?.type === "club" && (
+                        userData?.type === "club" &&
+                        member.role !== "관리자" && (
                           <div className="role-dropdown">
                             <button
                               className="role-option"
