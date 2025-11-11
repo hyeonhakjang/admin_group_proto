@@ -280,9 +280,13 @@ const MyClubScreen: React.FC = () => {
   }, [selectedClub, userData]);
 
   const loadSchedules = React.useCallback(async () => {
-    if (!selectedClub?.club_user_id) return;
+    if (!selectedClub?.club_user_id) {
+      console.log("일정 로드 실패: selectedClub 또는 club_user_id가 없음", selectedClub);
+      return;
+    }
 
     try {
+      console.log("일정 로드 시작 - club_user_id:", selectedClub.club_user_id);
       const { data: schedules, error } = await supabase
         .from("club_personal_schedule")
         .select("*")
@@ -291,7 +295,8 @@ const MyClubScreen: React.FC = () => {
 
       if (error) {
         console.error("일정 로드 오류:", error);
-      } else if (schedules) {
+      } else {
+        console.log("일정 로드 성공:", schedules);
         setSchedules(schedules || []);
       }
     } catch (error) {
@@ -700,11 +705,15 @@ const MyClubScreen: React.FC = () => {
     .map((schedule) => {
       if (schedule.date) {
         const date = new Date(schedule.date);
+        console.log("일정 날짜 변환:", schedule.date, "->", date);
         return date;
       }
       return null;
     })
     .filter((date): date is Date => date !== null);
+  
+  console.log("현재 schedules 상태:", schedules);
+  console.log("eventsDates:", eventsDates);
 
   const handleTabClick = (
     tab: "posts" | "payout" | "schedule" | "members" | "archive"
@@ -758,12 +767,16 @@ const MyClubScreen: React.FC = () => {
       currentDate.getMonth(),
       day
     );
-    return eventsDates.some(
+    const hasEventOnDay = eventsDates.some(
       (eventDate) =>
         eventDate.getFullYear() === checkDate.getFullYear() &&
         eventDate.getMonth() === checkDate.getMonth() &&
         eventDate.getDate() === checkDate.getDate()
     );
+    if (hasEventOnDay) {
+      console.log(`일정 있음: ${day}일`, checkDate, eventsDates);
+    }
+    return hasEventOnDay;
   };
 
   const isSelected = (day: number, isCurrentMonth: boolean) => {
