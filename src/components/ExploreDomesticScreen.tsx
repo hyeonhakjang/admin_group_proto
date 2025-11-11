@@ -60,6 +60,9 @@ const ExploreDomesticScreen: React.FC = () => {
           category,
           recruiting,
           created_at,
+          score,
+          club_simple_explanation,
+          profile_image_url,
           group_user_id,
           group_user:group_user_id (
             group_name,
@@ -108,15 +111,8 @@ const ExploreDomesticScreen: React.FC = () => {
               .eq("club_user_id", club.id)
               .eq("approved", true);
 
-            // club_user_profile에서 간략 설명 가져오기
-            const { data: profile } = await supabase
-              .from("club_user_profile")
-              .select("club_simple_explanation, profile_image_url, score")
-              .eq("club_user_id", club.id)
-              .single();
-
-            // 활동 점수는 profile의 score 우선, 없으면 멤버 수 * 10
-            const activityScore = profile?.score || (memberCount || 0) * 10;
+            // 활동 점수는 club_user의 score 우선, 없으면 멤버 수 * 10
+            const activityScore = club.score || (memberCount || 0) * 10;
 
             // 소속 정보
             const affiliation = club.group_user?.group_name || "미지정";
@@ -126,14 +122,14 @@ const ExploreDomesticScreen: React.FC = () => {
               name: club.club_name,
               affiliation: affiliation,
               description:
-                profile?.club_simple_explanation ||
+                club.club_simple_explanation ||
                 `${club.group_user?.university?.univ_name || ""} ${
                   club.club_name
                 }`,
               category: club.category || ("기타" as ClubCategory),
               activityScore: activityScore,
               isRecruiting: club.recruiting || false,
-              logo: profile?.profile_image_url || "/profile-icon.png",
+              logo: club.profile_image_url || "/profile-icon.png",
               created_at: club.created_at,
             };
           })
@@ -150,15 +146,15 @@ const ExploreDomesticScreen: React.FC = () => {
   // 필터링 및 정렬된 동아리 목록
   const filteredClubs = clubs
     .filter((club) => {
-      const matchCategory =
-        selectedCategory === "전체" || club.category === selectedCategory;
-      const matchAffiliation =
-        selectedAffiliation === "전체" ||
-        club.affiliation === selectedAffiliation;
-      const matchSearch =
-        club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        club.description.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchCategory && matchAffiliation && matchSearch;
+    const matchCategory =
+      selectedCategory === "전체" || club.category === selectedCategory;
+    const matchAffiliation =
+      selectedAffiliation === "전체" ||
+      club.affiliation === selectedAffiliation;
+    const matchSearch =
+      club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      club.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchCategory && matchAffiliation && matchSearch;
     })
     .sort((a, b) => {
       switch (selectedSort) {
@@ -176,7 +172,7 @@ const ExploreDomesticScreen: React.FC = () => {
         default:
           return 0;
       }
-    });
+  });
 
   return (
     <div className="explore-domestic-screen">
@@ -278,33 +274,33 @@ const ExploreDomesticScreen: React.FC = () => {
           </div>
         ) : (
           filteredClubs.map((club) => (
-            <div
-              key={club.id}
-              className="club-list-item"
-              onClick={() => navigate(`/community/club/${club.id}`)}
-            >
-              <div className="club-list-logo">
-                <img src={club.logo} alt={club.name} />
+          <div
+            key={club.id}
+            className="club-list-item"
+            onClick={() => navigate(`/community/club/${club.id}`)}
+          >
+            <div className="club-list-logo">
+              <img src={club.logo} alt={club.name} />
+            </div>
+            <div className="club-list-info">
+              <div className="club-list-header">
+                <h3 className="club-list-name">{club.name}</h3>
+                {club.isRecruiting && (
+                  <span className="recruiting-badge">모집중</span>
+                )}
               </div>
-              <div className="club-list-info">
-                <div className="club-list-header">
-                  <h3 className="club-list-name">{club.name}</h3>
-                  {club.isRecruiting && (
-                    <span className="recruiting-badge">모집중</span>
-                  )}
-                </div>
-                <p className="club-list-affiliation">{club.affiliation}</p>
-                <p className="club-list-description">{club.description}</p>
-                <div className="club-list-footer">
+              <p className="club-list-affiliation">{club.affiliation}</p>
+              <p className="club-list-description">{club.description}</p>
+              <div className="club-list-footer">
                   <span className="club-list-category">
                     {club.category || "기타"}
                   </span>
-                  <span className="club-list-score">
-                    활동점수: {club.activityScore}
-                  </span>
-                </div>
+                <span className="club-list-score">
+                  활동점수: {club.activityScore}
+                </span>
               </div>
             </div>
+          </div>
           ))
         )}
       </div>

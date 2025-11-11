@@ -201,7 +201,7 @@ const ClubDetailScreen: React.FC = () => {
   const loadClubData = async (clubId: number) => {
     try {
       setLoading(true);
-      // club_user와 club_user_profile 조인해서 가져오기
+      // club_user에서 직접 모든 필드 가져오기
       const { data: clubUser, error: clubError } = await supabase
         .from("club_user")
         .select(
@@ -210,18 +210,16 @@ const ClubDetailScreen: React.FC = () => {
           club_name,
           category,
           recruiting,
+          score,
+          club_explanation,
+          club_simple_explanation,
+          instagram_url,
+          youtube_url,
+          banner_image_url,
+          profile_image_url,
           group_user_id,
           group_user:group_user_id (
             group_name
-          ),
-          club_user_profile (
-            score,
-            club_explanation,
-            club_simple_explanation,
-            instagram_url,
-            youtube_url,
-            banner_image_url,
-            profile_image_url
           )
         `
         )
@@ -246,8 +244,7 @@ const ClubDetailScreen: React.FC = () => {
         .eq("club_user_id", clubId)
         .eq("approved", true);
 
-      const profile = clubUser.club_user_profile?.[0] || null;
-      const activityScore = profile?.score || (memberCount || 0) * 10;
+      const activityScore = clubUser.score || (memberCount || 0) * 10;
       const groupUser = Array.isArray(clubUser.group_user)
         ? clubUser.group_user[0]
         : clubUser.group_user;
@@ -258,16 +255,16 @@ const ClubDetailScreen: React.FC = () => {
         id: clubUser.id,
         name: clubUser.club_name,
         category: clubUser.category || "기타",
-        description: profile?.club_explanation || "",
-        logo: profile?.profile_image_url || "/profile-icon.png",
-        cover: profile?.banner_image_url || "/profile-icon.png",
+        description: clubUser.club_explanation || "",
+        logo: clubUser.profile_image_url || "/profile-icon.png",
+        cover: clubUser.banner_image_url || "/profile-icon.png",
         members: memberCount || 0,
         activityScore: activityScore,
         isRecruiting: clubUser.recruiting || false,
         affiliation: affiliation,
         externalLinks: {
-          instagram: profile?.instagram_url || undefined,
-          youtube: profile?.youtube_url || undefined,
+          instagram: clubUser.instagram_url || undefined,
+          youtube: clubUser.youtube_url || undefined,
         },
         feed: [], // 피드는 별도로 구현 필요
       };

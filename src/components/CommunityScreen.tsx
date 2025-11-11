@@ -65,6 +65,8 @@ const CommunityScreen: React.FC = () => {
           club_name,
           category,
           recruiting,
+          score,
+          profile_image_url,
           group_user_id,
           group_user:group_user_id (
             group_name,
@@ -97,8 +99,8 @@ const CommunityScreen: React.FC = () => {
             .eq("club_user_id", club.id)
             .eq("approved", true);
 
-          // 활동 점수는 임시로 멤버 수 * 10으로 계산 (나중에 실제 활동 점수로 대체 가능)
-          const activityScore = (memberCount || 0) * 10;
+          // 활동 점수는 club_user의 score 우선, 없으면 멤버 수 * 10
+          const activityScore = club.score || (memberCount || 0) * 10;
 
           // 소속 정보
           const affiliation = club.group_user?.group_name || "미지정";
@@ -110,8 +112,8 @@ const CommunityScreen: React.FC = () => {
             description: `${club.group_user?.university?.univ_name || ""} ${
               club.club_name
             }`,
-            logo: "/profile-icon.png",
-            cover: "/profile-icon.png",
+            logo: club.profile_image_url || "/profile-icon.png",
+            cover: club.profile_image_url || "/profile-icon.png",
             members: memberCount || 0,
             activityScore: activityScore,
             isRecruiting: club.recruiting || false,

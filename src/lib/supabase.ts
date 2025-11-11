@@ -55,6 +55,13 @@ export interface ClubUser {
   group_user_id?: number;
   category?: ClubCategory;
   recruiting?: boolean;
+  score?: number;
+  club_explanation?: string;
+  club_simple_explanation?: string;
+  instagram_url?: string;
+  youtube_url?: string;
+  banner_image_url?: string;
+  profile_image_url?: string;
 }
 
 export interface ClubUserProfile {
