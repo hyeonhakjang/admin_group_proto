@@ -29,6 +29,8 @@ const ClubDetailScreen: React.FC = () => {
   const [club, setClub] = useState<ClubData | null>(null);
   const [loading, setLoading] = useState(true);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [showJoinSuccess, setShowJoinSuccess] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
 
   // 달력 관련 상태 (MyClubScreen에서 재사용)
   const [currentDate, setCurrentDate] = useState(() => {
@@ -284,6 +286,64 @@ const ClubDetailScreen: React.FC = () => {
     }
   }, []);
 
+  // 가입 신청 처리 함수
+  const handleJoinRequest = async () => {
+    if (!userData || userData.type !== "personal" || !club) {
+      return;
+    }
+
+    try {
+      // 이미 가입 신청한 경우 확인
+      const { data: existingMembership, error: checkError } = await supabase
+        .from("club_personal")
+        .select("id")
+        .eq("personal_user_id", userData.id)
+        .eq("club_user_id", club.id)
+        .single();
+
+      if (existingMembership) {
+        alert("이미 가입 신청하셨습니다.");
+        return;
+      }
+
+      // club_personal 테이블에 추가
+      const { error: insertError } = await supabase
+        .from("club_personal")
+        .insert({
+          personal_user_id: userData.id,
+          club_user_id: club.id,
+          role: "member",
+          approved: false,
+        });
+
+      if (insertError) {
+        console.error("가입 신청 오류:", insertError);
+        alert("가입 신청 중 오류가 발생했습니다.");
+        return;
+      }
+
+      // 성공 메시지 표시
+      setShowJoinSuccess(true);
+      setShowJoinModal(false);
+    } catch (error) {
+      console.error("가입 신청 처리 중 오류:", error);
+      alert("가입 신청 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 사용자 정보 로드
+  useEffect(() => {
+    const loadUserData = () => {
+      const storedUser =
+        localStorage.getItem("user") || sessionStorage.getItem("user");
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        setUserData(user);
+      }
+    };
+    loadUserData();
+  }, []);
+
   // 동아리 데이터 로드
   useEffect(() => {
     if (id) {
@@ -469,8 +529,8 @@ const ClubDetailScreen: React.FC = () => {
         <div className="club-action-section">
           <button
             className="join-btn"
-            onClick={() => setShowJoinModal(true)}
-            disabled={!club.isRecruiting}
+            onClick={handleJoinRequest}
+            disabled={!club.isRecruiting || userData?.type !== "personal"}
           >
             가입 신청
           </button>
@@ -783,25 +843,27 @@ const ClubDetailScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 가입 신청 모달 */}
-      {showJoinModal && (
+      {/* 가입 신청 완료 모달 */}
+      {showJoinSuccess && (
         <>
           <div
             className="modal-overlay"
-            onClick={() => setShowJoinModal(false)}
+            onClick={() => setShowJoinSuccess(false)}
           ></div>
           <div className="join-modal">
             <div className="modal-header">
               <h2>가입 신청</h2>
               <button
                 className="modal-close"
-                onClick={() => setShowJoinModal(false)}
+                onClick={() => setShowJoinSuccess(false)}
               >
                 ✕
               </button>
             </div>
             <div className="modal-body">
-              <p>가입 신청서 폼이 여기에 표시됩니다.</p>
+              <p style={{ textAlign: "center", padding: "20px" }}>
+                가입 신청이 완료되었습니다.
+              </p>
             </div>
           </div>
         </>
