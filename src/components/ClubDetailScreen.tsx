@@ -664,18 +664,19 @@ const ClubDetailScreen: React.FC = () => {
                                 <p>{selectedEvent.description}</p>
                               </div>
                             )}
-                            {selectedEvent.agenda && selectedEvent.agenda.length > 0 && (
-                              <div className="event-detail-agenda">
-                                <h5 className="event-detail-section-title">
-                                  일정표
-                                </h5>
-                                <ul className="event-agenda-list">
-                                  {selectedEvent.agenda.map((item, index) => (
-                                    <li key={index}>{item}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
+                            {selectedEvent.agenda &&
+                              selectedEvent.agenda.length > 0 && (
+                                <div className="event-detail-agenda">
+                                  <h5 className="event-detail-section-title">
+                                    일정표
+                                  </h5>
+                                  <ul className="event-agenda-list">
+                                    {selectedEvent.agenda.map((item, index) => (
+                                      <li key={index}>{item}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
 
                             {/* 댓글 섹션 */}
                             <div className="event-comments-section">
