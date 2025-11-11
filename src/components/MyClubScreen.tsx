@@ -591,36 +591,6 @@ const MyClubScreen: React.FC = () => {
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState<any[]>([]);
 
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      const comment = {
-        id: comments.length + 1,
-        author: "홍익대 HICC",
-        authorAvatar: "/profile-icon.png",
-        content: newComment,
-        createdAt: "방금 전",
-        likes: 0,
-        isLiked: false,
-      };
-      setComments([comment, ...comments]);
-      setNewComment("");
-    }
-  };
-
-  const handleCommentLike = (commentId: number) => {
-    setComments(
-      comments.map((comment) =>
-        comment.id === commentId
-          ? {
-              ...comment,
-              isLiked: !comment.isLiked,
-              likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
-            }
-          : comment
-      )
-    );
-  };
-
   // 모달용 핸들러 함수들
   const handleModalLike = () => {
     setModalIsLiked(!modalIsLiked);
@@ -699,6 +669,100 @@ const MyClubScreen: React.FC = () => {
   // 일정 데이터
   const [schedules, setSchedules] = useState<any[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
+  // 일정 댓글 로드 함수
+  const loadScheduleComments = React.useCallback(async () => {
+    if (!selectedEvent?.id || !selectedClub?.club_personal_id) return;
+
+    try {
+      const { data: scheduleComments, error } = await supabase
+        .from("schedule_comment")
+        .select(
+          `
+          id,
+          content,
+          commented_date,
+          club_personal:club_personal_id (
+            personal_user:personal_user_id (
+              id,
+              personal_name,
+              profile_image_url
+            )
+          )
+        `
+        )
+        .eq("schedule_id", selectedEvent.id)
+        .order("commented_date", { ascending: false });
+
+      if (error) {
+        console.error("댓글 로드 오류:", error);
+        return;
+      }
+
+      if (scheduleComments) {
+        const formattedComments = scheduleComments.map((comment: any) => {
+          const personalUser = comment.club_personal?.personal_user;
+          return {
+            id: comment.id,
+            author: personalUser?.personal_name || "익명",
+            authorAvatar:
+              personalUser?.profile_image_url || "/profile-icon.png",
+            content: comment.content,
+            createdAt: comment.commented_date
+              ? new Date(comment.commented_date).toLocaleDateString("ko-KR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              : "",
+          };
+        });
+        setComments(formattedComments);
+      }
+    } catch (err) {
+      console.error("댓글 로드 중 오류:", err);
+    }
+  }, [selectedEvent?.id, selectedClub?.club_personal_id]);
+
+  // 일정 댓글 추가 함수
+  const handleAddComment = async () => {
+    if (!newComment.trim() || !selectedEvent?.id || !selectedClub?.club_personal_id) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("schedule_comment")
+        .insert({
+          schedule_id: selectedEvent.id,
+          club_personal_id: selectedClub.club_personal_id,
+          content: newComment.trim(),
+          commented_date: new Date().toISOString().split("T")[0],
+        });
+
+      if (error) {
+        console.error("댓글 등록 오류:", error);
+        alert("댓글 등록에 실패했습니다.");
+        return;
+      }
+
+      // 댓글 목록 새로고침
+      await loadScheduleComments();
+      setNewComment("");
+    } catch (err) {
+      console.error("댓글 등록 중 오류:", err);
+      alert("댓글 등록 중 오류가 발생했습니다.");
+    }
+  };
+
+  // selectedEvent가 변경될 때 댓글 로드
+  useEffect(() => {
+    if (selectedEvent?.id) {
+      loadScheduleComments();
+    } else {
+      setComments([]);
+    }
+  }, [selectedEvent?.id, loadScheduleComments]);
 
   // 일정이 있는 날짜들 계산
   const eventsDates = React.useMemo(() => {
@@ -1431,8 +1495,8 @@ const MyClubScreen: React.FC = () => {
                           </h4>
                           <div className="schedule-event-info">
                             <span className="schedule-event-group">
-                              {selectedEvent.group} · {selectedEvent.participants}
-                              명
+                              {selectedEvent.group} ·{" "}
+                              {selectedEvent.participants}명
                             </span>
                             {selectedEvent.participants > 0 &&
                               selectedEvent.participantAvatars &&
@@ -1457,176 +1521,162 @@ const MyClubScreen: React.FC = () => {
                           <div className="schedule-event-time">
                             • {selectedEvent.date.getFullYear()}년{" "}
                             {selectedEvent.date.getMonth() + 1}월{" "}
-                            {selectedEvent.date.getDate()}일 {selectedEvent.time}
+                            {selectedEvent.date.getDate()}일{" "}
+                            {selectedEvent.time}
                           </div>
                         </div>
                       ) : (
-                      <>
-                        <div
-                          className="event-detail-overlay"
-                          onClick={() => setShowEventDetail(false)}
-                        ></div>
-                        <div className="schedule-event-detail-card">
-                          <div className="schedule-event-detail-card-inner">
-                            <button
-                              className="event-back-btn"
-                              onClick={() => setShowEventDetail(false)}
-                            >
-                              ← 뒤로가기
-                            </button>
-                            <h4 className="event-detail-title">
-                              {selectedEvent.title}
-                            </h4>
-                            <div className="event-detail-info">
-                              <div className="event-detail-row">
-                                <span className="event-detail-label">
-                                  날짜:
-                                </span>
-                                <span className="event-detail-value">
-                                  {selectedEvent.date.getFullYear()}년{" "}
-                                  {selectedEvent.date.getMonth() + 1}월{" "}
-                                  {selectedEvent.date.getDate()}일
-                                </span>
+                        <>
+                          <div
+                            className="event-detail-overlay"
+                            onClick={() => setShowEventDetail(false)}
+                          ></div>
+                          <div className="schedule-event-detail-card">
+                            <div className="schedule-event-detail-card-inner">
+                              <button
+                                className="event-back-btn"
+                                onClick={() => setShowEventDetail(false)}
+                              >
+                                ← 뒤로가기
+                              </button>
+                              <h4 className="event-detail-title">
+                                {selectedEvent.title}
+                              </h4>
+                              <div className="event-detail-info">
+                                <div className="event-detail-row">
+                                  <span className="event-detail-label">
+                                    날짜:
+                                  </span>
+                                  <span className="event-detail-value">
+                                    {selectedEvent.date.getFullYear()}년{" "}
+                                    {selectedEvent.date.getMonth() + 1}월{" "}
+                                    {selectedEvent.date.getDate()}일
+                                  </span>
+                                </div>
+                                <div className="event-detail-row">
+                                  <span className="event-detail-label">
+                                    시간:
+                                  </span>
+                                  <span className="event-detail-value">
+                                    {selectedEvent.time}
+                                  </span>
+                                </div>
+                                <div className="event-detail-row">
+                                  <span className="event-detail-label">
+                                    장소:
+                                  </span>
+                                  <span className="event-detail-value">
+                                    {selectedEvent.location}
+                                  </span>
+                                </div>
+                                <div className="event-detail-row">
+                                  <span className="event-detail-label">
+                                    참가자:
+                                  </span>
+                                  <span className="event-detail-value">
+                                    {selectedEvent.group} ·{" "}
+                                    {selectedEvent.participants}명
+                                  </span>
+                                </div>
                               </div>
-                              <div className="event-detail-row">
-                                <span className="event-detail-label">
-                                  시간:
-                                </span>
-                                <span className="event-detail-value">
-                                  {selectedEvent.time}
-                                </span>
+                              <div className="event-detail-description">
+                                <h5 className="event-detail-section-title">
+                                  상세 내용
+                                </h5>
+                                <p>{selectedEvent.description}</p>
                               </div>
-                              <div className="event-detail-row">
-                                <span className="event-detail-label">
-                                  장소:
-                                </span>
-                                <span className="event-detail-value">
-                                  {selectedEvent.location}
-                                </span>
-                              </div>
-                              <div className="event-detail-row">
-                                <span className="event-detail-label">
-                                  참가자:
-                                </span>
-                                <span className="event-detail-value">
-                                  {selectedEvent.group} ·{" "}
-                                  {selectedEvent.participants}명
-                                </span>
-                              </div>
-                            </div>
-                            <div className="event-detail-description">
-                              <h5 className="event-detail-section-title">
-                                상세 내용
-                              </h5>
-                              <p>{selectedEvent.description}</p>
-                            </div>
-                            <div className="event-detail-agenda">
-                              <h5 className="event-detail-section-title">
-                                일정표
-                              </h5>
-                              <ul className="event-agenda-list">
-                                {selectedEvent.agenda &&
-                                selectedEvent.agenda.length > 0 ? (
-                                  selectedEvent.agenda.map(
-                                    (item: string, index: number) => (
-                                      <li key={index}>{item}</li>
+                              <div className="event-detail-agenda">
+                                <h5 className="event-detail-section-title">
+                                  일정표
+                                </h5>
+                                <ul className="event-agenda-list">
+                                  {selectedEvent.agenda &&
+                                  selectedEvent.agenda.length > 0 ? (
+                                    selectedEvent.agenda.map(
+                                      (item: string, index: number) => (
+                                        <li key={index}>{item}</li>
+                                      )
                                     )
-                                  )
-                                ) : (
-                                  <li>일정표 정보가 없습니다.</li>
-                                )}
-                              </ul>
-                            </div>
-
-                            {/* 댓글 섹션 */}
-                            <div className="event-comments-section">
-                              <h5 className="event-detail-section-title">
-                                댓글 ({comments.length})
-                              </h5>
-
-                              {/* 댓글 입력 */}
-                              <div className="comment-input-container">
-                                <div className="comment-input-avatar">
-                                  <img src="/profile-icon.png" alt="프로필" />
-                                </div>
-                                <div className="comment-input-wrapper">
-                                  <input
-                                    type="text"
-                                    className="comment-input"
-                                    placeholder="댓글을 입력하세요..."
-                                    value={newComment}
-                                    onChange={(e) =>
-                                      setNewComment(e.target.value)
-                                    }
-                                    onKeyPress={(e) => {
-                                      if (e.key === "Enter") {
-                                        handleAddComment();
-                                      }
-                                    }}
-                                  />
-                                  <button
-                                    className="comment-submit-btn"
-                                    onClick={handleAddComment}
-                                    disabled={!newComment.trim()}
-                                  >
-                                    등록
-                                  </button>
-                                </div>
+                                  ) : (
+                                    <li>일정표 정보가 없습니다.</li>
+                                  )}
+                                </ul>
                               </div>
 
-                              {/* 댓글 리스트 */}
-                              <div className="comments-list">
-                                {comments.map((comment) => (
-                                  <div
-                                    key={comment.id}
-                                    className="comment-item"
-                                  >
-                                    <div className="comment-header">
-                                      <div className="comment-author-info">
-                                        <img
-                                          src={
-                                            comment.authorAvatar ||
-                                            "/profile-icon.png"
-                                          }
-                                          alt={comment.author}
-                                          className="comment-author-avatar"
-                                        />
-                                        <span className="comment-author">
-                                          {comment.author}
+                              {/* 댓글 섹션 */}
+                              <div className="event-comments-section">
+                                <h5 className="event-detail-section-title">
+                                  댓글 ({comments.length})
+                                </h5>
+
+                                {/* 댓글 입력 */}
+                                <div className="comment-input-container">
+                                  <div className="comment-input-avatar">
+                                    <img src="/profile-icon.png" alt="프로필" />
+                                  </div>
+                                  <div className="comment-input-wrapper">
+                                    <input
+                                      type="text"
+                                      className="comment-input"
+                                      placeholder="댓글을 입력하세요..."
+                                      value={newComment}
+                                      onChange={(e) =>
+                                        setNewComment(e.target.value)
+                                      }
+                                      onKeyPress={(e) => {
+                                        if (e.key === "Enter") {
+                                          handleAddComment();
+                                        }
+                                      }}
+                                    />
+                                    <button
+                                      className="comment-submit-btn"
+                                      onClick={handleAddComment}
+                                      disabled={!newComment.trim()}
+                                    >
+                                      등록
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* 댓글 리스트 */}
+                                <div className="comments-list">
+                                  {comments.map((comment) => (
+                                    <div
+                                      key={comment.id}
+                                      className="comment-item"
+                                    >
+                                      <div className="comment-header">
+                                        <div className="comment-author-info">
+                                          <img
+                                            src={
+                                              comment.authorAvatar ||
+                                              "/profile-icon.png"
+                                            }
+                                            alt={comment.author}
+                                            className="comment-author-avatar"
+                                          />
+                                          <span className="comment-author">
+                                            {comment.author}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div className="comment-body">
+                                        <p className="comment-content">
+                                          {comment.content}
+                                        </p>
+                                        <span className="comment-date">
+                                          {comment.createdAt}
                                         </span>
                                       </div>
-                                      <div className="comment-actions">
-                                        <button
-                                          className={`comment-like-btn ${
-                                            comment.isLiked ? "active" : ""
-                                          }`}
-                                          onClick={() =>
-                                            handleCommentLike(comment.id)
-                                          }
-                                        >
-                                          좋아요 {comment.likes}
-                                        </button>
-                                        <button className="comment-reply-btn">
-                                          답글
-                                        </button>
-                                      </div>
                                     </div>
-                                    <div className="comment-body">
-                                      <p className="comment-content">
-                                        {comment.content}
-                                      </p>
-                                      <span className="comment-date">
-                                        {comment.createdAt}
-                                      </span>
-                                    </div>
-                                  </div>
-                                ))}
+                                  ))}
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </>
-                    )}
+                        </>
+                      )}
                     </>
                   ) : (
                     <div className="schedule-event-card no-event-card">
@@ -2282,17 +2332,6 @@ const MyClubScreen: React.FC = () => {
                           <span className="comment-author">
                             {comment.author}
                           </span>
-                        </div>
-                        <div className="comment-actions">
-                          <button
-                            className={`comment-like-btn ${
-                              comment.isLiked ? "active" : ""
-                            }`}
-                            onClick={() => handleCommentLike(comment.id)}
-                          >
-                            좋아요 {comment.likes}
-                          </button>
-                          <button className="comment-reply-btn">답글</button>
                         </div>
                       </div>
                       <div className="comment-body">
