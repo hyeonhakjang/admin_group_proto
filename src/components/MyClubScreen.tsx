@@ -809,18 +809,36 @@ const MyClubScreen: React.FC = () => {
     });
 
     if (eventOnDate) {
-      // 참가자 수 로드
+      // 참가자 정보 로드
       const loadParticipants = async () => {
-        const { count } = await supabase
+        const { data: participants, count } = await supabase
           .from("schedule_participant")
-          .select("*", { count: "exact", head: true })
+          .select(
+            `
+            *,
+            club_personal:club_personal_id (
+              personal_user:personal_user_id (
+                id,
+                personal_name,
+                profile_image_url
+              )
+            )
+          `,
+            { count: "exact" }
+          )
           .eq("schedule_id", eventOnDate.id);
+
+        const participantAvatars = (participants || [])
+          .map((p: any) => p.club_personal?.personal_user?.profile_image_url)
+          .filter((url: string) => url) // null/undefined 제거
+          .slice(0, 4); // 최대 4개만 표시
 
         setSelectedEvent({
           id: eventOnDate.id,
           title: eventOnDate.title || "",
           group: selectedClub?.name || "",
           participants: count || 0,
+          participantAvatars: participantAvatars,
           date: clickedDate,
           time:
             eventOnDate.started_at && eventOnDate.ended_at
@@ -1415,12 +1433,25 @@ const MyClubScreen: React.FC = () => {
                             {selectedEvent.group} · {selectedEvent.participants}
                             명
                           </span>
-                          <div className="schedule-event-participants">
-                            <div className="participant-avatar">👤</div>
-                            <div className="participant-avatar">👤</div>
-                            <div className="participant-avatar">👤</div>
-                            <div className="participant-avatar">👤</div>
-                          </div>
+                          {selectedEvent.participants > 0 &&
+                            selectedEvent.participantAvatars &&
+                            selectedEvent.participantAvatars.length > 0 && (
+                              <div className="schedule-event-participants">
+                                {selectedEvent.participantAvatars.map(
+                                  (avatar: string, index: number) => (
+                                    <div
+                                      key={index}
+                                      className="participant-avatar"
+                                    >
+                                      <img
+                                        src={avatar || "/profile-icon.png"}
+                                        alt="참가자"
+                                      />
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            )}
                         </div>
                         <div className="schedule-event-time">
                           • {selectedEvent.date.getFullYear()}년{" "}
@@ -1611,6 +1642,21 @@ const MyClubScreen: React.FC = () => {
                       <span className="schedule-add-text">일정 추가</span>
                     </button>
                   </div>
+                )}
+                {/* 일정이 있어도 일정 추가 버튼 표시 */}
+                {selectedEvent && (
+                  <button
+                    className="schedule-add-btn"
+                    onClick={() => {
+                      // TODO: 일정 추가 기능 구현
+                      alert("일정 추가 기능은 준비 중입니다.");
+                    }}
+                    aria-label="일정 추가"
+                    style={{ marginTop: "16px" }}
+                  >
+                    <span className="schedule-add-icon">+</span>
+                    <span className="schedule-add-text">일정 추가</span>
+                  </button>
                 )}
               </div>
             )}
