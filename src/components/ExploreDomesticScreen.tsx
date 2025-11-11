@@ -108,8 +108,15 @@ const ExploreDomesticScreen: React.FC = () => {
               .eq("club_user_id", club.id)
               .eq("approved", true);
 
-            // 활동 점수는 임시로 멤버 수 * 10으로 계산
-            const activityScore = (memberCount || 0) * 10;
+            // club_user_profile에서 간략 설명 가져오기
+            const { data: profile } = await supabase
+              .from("club_user_profile")
+              .select("club_simple_explanation, profile_image_url, score")
+              .eq("club_user_id", club.id)
+              .single();
+
+            // 활동 점수는 profile의 score 우선, 없으면 멤버 수 * 10
+            const activityScore = profile?.score || (memberCount || 0) * 10;
 
             // 소속 정보
             const affiliation = club.group_user?.group_name || "미지정";
@@ -118,11 +125,15 @@ const ExploreDomesticScreen: React.FC = () => {
               id: club.id,
               name: club.club_name,
               affiliation: affiliation,
-              description: `${club.group_user?.university?.univ_name || ""} ${club.club_name}`,
+              description:
+                profile?.club_simple_explanation ||
+                `${club.group_user?.university?.univ_name || ""} ${
+                  club.club_name
+                }`,
               category: club.category || ("기타" as ClubCategory),
               activityScore: activityScore,
               isRecruiting: club.recruiting || false,
-              logo: "/profile-icon.png",
+              logo: profile?.profile_image_url || "/profile-icon.png",
               created_at: club.created_at,
             };
           })

@@ -217,6 +217,7 @@ const ClubDetailScreen: React.FC = () => {
           club_user_profile (
             score,
             club_explanation,
+            club_simple_explanation,
             instagram_url,
             youtube_url,
             banner_image_url,
@@ -247,8 +248,8 @@ const ClubDetailScreen: React.FC = () => {
 
       const profile = clubUser.club_user_profile?.[0] || null;
       const activityScore = profile?.score || (memberCount || 0) * 10;
-      const groupUser = Array.isArray(clubUser.group_user) 
-        ? clubUser.group_user[0] 
+      const groupUser = Array.isArray(clubUser.group_user)
+        ? clubUser.group_user[0]
         : clubUser.group_user;
       const affiliation = groupUser?.group_name || "미지정";
 

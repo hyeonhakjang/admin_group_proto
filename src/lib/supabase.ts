@@ -61,6 +61,7 @@ export interface ClubUserProfile {
   id?: number;
   score?: number;
   club_explanation?: string;
+  club_simple_explanation?: string;
   instagram_url?: string;
   youtube_url?: string;
   banner_image_url?: string;
