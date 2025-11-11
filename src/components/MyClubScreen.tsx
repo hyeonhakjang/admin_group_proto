@@ -371,6 +371,32 @@ const MyClubScreen: React.FC = () => {
     [loadMembers]
   );
 
+  // 멤버 역할 변경 함수
+  const handleChangeMemberRole = React.useCallback(
+    async (clubPersonalId: number, newRole: string) => {
+      try {
+        const { error } = await supabase
+          .from("club_personal")
+          .update({ role: newRole })
+          .eq("id", clubPersonalId);
+
+        if (error) {
+          console.error("멤버 역할 변경 오류:", error);
+          alert("멤버 역할 변경 중 오류가 발생했습니다.");
+          return;
+        }
+
+        // 멤버 목록 다시 로드
+        await loadMembers();
+        setSelectedMemberForRole(null);
+      } catch (error) {
+        console.error("멤버 역할 변경 처리 중 오류:", error);
+        alert("멤버 역할 변경 중 오류가 발생했습니다.");
+      }
+    },
+    [loadMembers]
+  );
+
   // 선택된 동아리 변경 시 데이터 로드
   useEffect(() => {
     if (!selectedClub || !selectedClub.club_user_id) return;
@@ -586,7 +612,9 @@ const MyClubScreen: React.FC = () => {
   // 멤버 검색 상태
   const [memberSearchQuery, setMemberSearchQuery] = useState("");
   const [members, setMembers] = useState<any[]>([]);
-  const [selectedMemberForRole, setSelectedMemberForRole] = useState<number | null>(null);
+  const [selectedMemberForRole, setSelectedMemberForRole] = useState<
+    number | null
+  >(null);
 
   // 검색 필터링된 멤버
   const filteredMembers = members.filter(
@@ -1983,7 +2011,10 @@ const MyClubScreen: React.FC = () => {
                             <button
                               className="role-option"
                               onClick={() =>
-                                handleChangeMemberRole(member.clubPersonalId, "회장")
+                                handleChangeMemberRole(
+                                  member.clubPersonalId,
+                                  "회장"
+                                )
                               }
                             >
                               회장
@@ -1991,7 +2022,10 @@ const MyClubScreen: React.FC = () => {
                             <button
                               className="role-option"
                               onClick={() =>
-                                handleChangeMemberRole(member.clubPersonalId, "스태프")
+                                handleChangeMemberRole(
+                                  member.clubPersonalId,
+                                  "스태프"
+                                )
                               }
                             >
                               스태프
@@ -1999,7 +2033,10 @@ const MyClubScreen: React.FC = () => {
                             <button
                               className="role-option"
                               onClick={() =>
-                                handleChangeMemberRole(member.clubPersonalId, "회원")
+                                handleChangeMemberRole(
+                                  member.clubPersonalId,
+                                  "회원"
+                                )
                               }
                             >
                               회원
