@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import "./PersonalSignupScreen.css";
 
-
 const PersonalSignupScreen: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -12,18 +11,12 @@ const PersonalSignupScreen: React.FC = () => {
     name: "",
     university: "",
     email: "",
-    emailVerified: false,
     studentId: "",
     department: "",
     phone: "",
-    phoneVerified: false,
     birthDate: "",
   });
 
-  const [showEmailVerification, setShowEmailVerification] = useState(false);
-  const [showPhoneVerification, setShowPhoneVerification] = useState(false);
-  const [emailVerificationCode, setEmailVerificationCode] = useState("");
-  const [phoneVerificationCode, setPhoneVerificationCode] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -71,51 +64,12 @@ const PersonalSignupScreen: React.FC = () => {
     setUniversitySearch("");
   };
 
-  const handleEmailVerification = () => {
-    // 학교 이메일 인증 로직 구현 예정
-    setShowEmailVerification(true);
-  };
-
-  const handlePhoneVerification = () => {
-    // 모바일 인증 로직 구현 예정
-    setShowPhoneVerification(true);
-  };
-
-  const verifyEmailCode = () => {
-    // 인증 코드 확인 로직 구현 예정
-    if (emailVerificationCode) {
-      setFormData((prev) => ({ ...prev, emailVerified: true }));
-      setShowEmailVerification(false);
-      setEmailVerificationCode("");
-    }
-  };
-
-  const verifyPhoneCode = () => {
-    // 인증 코드 확인 로직 구현 예정
-    if (phoneVerificationCode) {
-      setFormData((prev) => ({ ...prev, phoneVerified: true }));
-      setShowPhoneVerification(false);
-      setPhoneVerificationCode("");
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    // 이메일 및 휴대폰 인증 확인
-    if (!formData.emailVerified) {
-      setError("이메일 인증을 완료해주세요.");
-      setLoading(false);
-      return;
-    }
-
-    if (!formData.phoneVerified) {
-      setError("휴대폰 인증을 완료해주세요.");
-      setLoading(false);
-      return;
-    }
 
     try {
       // 대학교 ID 찾기 (university 테이블에서)
@@ -302,29 +256,16 @@ const PersonalSignupScreen: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">이메일 (학교 이메일 인증)</label>
-            <div className="verification-input-wrapper">
-              <input
-                type="email"
-                name="email"
-                className="form-input verification-input"
-                placeholder="학교 이메일을 입력하세요"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-              <button
-                type="button"
-                className="verification-btn"
-                onClick={handleEmailVerification}
-                disabled={!formData.email}
-              >
-                인증
-              </button>
-            </div>
-            {formData.emailVerified && (
-              <span className="verification-status verified">✓ 인증 완료</span>
-            )}
+            <label className="form-label">이메일</label>
+            <input
+              type="email"
+              name="email"
+              className="form-input"
+              placeholder="이메일을 입력하세요"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="form-group">
@@ -354,29 +295,16 @@ const PersonalSignupScreen: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">휴대폰 번호 (모바일 인증)</label>
-            <div className="verification-input-wrapper">
-              <input
-                type="tel"
-                name="phone"
-                className="form-input verification-input"
-                placeholder="휴대폰 번호를 입력하세요"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
-              <button
-                type="button"
-                className="verification-btn"
-                onClick={handlePhoneVerification}
-                disabled={!formData.phone}
-              >
-                인증
-              </button>
-            </div>
-            {formData.phoneVerified && (
-              <span className="verification-status verified">✓ 인증 완료</span>
-            )}
+            <label className="form-label">휴대폰 번호</label>
+            <input
+              type="tel"
+              name="phone"
+              className="form-input"
+              placeholder="휴대폰 번호를 입력하세요"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="form-group">
@@ -398,95 +326,6 @@ const PersonalSignupScreen: React.FC = () => {
         </form>
       </div>
 
-      {/* 이메일 인증 모달 */}
-      {showEmailVerification && (
-        <>
-          <div
-            className="modal-overlay"
-            onClick={() => setShowEmailVerification(false)}
-          ></div>
-          <div className="verification-modal">
-            <div className="verification-modal-header">
-              <h3>이메일 인증</h3>
-              <button
-                type="button"
-                className="close-btn"
-                onClick={() => setShowEmailVerification(false)}
-              >
-                ✕
-              </button>
-            </div>
-            <div className="verification-modal-body">
-              <p>
-                {formData.email}로 인증 코드를 발송했습니다.
-                <br />
-                인증 코드를 입력해주세요.
-              </p>
-              <input
-                type="text"
-                className="verification-code-input"
-                placeholder="인증 코드 입력"
-                value={emailVerificationCode}
-                onChange={(e) => setEmailVerificationCode(e.target.value)}
-                maxLength={6}
-              />
-              <button
-                type="button"
-                className="verify-btn"
-                onClick={verifyEmailCode}
-                disabled={!emailVerificationCode}
-              >
-                확인
-              </button>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* 휴대폰 인증 모달 */}
-      {showPhoneVerification && (
-        <>
-          <div
-            className="modal-overlay"
-            onClick={() => setShowPhoneVerification(false)}
-          ></div>
-          <div className="verification-modal">
-            <div className="verification-modal-header">
-              <h3>휴대폰 인증</h3>
-              <button
-                type="button"
-                className="close-btn"
-                onClick={() => setShowPhoneVerification(false)}
-              >
-                ✕
-              </button>
-            </div>
-            <div className="verification-modal-body">
-              <p>
-                {formData.phone}로 인증 코드를 발송했습니다.
-                <br />
-                인증 코드를 입력해주세요.
-              </p>
-              <input
-                type="text"
-                className="verification-code-input"
-                placeholder="인증 코드 입력"
-                value={phoneVerificationCode}
-                onChange={(e) => setPhoneVerificationCode(e.target.value)}
-                maxLength={6}
-              />
-              <button
-                type="button"
-                className="verify-btn"
-                onClick={verifyPhoneCode}
-                disabled={!phoneVerificationCode}
-              >
-                확인
-              </button>
-            </div>
-          </div>
-        </>
-      )}
     </div>
   );
 };
