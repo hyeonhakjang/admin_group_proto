@@ -673,7 +673,7 @@ const MyClubScreen: React.FC = () => {
   // 일정 댓글 로드 함수
   const loadScheduleComments = React.useCallback(
     async (scheduleId: number) => {
-      if (!scheduleId || !selectedClub?.club_personal_id) return;
+      if (!scheduleId) return;
 
       try {
         const { data: scheduleComments, error } = await supabase
@@ -688,6 +688,10 @@ const MyClubScreen: React.FC = () => {
               id,
               personal_name,
               profile_image_url
+            ),
+            club_user:club_user_id (
+              id,
+              club_name
             )
           )
         `
@@ -697,17 +701,24 @@ const MyClubScreen: React.FC = () => {
 
         if (error) {
           console.error("댓글 로드 오류:", error);
+          setComments([]);
           return;
         }
 
         if (scheduleComments) {
           const formattedComments = scheduleComments.map((comment: any) => {
-            const personalUser = comment.club_personal?.personal_user;
+            const clubPersonal = comment.club_personal;
+            const personalUser = clubPersonal?.personal_user;
+            const clubUser = clubPersonal?.club_user;
+            
+            // 개인 유저가 있으면 개인 유저 정보 사용, 없으면 클럽 유저 정보 사용
+            const authorName = personalUser?.personal_name || clubUser?.club_name || "익명";
+            const authorAvatar = personalUser?.profile_image_url || "/profile-icon.png";
+            
             return {
               id: comment.id,
-              author: personalUser?.personal_name || "익명",
-              authorAvatar:
-                personalUser?.profile_image_url || "/profile-icon.png",
+              author: authorName,
+              authorAvatar: authorAvatar,
               content: comment.content,
               createdAt: comment.commented_date
                 ? new Date(comment.commented_date).toLocaleDateString("ko-KR", {
@@ -719,44 +730,81 @@ const MyClubScreen: React.FC = () => {
             };
           });
           setComments(formattedComments);
+        } else {
+          setComments([]);
         }
       } catch (err) {
         console.error("댓글 로드 중 오류:", err);
+        setComments([]);
       }
     },
-    [selectedClub?.club_personal_id]
+    []
   );
 
   // 일정 댓글 추가 함수
   const handleAddComment = async () => {
-    if (
-      !newComment.trim() ||
-      !selectedEvent?.id ||
-      !selectedClub?.club_personal_id
-    ) {
+    if (!newComment.trim() || !selectedEvent?.id) {
+      return;
+    }
+
+    // club_personal_id 찾기
+    let clubPersonalId: number | null = null;
+
+    if (selectedClub?.club_personal_id) {
+      // 개인 계정 사용자: 이미 club_personal_id가 있음
+      clubPersonalId = selectedClub.club_personal_id;
+    } else if (userData?.type === "club" && selectedClub?.club_user_id) {
+      // 클럽 계정 사용자: club_user_id로 club_personal 찾기
+      // 클럽 계정 사용자는 자신의 클럽에 대한 club_personal 레코드를 찾거나 생성해야 함
+      const { data: clubPersonalList } = await supabase
+        .from("club_personal")
+        .select("id")
+        .eq("club_user_id", selectedClub.club_user_id)
+        .limit(1);
+
+      if (clubPersonalList && clubPersonalList.length > 0) {
+        // 기존 club_personal 레코드 사용
+        clubPersonalId = clubPersonalList[0].id;
+      } else {
+        // 클럽 계정 사용자의 경우, club_user_id와 personal_user_id가 같은 경우를 찾거나
+        // 새로운 club_personal 레코드를 생성해야 할 수 있음
+        // 일단 에러 메시지 표시
+        console.error("club_personal 레코드를 찾을 수 없습니다.");
+        alert("댓글을 작성하려면 동아리 가입 정보가 필요합니다.");
+        return;
+      }
+    }
+
+    if (!clubPersonalId) {
+      console.error("club_personal_id를 찾을 수 없습니다.", {
+        selectedClub,
+        userData,
+      });
+      alert("댓글을 작성할 수 없습니다. 동아리 가입 정보를 확인해주세요.");
       return;
     }
 
     try {
       const { error } = await supabase.from("schedule_comment").insert({
         schedule_id: selectedEvent.id,
-        club_personal_id: selectedClub.club_personal_id,
+        club_personal_id: clubPersonalId,
         content: newComment.trim(),
         commented_date: new Date().toISOString().split("T")[0],
       });
 
       if (error) {
         console.error("댓글 등록 오류:", error);
-        alert("댓글 등록에 실패했습니다.");
+        console.error("에러 상세:", JSON.stringify(error, null, 2));
+        alert(`댓글 등록에 실패했습니다: ${error.message}`);
         return;
       }
 
       // 댓글 목록 새로고침
       await loadScheduleComments(selectedEvent.id);
       setNewComment("");
-    } catch (err) {
+    } catch (err: any) {
       console.error("댓글 등록 중 오류:", err);
-      alert("댓글 등록 중 오류가 발생했습니다.");
+      alert(`댓글 등록 중 오류가 발생했습니다: ${err.message || err}`);
     }
   };
 
@@ -767,7 +815,8 @@ const MyClubScreen: React.FC = () => {
     } else {
       setComments([]);
     }
-  }, [selectedEvent?.id, loadScheduleComments]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedEvent?.id]);
 
   // 일정이 있는 날짜들 계산
   const eventsDates = React.useMemo(() => {
