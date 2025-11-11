@@ -1,52 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import BottomTabBar from "./BottomTabBar";
+import { supabase, ClubCategory } from "../lib/supabase";
 import "./CommunityScreen.css";
 
-// 샘플 동아리 데이터
-const sampleClubs = [
-  {
-    id: 1,
-    name: "HICC",
-    category: "학술",
-    description: "홍익대학교 컴퓨터공학 동아리",
-    logo: "/profile-icon.png",
-    cover: "/profile-icon.png",
-    members: 120,
-    activityScore: 850,
-    isRecruiting: true,
-    affiliation: "총동아리연합회",
-    externalLinks: {
-      instagram: "https://instagram.com/hicc",
-      youtube: "https://youtube.com/hicc",
-    },
-  },
-  {
-    id: 2,
-    name: "브레인스워즈",
-    category: "학술",
-    description: "토론과 학술 활동을 하는 동아리",
-    logo: "/profile-icon.png",
-    cover: "/profile-icon.png",
-    members: 85,
-    activityScore: 720,
-    isRecruiting: true,
-    affiliation: "경영대학 학생회",
-  },
-  {
-    id: 3,
-    name: "VOERA",
-    category: "공연",
-    description: "밴드 동아리",
-    logo: "/profile-icon.png",
-    cover: "/profile-icon.png",
-    members: 45,
-    activityScore: 680,
-    isRecruiting: false,
-    affiliation: "총동아리연합회",
-  },
-];
+// 동아리 인터페이스
+interface Club {
+  id: number;
+  name: string;
+  category: ClubCategory | null;
+  description?: string;
+  logo: string;
+  cover: string;
+  members: number;
+  activityScore: number;
+  isRecruiting: boolean;
+  affiliation: string;
+  externalLinks?: {
+    instagram?: string;
+    youtube?: string;
+  };
+}
 
 // 게시글 인터페이스
 interface Post {
@@ -153,6 +128,166 @@ const CommunityScreen: React.FC = () => {
   const [activeTopTab, setActiveTopTab] = useState<"find-clubs" | "board">(
     "find-clubs"
   );
+  const [clubs, setClubs] = useState<Club[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  // 동아리 데이터 로드
+  useEffect(() => {
+    loadClubs();
+    loadPosts();
+  }, []);
+
+  const loadClubs = async () => {
+    try {
+      setLoading(true);
+      // 승인된 동아리만 가져오기
+      const { data: clubUsers, error } = await supabase
+        .from("club_user")
+        .select(
+          `
+          id,
+          club_name,
+          category,
+          recruiting,
+          group_user_id,
+          group_user:group_user_id (
+            group_name,
+            university:univ_id (
+              univ_name
+            )
+          )
+        `
+        )
+        .eq("approved", true);
+
+      if (error) {
+        console.error("동아리 로드 오류:", error);
+        return;
+      }
+
+      if (!clubUsers) {
+        setClubs([]);
+        setLoading(false);
+        return;
+      }
+
+      // 각 동아리의 멤버 수 계산
+      const clubsWithMembers = await Promise.all(
+        clubUsers.map(async (club: any) => {
+          // club_personal 테이블에서 멤버 수 계산
+          const { count: memberCount } = await supabase
+            .from("club_personal")
+            .select("*", { count: "exact", head: true })
+            .eq("club_user_id", club.id)
+            .eq("approved", true);
+
+          // 활동 점수는 임시로 멤버 수 * 10으로 계산 (나중에 실제 활동 점수로 대체 가능)
+          const activityScore = (memberCount || 0) * 10;
+
+          // 소속 정보
+          const affiliation = club.group_user?.group_name || "미지정";
+
+          return {
+            id: club.id,
+            name: club.club_name,
+            category: club.category || ("기타" as ClubCategory),
+            description: `${club.group_user?.university?.univ_name || ""} ${club.club_name}`,
+            logo: "/profile-icon.png",
+            cover: "/profile-icon.png",
+            members: memberCount || 0,
+            activityScore: activityScore,
+            isRecruiting: club.recruiting || false,
+            affiliation: affiliation,
+          };
+        })
+      );
+
+      setClubs(clubsWithMembers);
+    } catch (error) {
+      console.error("동아리 로드 중 오류:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadPosts = async () => {
+    try {
+      // 게시글 데이터 로드 (club_personal_article 테이블에서)
+      const { data: articles, error } = await supabase
+        .from("club_personal_article")
+        .select(
+          `
+          id,
+          title,
+          content,
+          written_date,
+          created_at,
+          club_personal:club_personal_id (
+            club_user:club_user_id (
+              club_name,
+              group_user:group_user_id (
+                group_name
+              )
+            )
+          )
+        `
+        )
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error("게시글 로드 오류:", error);
+        return;
+      }
+
+      if (!articles) {
+        setPosts([]);
+        return;
+      }
+
+      // 게시글 데이터 변환
+      const transformedPosts = await Promise.all(
+        articles.map(async (article: any) => {
+          // 좋아요 수
+          const { count: likeCount } = await supabase
+            .from("club_personal_like")
+            .select("*", { count: "exact", head: true })
+            .eq("club_personal_article_id", article.id);
+
+          // 댓글 수
+          const { count: commentCount } = await supabase
+            .from("club_personal_comment")
+            .select("*", { count: "exact", head: true })
+            .eq("club_personal_article_id", article.id);
+
+          const clubName =
+            article.club_personal?.club_user?.club_name || "알 수 없음";
+          const affiliation =
+            article.club_personal?.club_user?.group_user?.group_name ||
+            "미지정";
+
+          return {
+            id: article.id,
+            clubId: article.club_personal?.club_user?.id || 0,
+            clubName: clubName,
+            clubLogo: "/profile-icon.png",
+            clubAffiliation: affiliation,
+            title: article.title || "",
+            content: article.content || "",
+            createdAt: article.written_date || article.created_at || "",
+            views: 0, // 조회수는 별도 필드 필요
+            likes: likeCount || 0,
+            comments: commentCount || 0,
+          };
+        })
+      );
+
+      setPosts(transformedPosts);
+    } catch (error) {
+      console.error("게시글 로드 중 오류:", error);
+    }
+  };
 
   return (
     <div className="community-screen" data-name="커뮤니티 화면">
@@ -237,30 +372,35 @@ const CommunityScreen: React.FC = () => {
                 </button>
               </div>
               <div className="ranking-list">
-                {sampleClubs
-                  .slice(0, 3)
-                  .sort((a, b) => b.activityScore - a.activityScore)
-                  .map((club, index) => (
-                    <div
-                      key={club.id}
-                      className="ranking-item"
-                      onClick={() => navigate(`/community/club/${club.id}`)}
-                    >
-                      <span className="ranking-number">{index + 1}</span>
-                      <div className="ranking-club-logo">
-                        <img src={club.logo} alt={club.name} />
-                      </div>
-                      <div className="ranking-club-info">
-                        <h3 className="ranking-club-name">{club.name}</h3>
-                        <span className="ranking-club-category">
-                          {club.category}
+                {loading ? (
+                  <div>로딩 중...</div>
+                ) : (
+                  clubs
+                    .filter((club) => club.affiliation !== "총동아리연합회")
+                    .sort((a, b) => b.activityScore - a.activityScore)
+                    .slice(0, 3)
+                    .map((club, index) => (
+                      <div
+                        key={club.id}
+                        className="ranking-item"
+                        onClick={() => navigate(`/community/club/${club.id}`)}
+                      >
+                        <span className="ranking-number">{index + 1}</span>
+                        <div className="ranking-club-logo">
+                          <img src={club.logo} alt={club.name} />
+                        </div>
+                        <div className="ranking-club-info">
+                          <h3 className="ranking-club-name">{club.name}</h3>
+                          <span className="ranking-club-category">
+                            {club.category}
+                          </span>
+                        </div>
+                        <span className="ranking-score">
+                          {club.activityScore}
                         </span>
                       </div>
-                      <span className="ranking-score">
-                        {club.activityScore}
-                      </span>
-                    </div>
-                  ))}
+                    ))
+                )}
               </div>
             </section>
 
@@ -276,32 +416,41 @@ const CommunityScreen: React.FC = () => {
                 </button>
               </div>
               <div className="club-cards-grid">
-                {sampleClubs.slice(0, 3).map((club) => (
-                  <div
-                    key={club.id}
-                    className="club-card"
-                    onClick={() => navigate(`/community/club/${club.id}`)}
-                  >
-                    <div className="club-card-logo">
-                      <img src={club.logo} alt={club.name} />
-                    </div>
-                    <div className="club-card-info">
-                      <h3 className="club-card-name">{club.name}</h3>
-                      <p className="club-card-desc">{club.description}</p>
-                      <div className="club-card-meta">
-                        <span className="club-card-category">
-                          {club.category}
-                        </span>
-                        <span className="club-card-score">
-                          활동점수: {club.activityScore}
-                        </span>
+                {loading ? (
+                  <div>로딩 중...</div>
+                ) : (
+                  clubs
+                    .filter((club) => club.affiliation === "총동아리연합회")
+                    .slice(0, 3)
+                    .map((club) => (
+                      <div
+                        key={club.id}
+                        className="club-card"
+                        onClick={() => navigate(`/community/club/${club.id}`)}
+                      >
+                        <div className="club-card-logo">
+                          <img src={club.logo} alt={club.name} />
+                        </div>
+                        <div className="club-card-info">
+                          <h3 className="club-card-name">{club.name}</h3>
+                          <p className="club-card-desc">
+                            {club.description || club.name}
+                          </p>
+                          <div className="club-card-meta">
+                            <span className="club-card-category">
+                              {club.category}
+                            </span>
+                            <span className="club-card-score">
+                              활동점수: {club.activityScore}
+                            </span>
+                          </div>
+                          {club.isRecruiting && (
+                            <span className="recruiting-badge">모집중</span>
+                          )}
+                        </div>
                       </div>
-                      {club.isRecruiting && (
-                        <span className="recruiting-badge">모집중</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                    ))
+                )}
               </div>
             </section>
 
@@ -317,30 +466,35 @@ const CommunityScreen: React.FC = () => {
                 </button>
               </div>
               <div className="ranking-list">
-                {sampleClubs
-                  .slice(0, 3)
-                  .sort((a, b) => b.activityScore - a.activityScore)
-                  .map((club, index) => (
-                    <div
-                      key={club.id}
-                      className="ranking-item"
-                      onClick={() => navigate(`/community/club/${club.id}`)}
-                    >
-                      <span className="ranking-number">{index + 1}</span>
-                      <div className="ranking-club-logo">
-                        <img src={club.logo} alt={club.name} />
-                      </div>
-                      <div className="ranking-club-info">
-                        <h3 className="ranking-club-name">{club.name}</h3>
-                        <span className="ranking-club-category">
-                          {club.category}
+                {loading ? (
+                  <div>로딩 중...</div>
+                ) : (
+                  clubs
+                    .filter((club) => club.affiliation === "총동아리연합회")
+                    .sort((a, b) => b.activityScore - a.activityScore)
+                    .slice(0, 3)
+                    .map((club, index) => (
+                      <div
+                        key={club.id}
+                        className="ranking-item"
+                        onClick={() => navigate(`/community/club/${club.id}`)}
+                      >
+                        <span className="ranking-number">{index + 1}</span>
+                        <div className="ranking-club-logo">
+                          <img src={club.logo} alt={club.name} />
+                        </div>
+                        <div className="ranking-club-info">
+                          <h3 className="ranking-club-name">{club.name}</h3>
+                          <span className="ranking-club-category">
+                            {club.category}
+                          </span>
+                        </div>
+                        <span className="ranking-score">
+                          {club.activityScore}
                         </span>
                       </div>
-                      <span className="ranking-score">
-                        {club.activityScore}
-                      </span>
-                    </div>
-                  ))}
+                    ))
+                )}
               </div>
             </section>
           </>
@@ -355,7 +509,7 @@ const CommunityScreen: React.FC = () => {
                 </button>
               </div>
               <div className="post-list">
-                {samplePosts
+                {posts
                   .filter((post) => post.title.includes("모집"))
                   .slice(0, 3)
                   .map((post) => (
@@ -406,7 +560,7 @@ const CommunityScreen: React.FC = () => {
                 </button>
               </div>
               <div className="post-list">
-                {samplePosts
+                {posts
                   .filter(
                     (post) =>
                       post.title.includes("공연") ||
@@ -462,7 +616,7 @@ const CommunityScreen: React.FC = () => {
                 </button>
               </div>
               <div className="post-list">
-                {samplePosts
+                {posts
                   .sort((a, b) => b.views - a.views)
                   .slice(0, 3)
                   .map((post) => (

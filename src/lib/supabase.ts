@@ -29,6 +29,15 @@ export interface PersonalUser {
   univ_id?: number;
 }
 
+export type ClubCategory =
+  | "학술"
+  | "공연"
+  | "체육"
+  | "봉사"
+  | "종교"
+  | "문화"
+  | "기타";
+
 export interface ClubUser {
   id?: number;
   club_user_name: string;
@@ -44,6 +53,8 @@ export interface ClubUser {
   account_number?: string;
   refresh_token?: string;
   group_user_id?: number;
+  category?: ClubCategory;
+  recruiting?: boolean;
 }
 
 export interface GroupUser {
