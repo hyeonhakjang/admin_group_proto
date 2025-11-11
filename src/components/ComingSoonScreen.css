@@ -6,7 +6,6 @@
   align-items: flex-start;
   position: relative;
   width: 100%;
-  min-height: calc(100vh + 100px);
   padding-bottom: 100px;
   font-family: "Inter", "Noto Sans KR", sans-serif;
   overflow-x: hidden;
@@ -55,7 +54,6 @@
   align-items: center;
   justify-content: center;
   padding: clamp(40px, 10vw, 60px) clamp(20px, 5vw, 40px);
-  min-height: calc(100vh - 164px);
 }
 
 .coming-soon-icon {

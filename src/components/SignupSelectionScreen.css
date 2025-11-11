@@ -1,7 +1,6 @@
 /* 회원가입 선택 화면 */
 .signup-selection-screen {
   background-color: #fffcfa;
-  min-height: calc(100vh + 100px);
   padding-bottom: 100px;
   font-family: "Inter", "Noto Sans KR", sans-serif;
   width: 100%;

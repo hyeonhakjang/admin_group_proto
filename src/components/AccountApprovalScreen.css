@@ -6,14 +6,12 @@
   align-items: flex-start;
   position: relative;
   width: 100%;
-  min-height: 100vh;
   font-family: "Inter", "Noto Sans KR", sans-serif;
   overflow-x: hidden;
 }
 
 .loading {
   width: 100%;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;

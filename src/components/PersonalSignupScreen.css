@@ -1,7 +1,6 @@
 /* 개인 계정 회원가입 화면 */
 .personal-signup-screen {
   background-color: #fffcfa;
-  min-height: calc(100vh + 100px);
   padding-bottom: 100px;
   font-family: "Inter", "Noto Sans KR", sans-serif;
   width: 100%;
