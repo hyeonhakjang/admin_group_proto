@@ -146,15 +146,15 @@ const ExploreDomesticScreen: React.FC = () => {
   // 필터링 및 정렬된 동아리 목록
   const filteredClubs = clubs
     .filter((club) => {
-    const matchCategory =
-      selectedCategory === "전체" || club.category === selectedCategory;
-    const matchAffiliation =
-      selectedAffiliation === "전체" ||
-      club.affiliation === selectedAffiliation;
-    const matchSearch =
-      club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      club.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchCategory && matchAffiliation && matchSearch;
+      const matchCategory =
+        selectedCategory === "전체" || club.category === selectedCategory;
+      const matchAffiliation =
+        selectedAffiliation === "전체" ||
+        club.affiliation === selectedAffiliation;
+      const matchSearch =
+        club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        club.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchCategory && matchAffiliation && matchSearch;
     })
     .sort((a, b) => {
       switch (selectedSort) {
@@ -172,7 +172,7 @@ const ExploreDomesticScreen: React.FC = () => {
         default:
           return 0;
       }
-  });
+    });
 
   return (
     <div className="explore-domestic-screen">
@@ -274,33 +274,33 @@ const ExploreDomesticScreen: React.FC = () => {
           </div>
         ) : (
           filteredClubs.map((club) => (
-          <div
-            key={club.id}
-            className="club-list-item"
-            onClick={() => navigate(`/community/club/${club.id}`)}
-          >
-            <div className="club-list-logo">
-              <img src={club.logo} alt={club.name} />
-            </div>
-            <div className="club-list-info">
-              <div className="club-list-header">
-                <h3 className="club-list-name">{club.name}</h3>
-                {club.isRecruiting && (
-                  <span className="recruiting-badge">모집중</span>
-                )}
+            <div
+              key={club.id}
+              className="club-list-item"
+              onClick={() => navigate(`/community/club/${club.id}`)}
+            >
+              <div className="club-list-logo">
+                <img src={club.logo} alt={club.name} />
               </div>
-              <p className="club-list-affiliation">{club.affiliation}</p>
-              <p className="club-list-description">{club.description}</p>
-              <div className="club-list-footer">
+              <div className="club-list-info">
+                <div className="club-list-header">
+                  <h3 className="club-list-name">{club.name}</h3>
+                  {club.isRecruiting && (
+                    <span className="recruiting-badge">모집중</span>
+                  )}
+                </div>
+                <p className="club-list-affiliation">{club.affiliation}</p>
+                <p className="club-list-description">{club.description}</p>
+                <div className="club-list-footer">
                   <span className="club-list-category">
                     {club.category || "기타"}
                   </span>
-                <span className="club-list-score">
-                  활동점수: {club.activityScore}
-                </span>
+                  <span className="club-list-score">
+                    활동점수: {club.activityScore}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
           ))
         )}
       </div>
