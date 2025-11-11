@@ -3166,3 +3166,25 @@
   font-size: clamp(10px, 2.5vw, 12px);
   color: #888888;
 }
+
+.member-approve-btn {
+  padding: clamp(6px, 1.5vw, 8px) clamp(16px, 4vw, 20px);
+  background-color: #c34e00;
+  color: white;
+  border: none;
+  border-radius: clamp(8px, 2vw, 12px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.member-approve-btn:hover {
+  background-color: #a03e00;
+}
+
+.member-approve-btn:active {
+  background-color: #8a3500;
+}

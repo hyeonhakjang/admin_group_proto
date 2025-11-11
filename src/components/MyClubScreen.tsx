@@ -347,26 +347,29 @@ const MyClubScreen: React.FC = () => {
   }, [selectedClub]);
 
   // 멤버 승인 처리 함수
-  const handleApproveMember = React.useCallback(async (clubPersonalId: number) => {
-    try {
-      const { error } = await supabase
-        .from("club_personal")
-        .update({ approved: true })
-        .eq("id", clubPersonalId);
+  const handleApproveMember = React.useCallback(
+    async (clubPersonalId: number) => {
+      try {
+        const { error } = await supabase
+          .from("club_personal")
+          .update({ approved: true })
+          .eq("id", clubPersonalId);
 
-      if (error) {
-        console.error("멤버 승인 오류:", error);
+        if (error) {
+          console.error("멤버 승인 오류:", error);
+          alert("멤버 승인 중 오류가 발생했습니다.");
+          return;
+        }
+
+        // 멤버 목록 다시 로드
+        await loadMembers();
+      } catch (error) {
+        console.error("멤버 승인 처리 중 오류:", error);
         alert("멤버 승인 중 오류가 발생했습니다.");
-        return;
       }
-
-      // 멤버 목록 다시 로드
-      await loadMembers();
-    } catch (error) {
-      console.error("멤버 승인 처리 중 오류:", error);
-      alert("멤버 승인 중 오류가 발생했습니다.");
-    }
-  }, [loadMembers]);
+    },
+    [loadMembers]
+  );
 
   // 선택된 동아리 변경 시 데이터 로드
   useEffect(() => {
