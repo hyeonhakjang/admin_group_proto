@@ -1931,8 +1931,12 @@ const MyClubScreen: React.FC = () => {
                       <p className="no-event-message">일정이 없습니다.</p>
                     </div>
                   )}
-                  {/* 일정 추가 버튼 - club_user 계정은 숨김 */}
-                  {userData?.type !== "club" && (
+                  {/* 일정 추가 버튼 - 회장, 스태프, club_user 계정만 표시 */}
+                  {((userData?.type === "club") ||
+                    (userData?.type === "personal" &&
+                      selectedClub?.role &&
+                      (selectedClub.role === "회장" ||
+                        selectedClub.role === "스태프"))) && (
                     <button
                       className="schedule-add-btn"
                       onClick={() => {
