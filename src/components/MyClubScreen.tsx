@@ -586,6 +586,7 @@ const MyClubScreen: React.FC = () => {
   // 멤버 검색 상태
   const [memberSearchQuery, setMemberSearchQuery] = useState("");
   const [members, setMembers] = useState<any[]>([]);
+  const [selectedMemberForRole, setSelectedMemberForRole] = useState<number | null>(null);
 
   // 검색 필터링된 멤버
   const filteredMembers = members.filter(
@@ -1955,16 +1956,57 @@ const MyClubScreen: React.FC = () => {
                     </div>
                   </div>
                   {member.approved ? (
-                    <button
-                      className={`member-role-btn ${
-                        member.isOwner ? "owner-role" : ""
-                      }`}
-                    >
-                      {member.role}
-                      {!member.isOwner && (
-                        <span className="dropdown-icon">▼</span>
-                      )}
-                    </button>
+                    <div style={{ position: "relative" }}>
+                      <button
+                        className={`member-role-btn ${
+                          member.isOwner ? "owner-role" : ""
+                        }`}
+                        onClick={() => {
+                          if (userData?.type === "club" && !member.isOwner) {
+                            setSelectedMemberForRole(
+                              selectedMemberForRole === member.clubPersonalId
+                                ? null
+                                : member.clubPersonalId
+                            );
+                          }
+                        }}
+                        disabled={member.isOwner}
+                      >
+                        {member.role}
+                        {!member.isOwner && userData?.type === "club" && (
+                          <span className="dropdown-icon">▼</span>
+                        )}
+                      </button>
+                      {selectedMemberForRole === member.clubPersonalId &&
+                        userData?.type === "club" && (
+                          <div className="role-dropdown">
+                            <button
+                              className="role-option"
+                              onClick={() =>
+                                handleChangeMemberRole(member.clubPersonalId, "회장")
+                              }
+                            >
+                              회장
+                            </button>
+                            <button
+                              className="role-option"
+                              onClick={() =>
+                                handleChangeMemberRole(member.clubPersonalId, "스태프")
+                              }
+                            >
+                              스태프
+                            </button>
+                            <button
+                              className="role-option"
+                              onClick={() =>
+                                handleChangeMemberRole(member.clubPersonalId, "회원")
+                              }
+                            >
+                              회원
+                            </button>
+                          </div>
+                        )}
+                    </div>
                   ) : (
                     <button
                       className="member-approve-btn"
