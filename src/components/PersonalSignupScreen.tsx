@@ -165,7 +165,7 @@ const PersonalSignupScreen: React.FC = () => {
       }
 
       // 개인 사용자 등록
-      const { data, error: insertError } = await supabase
+      const { error: insertError } = await supabase
         .from("personal_user")
         .insert({
           personal_user_name: formData.userId,
