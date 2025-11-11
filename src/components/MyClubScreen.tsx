@@ -1932,7 +1932,7 @@ const MyClubScreen: React.FC = () => {
                     </div>
                   )}
                   {/* 일정 추가 버튼 - 회장, 스태프, club_user 계정만 표시 */}
-                  {((userData?.type === "club") ||
+                  {(userData?.type === "club" ||
                     (userData?.type === "personal" &&
                       selectedClub?.role &&
                       (selectedClub.role === "회장" ||
