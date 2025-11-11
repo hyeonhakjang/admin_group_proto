@@ -695,7 +695,6 @@
 .schedule-event-card.no-event-card {
   align-items: center;
   justify-content: center;
-  min-height: clamp(140px, 35vw, 200px);
 }
 
 .schedule-event-card:hover {
