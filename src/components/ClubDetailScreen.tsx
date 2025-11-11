@@ -1,38 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BottomTabBar from "./BottomTabBar";
+import { supabase } from "../lib/supabase";
 import "./ClubDetailScreen.css";
 
-// 샘플 동아리 데이터 (실제로는 API에서 가져올 데이터)
-const sampleClubData = {
-  id: 1,
-  name: "HICC",
-  category: "학술",
-  description:
-    "홍익대학교 컴퓨터공학 동아리로, 웹 개발, 알고리즘, 프로젝트 등 다양한 활동을 진행합니다.",
-  logo: "/profile-icon.png",
-  cover: "/profile-icon.png",
-  members: 120,
-  activityScore: 850,
-  isRecruiting: true,
-  affiliation: "총동아리연합회",
+// 동아리 데이터 인터페이스
+interface ClubData {
+  id: number;
+  name: string;
+  category: string | null;
+  description: string;
+  logo: string;
+  cover: string;
+  members: number;
+  activityScore: number;
+  isRecruiting: boolean;
+  affiliation: string;
   externalLinks: {
-    instagram: "https://instagram.com/hicc",
-    youtube: "https://youtube.com/hicc",
-  },
-  calendar: [], // 일정 데이터는 MyClubScreen의 달력 컴포넌트 재사용
-  feed: [
-    { id: 1, image: "/profile-icon.png", caption: "정기 세션 진행 중" },
-    { id: 2, image: "/profile-icon.png", caption: "프로젝트 발표" },
-    { id: 3, image: "/profile-icon.png", caption: "동아리 MT" },
-    { id: 4, image: "/profile-icon.png", caption: "해커톤 참가" },
-  ],
-};
+    instagram?: string;
+    youtube?: string;
+  };
+  feed: Array<{ id: number; image: string; caption: string }>;
+}
 
 const ClubDetailScreen: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [club, setClub] = useState(sampleClubData);
+  const [club, setClub] = useState<ClubData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [showJoinModal, setShowJoinModal] = useState(false);
 
   // 달력 관련 상태 (MyClubScreen에서 재사용)
@@ -196,10 +191,113 @@ const ClubDetailScreen: React.FC = () => {
     return `${month}월 ${day}일 ${dayName}`;
   };
 
-  // 실제로는 API에서 동아리 데이터를 가져옴
+  // 동아리 데이터 로드
   useEffect(() => {
-    // setClub(fetchClubData(id));
+    if (id) {
+      loadClubData(parseInt(id));
+    }
   }, [id]);
+
+  const loadClubData = async (clubId: number) => {
+    try {
+      setLoading(true);
+      // club_user와 club_user_profile 조인해서 가져오기
+      const { data: clubUser, error: clubError } = await supabase
+        .from("club_user")
+        .select(
+          `
+          id,
+          club_name,
+          category,
+          recruiting,
+          group_user_id,
+          group_user:group_user_id (
+            group_name
+          ),
+          club_user_profile (
+            score,
+            club_explanation,
+            instagram_url,
+            youtube_url,
+            banner_image_url,
+            profile_image_url
+          )
+        `
+        )
+        .eq("id", clubId)
+        .eq("approved", true)
+        .single();
+
+      if (clubError) {
+        console.error("동아리 로드 오류:", clubError);
+        return;
+      }
+
+      if (!clubUser) {
+        console.error("동아리를 찾을 수 없습니다.");
+        return;
+      }
+
+      // 멤버 수 계산
+      const { count: memberCount } = await supabase
+        .from("club_personal")
+        .select("*", { count: "exact", head: true })
+        .eq("club_user_id", clubId)
+        .eq("approved", true);
+
+      const profile = clubUser.club_user_profile?.[0] || null;
+      const activityScore = profile?.score || (memberCount || 0) * 10;
+      const affiliation = clubUser.group_user?.group_name || "미지정";
+
+      // 동아리 데이터 구성
+      const clubData: ClubData = {
+        id: clubUser.id,
+        name: clubUser.club_name,
+        category: clubUser.category || "기타",
+        description: profile?.club_explanation || "",
+        logo: profile?.profile_image_url || "/profile-icon.png",
+        cover: profile?.banner_image_url || "/profile-icon.png",
+        members: memberCount || 0,
+        activityScore: activityScore,
+        isRecruiting: clubUser.recruiting || false,
+        affiliation: affiliation,
+        externalLinks: {
+          instagram: profile?.instagram_url || undefined,
+          youtube: profile?.youtube_url || undefined,
+        },
+        feed: [], // 피드는 별도로 구현 필요
+      };
+
+      setClub(clubData);
+    } catch (error) {
+      console.error("동아리 데이터 로드 중 오류:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="club-detail-screen">
+        <div style={{ padding: "40px", textAlign: "center" }}>로딩 중...</div>
+      </div>
+    );
+  }
+
+  if (!club) {
+    return (
+      <div className="club-detail-screen">
+        <div className="club-header-back">
+          <button className="back-btn" onClick={() => navigate(-1)}>
+            ← 뒤로가기
+          </button>
+        </div>
+        <div style={{ padding: "40px", textAlign: "center" }}>
+          동아리를 찾을 수 없습니다.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="club-detail-screen">
@@ -546,21 +644,23 @@ const ClubDetailScreen: React.FC = () => {
         </div>
 
         {/* Section H: 활동 피드 */}
-        <div className="club-feed-section">
-          <h2 className="section-title">동아리 활동 피드</h2>
-          <div className="feed-grid">
-            {club.feed.map((item) => (
-              <div key={item.id} className="feed-item">
-                <img
-                  src={item.image}
-                  alt={item.caption}
-                  className="feed-image"
-                />
-                <div className="feed-caption">{item.caption}</div>
-              </div>
-            ))}
+        {club.feed.length > 0 && (
+          <div className="club-feed-section">
+            <h2 className="section-title">동아리 활동 피드</h2>
+            <div className="feed-grid">
+              {club.feed.map((item) => (
+                <div key={item.id} className="feed-item">
+                  <img
+                    src={item.image}
+                    alt={item.caption}
+                    className="feed-image"
+                  />
+                  <div className="feed-caption">{item.caption}</div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* 가입 신청 모달 */}
