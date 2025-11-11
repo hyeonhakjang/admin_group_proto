@@ -645,9 +645,9 @@ const ClubDetailScreen: React.FC = () => {
         </div>
 
         {/* Section H: 활동 피드 */}
-        {club.feed.length > 0 && (
-          <div className="club-feed-section">
-            <h2 className="section-title">동아리 활동 피드</h2>
+        <div className="club-feed-section">
+          <h2 className="section-title">동아리 활동 피드</h2>
+          {club.feed.length > 0 ? (
             <div className="feed-grid">
               {club.feed.map((item) => (
                 <div key={item.id} className="feed-item">
@@ -660,8 +660,12 @@ const ClubDetailScreen: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="feed-empty-state">
+              <p>아직 활동 피드가 없습니다.</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 가입 신청 모달 */}
