@@ -742,6 +742,11 @@ const MyClubScreen: React.FC = () => {
 
   // 일정 댓글 추가 함수
   const handleAddComment = async () => {
+    // club_user 계정은 댓글 작성 불가
+    if (userData?.type === "club") {
+      return;
+    }
+
     if (!newComment.trim() || !selectedEvent?.id) {
       return;
     }
@@ -752,21 +757,24 @@ const MyClubScreen: React.FC = () => {
     if (selectedClub?.club_personal_id) {
       // 개인 계정 사용자: 이미 club_personal_id가 있음
       clubPersonalId = selectedClub.club_personal_id;
-    } else if (userData?.type === "club" && selectedClub?.club_user_id) {
+    } else if ((userData?.type as string) === "club" && selectedClub?.club_user_id) {
       // 클럽 계정 사용자: 해당 클럽의 club_personal 레코드 찾기
       // club_user 계정이 자신의 클럽 일정에 댓글을 작성하는 경우,
       // 해당 클럽의 첫 번째 club_personal 레코드를 사용
-      
-      const { data: clubPersonalList, error: clubPersonalError } = await supabase
-        .from("club_personal")
-        .select("id")
-        .eq("club_user_id", selectedClub.club_user_id)
-        .eq("approved", true)
-        .limit(1);
+
+      const { data: clubPersonalList, error: clubPersonalError } =
+        await supabase
+          .from("club_personal")
+          .select("id")
+          .eq("club_user_id", selectedClub.club_user_id)
+          .eq("approved", true)
+          .limit(1);
 
       if (clubPersonalError) {
         console.error("club_personal 조회 오류:", clubPersonalError);
-        alert("댓글을 작성할 수 없습니다. 동아리 정보를 불러오는 중 오류가 발생했습니다.");
+        alert(
+          "댓글을 작성할 수 없습니다. 동아리 정보를 불러오는 중 오류가 발생했습니다."
+        );
         return;
       }
 
@@ -1672,35 +1680,37 @@ const MyClubScreen: React.FC = () => {
                                   댓글 ({comments.length})
                                 </h5>
 
-                                {/* 댓글 입력 */}
-                                <div className="comment-input-container">
-                                  <div className="comment-input-avatar">
-                                    <img src="/profile-icon.png" alt="프로필" />
-                                  </div>
-                                  <div className="comment-input-wrapper">
-                                    <input
-                                      type="text"
-                                      className="comment-input"
-                                      placeholder="댓글을 입력하세요..."
-                                      value={newComment}
-                                      onChange={(e) =>
-                                        setNewComment(e.target.value)
-                                      }
-                                      onKeyPress={(e) => {
-                                        if (e.key === "Enter") {
-                                          handleAddComment();
+                                {/* 댓글 입력 - club_user 계정은 숨김 */}
+                                {userData?.type !== "club" && (
+                                  <div className="comment-input-container">
+                                    <div className="comment-input-avatar">
+                                      <img src="/profile-icon.png" alt="프로필" />
+                                    </div>
+                                    <div className="comment-input-wrapper">
+                                      <input
+                                        type="text"
+                                        className="comment-input"
+                                        placeholder="댓글을 입력하세요..."
+                                        value={newComment}
+                                        onChange={(e) =>
+                                          setNewComment(e.target.value)
                                         }
-                                      }}
-                                    />
-                                    <button
-                                      className="comment-submit-btn"
-                                      onClick={handleAddComment}
-                                      disabled={!newComment.trim()}
-                                    >
-                                      등록
-                                    </button>
+                                        onKeyPress={(e) => {
+                                          if (e.key === "Enter") {
+                                            handleAddComment();
+                                          }
+                                        }}
+                                      />
+                                      <button
+                                        className="comment-submit-btn"
+                                        onClick={handleAddComment}
+                                        disabled={!newComment.trim()}
+                                      >
+                                        등록
+                                      </button>
+                                    </div>
                                   </div>
-                                </div>
+                                )}
 
                                 {/* 댓글 리스트 */}
                                 <div className="comments-list">
@@ -1746,18 +1756,20 @@ const MyClubScreen: React.FC = () => {
                       <p className="no-event-message">일정이 없습니다.</p>
                     </div>
                   )}
-                  {/* 일정 추가 버튼 - 일정이 있든 없든 항상 표시 */}
-                  <button
-                    className="schedule-add-btn"
-                    onClick={() => {
-                      // TODO: 일정 추가 기능 구현
-                      alert("일정 추가 기능은 준비 중입니다.");
-                    }}
-                    aria-label="일정 추가"
-                  >
-                    <span className="schedule-add-icon">+</span>
-                    <span className="schedule-add-text">일정 추가</span>
-                  </button>
+                  {/* 일정 추가 버튼 - club_user 계정은 숨김 */}
+                  {userData?.type !== "club" && (
+                    <button
+                      className="schedule-add-btn"
+                      onClick={() => {
+                        // TODO: 일정 추가 기능 구현
+                        alert("일정 추가 기능은 준비 중입니다.");
+                      }}
+                      aria-label="일정 추가"
+                    >
+                      <span className="schedule-add-icon">+</span>
+                      <span className="schedule-add-text">일정 추가</span>
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -2059,8 +2071,8 @@ const MyClubScreen: React.FC = () => {
         </>
       )}
 
-      {/* 글 작성 플로팅 버튼 */}
-      {activeTab === "posts" && (
+      {/* 글 작성 플로팅 버튼 - club_user 계정은 숨김 */}
+      {activeTab === "posts" && userData?.type !== "club" && (
         <button
           className="floating-write-btn"
           onClick={() => navigate("/myclub/post/write")}
@@ -2355,32 +2367,35 @@ const MyClubScreen: React.FC = () => {
                   댓글 ({comments.length})
                 </h5>
 
-                <div className="comment-input-container">
-                  <div className="comment-input-avatar">
-                    <img src="/profile-icon.png" alt="프로필" />
+                {/* 댓글 입력 - club_user 계정은 숨김 */}
+                {userData?.type !== "club" && (
+                  <div className="comment-input-container">
+                    <div className="comment-input-avatar">
+                      <img src="/profile-icon.png" alt="프로필" />
+                    </div>
+                    <div className="comment-input-wrapper">
+                      <input
+                        type="text"
+                        className="comment-input"
+                        placeholder="댓글을 입력하세요..."
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            handleAddComment();
+                          }
+                        }}
+                      />
+                      <button
+                        className="comment-submit-btn"
+                        onClick={handleAddComment}
+                        disabled={!newComment.trim()}
+                      >
+                        등록
+                      </button>
+                    </div>
                   </div>
-                  <div className="comment-input-wrapper">
-                    <input
-                      type="text"
-                      className="comment-input"
-                      placeholder="댓글을 입력하세요..."
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === "Enter") {
-                          handleAddComment();
-                        }
-                      }}
-                    />
-                    <button
-                      className="comment-submit-btn"
-                      onClick={handleAddComment}
-                      disabled={!newComment.trim()}
-                    >
-                      등록
-                    </button>
-                  </div>
-                </div>
+                )}
 
                 <div className="comments-list">
                   {comments.map((comment) => (
