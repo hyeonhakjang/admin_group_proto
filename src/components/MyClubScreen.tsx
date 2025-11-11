@@ -757,7 +757,10 @@ const MyClubScreen: React.FC = () => {
     if (selectedClub?.club_personal_id) {
       // 개인 계정 사용자: 이미 club_personal_id가 있음
       clubPersonalId = selectedClub.club_personal_id;
-    } else if ((userData?.type as string) === "club" && selectedClub?.club_user_id) {
+    } else if (
+      (userData?.type as string) === "club" &&
+      selectedClub?.club_user_id
+    ) {
       // 클럽 계정 사용자: 해당 클럽의 club_personal 레코드 찾기
       // club_user 계정이 자신의 클럽 일정에 댓글을 작성하는 경우,
       // 해당 클럽의 첫 번째 club_personal 레코드를 사용
@@ -1034,6 +1037,72 @@ const MyClubScreen: React.FC = () => {
     const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
     return `${period} ${displayHour}:${minutes}`;
   }, []);
+
+  // 가입된 동아리가 없는 경우 (개인 계정만)
+  if (userData?.type !== "club" && clubs.length === 0) {
+    return (
+      <div
+        className="myclub-screen"
+        data-name="내 동아리 화면"
+        data-node-id="12:2999"
+      >
+        {/* Header Navigation Bar */}
+        <div
+          className="header-nav-bar"
+          data-name="Header Navigation Bar With Title"
+          data-node-id="12:3000"
+        >
+          {/* Navigation Bar */}
+          <div
+            className="nav-bar"
+            data-name="Navigation Bar"
+            data-node-id="12:3017"
+          >
+            <button
+              className="back-btn"
+              onClick={() => navigate(-1)}
+              style={{
+                background: "none",
+                border: "none",
+                padding: "0",
+                margin: "0",
+                cursor: "pointer",
+                fontSize: "clamp(16px, 4vw, 18px)",
+                color: "#28201b",
+                fontFamily: '"Inter", "Noto Sans KR", sans-serif',
+              }}
+            >
+              ← 뒤로가기
+            </button>
+          </div>
+        </div>
+
+        {/* Main Content - No Clubs Message */}
+        <div className="main-content">
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "calc(100vh - 200px)",
+              padding: "clamp(40px, 10vw, 60px)",
+            }}
+          >
+            <p
+              style={{
+                fontFamily: '"Inter", "Noto Sans KR", sans-serif',
+                fontSize: "clamp(16px, 4vw, 18px)",
+                color: "#28201b",
+                textAlign: "center",
+              }}
+            >
+              가입된 동아리가 없어요
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -1684,7 +1753,10 @@ const MyClubScreen: React.FC = () => {
                                 {userData?.type !== "club" && (
                                   <div className="comment-input-container">
                                     <div className="comment-input-avatar">
-                                      <img src="/profile-icon.png" alt="프로필" />
+                                      <img
+                                        src="/profile-icon.png"
+                                        alt="프로필"
+                                      />
                                     </div>
                                     <div className="comment-input-wrapper">
                                       <input
