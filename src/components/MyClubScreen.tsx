@@ -1301,8 +1301,8 @@ const MyClubScreen: React.FC = () => {
         )}
         {activeTab === "payout" && (
           <div className="statistics-content">
-            <h2>통계</h2>
-            <p>통계 콘텐츠가 여기에 표시됩니다.</p>
+            <h2>정산</h2>
+            <p>정산 콘텐츠가 여기에 표시됩니다.</p>
           </div>
         )}
         {activeTab === "schedule" && (
@@ -1586,6 +1586,17 @@ const MyClubScreen: React.FC = () => {
                 ) : (
                   <div className="schedule-event-card">
                     <p className="no-event-message">일정이 없습니다.</p>
+                    <button
+                      className="schedule-add-btn"
+                      onClick={() => {
+                        // TODO: 일정 추가 기능 구현
+                        alert("일정 추가 기능은 준비 중입니다.");
+                      }}
+                      aria-label="일정 추가"
+                    >
+                      <span className="schedule-add-icon">+</span>
+                      <span className="schedule-add-text">일정 추가</span>
+                    </button>
                   </div>
                 )}
               </div>

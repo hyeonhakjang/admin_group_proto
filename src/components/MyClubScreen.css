@@ -1546,7 +1546,50 @@
   color: #888888;
   margin: 0;
   text-align: center;
-  padding: clamp(40px, 10vw, 60px) 0;
+  padding: clamp(20px, 5vw, 30px) 0;
+}
+
+.schedule-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 12px);
+  padding: clamp(12px, 3vw, 16px) clamp(24px, 6vw, 32px);
+  background: #c34e00;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(195, 78, 0, 0.3);
+  margin-top: clamp(8px, 2vw, 12px);
+}
+
+.schedule-add-btn:hover {
+  background: #a03f00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(195, 78, 0, 0.4);
+}
+
+.schedule-add-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(195, 78, 0, 0.3);
+}
+
+.schedule-add-icon {
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 300;
+  line-height: 1;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+}
+
+.schedule-add-text {
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 600;
+  line-height: 1;
 }
 
 /* 게시글 콘텐츠 스타일 */
