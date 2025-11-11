@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BottomTabBar from "./BottomTabBar";
 import { supabase } from "../lib/supabase";
@@ -31,9 +31,17 @@ const ClubDetailScreen: React.FC = () => {
   const [showJoinModal, setShowJoinModal] = useState(false);
 
   // 달력 관련 상태 (MyClubScreen에서 재사용)
-  const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 7)); // 2024년 9월 7일
+  const [currentDate, setCurrentDate] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1); // 오늘 날짜의 월 첫날
+  });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showEventDetail, setShowEventDetail] = useState(false);
+  
+  // 일정 데이터 상태
+  const [schedules, setSchedules] = useState<any[]>([]);
+  const [selectedSchedule, setSelectedSchedule] = useState<any | null>(null);
+  const [scheduleParticipants, setScheduleParticipants] = useState<any[]>([]);
 
   // 댓글 상태
   const [newComment, setNewComment] = useState("");
@@ -68,33 +76,47 @@ const ClubDetailScreen: React.FC = () => {
     }
   };
 
-  // 일정이 있는 날짜들 (샘플 데이터)
-  const eventsDates = [
-    new Date(2024, 8, 7), // 9월 7일
-    new Date(2024, 8, 14), // 9월 14일
-    new Date(2024, 8, 21), // 9월 21일
-    new Date(2024, 8, 28), // 9월 28일
-  ];
+  // 일정이 있는 날짜들 (DB에서 로드된 데이터 기반)
+  const eventsDates = useMemo(() => {
+    return schedules.map((schedule) => {
+      const dateStr = schedule.date;
+      const [year, month, day] = dateStr.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    });
+  }, [schedules]);
 
-  // 선택된 날짜의 일정 정보
-  const selectedEvent = selectedDate
-    ? {
-        title: "HICC 정기 세션",
-        group: "HICC",
-        participants: 21,
+  // 선택된 날짜의 일정 정보 (DB에서 로드된 데이터 기반)
+  const selectedEvent = useMemo(() => {
+    if (!selectedDate || !selectedSchedule) return null;
+    
+    const formatTime = (timeStr: string) => {
+      if (!timeStr) return "";
+      const [hours, minutes] = timeStr.split(":");
+      const hour = parseInt(hours);
+      const period = hour >= 12 ? "오후" : "오전";
+      const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+      return `${period} ${displayHour}:${minutes}`;
+    };
+
+    const startTime = formatTime(selectedSchedule.started_at || "");
+    const endTime = formatTime(selectedSchedule.ended_at || "");
+    const timeRange = startTime && endTime ? `${startTime} ~ ${endTime}` : "";
+
+    return {
+      id: selectedSchedule.id,
+      title: selectedSchedule.title || "일정",
+      group: club?.name || "동아리",
+      participants: scheduleParticipants.length,
         date: selectedDate,
-        time: "오후 01:00 ~ 오후 05:00",
-        location: "홍익대학교 공학관 301호",
-        description:
-          "이번 정기 세션에서는 웹 개발 기초와 React 프레임워크에 대해 다룹니다. 초보자도 참여 가능하며, 실습 시간도 포함되어 있습니다. 노트북을 지참해 주시기 바랍니다.",
-        agenda: [
-          "14:00 - 14:30: 웹 개발 기초 강의",
-          "14:30 - 15:30: React 소개 및 환경 설정",
-          "15:30 - 16:00: 실습 시간",
-          "16:00 - 17:00: Q&A 및 네트워킹",
-        ],
-      }
-    : null;
+      time: timeRange,
+      location: "", // DB에 location 필드가 없으면 빈 문자열
+      description: selectedSchedule.content || "",
+      agenda: [], // DB에 agenda 필드가 없으면 빈 배열
+      participantAvatars: scheduleParticipants.map((p: any) => 
+        p.club_personal?.personal_user?.profile_image_url || "/profile-icon.png"
+      ),
+    };
+  }, [selectedDate, selectedSchedule, club, scheduleParticipants]);
 
   // 달력 관련 함수 (MyClubScreen에서 재사용)
   const getDaysInMonth = (date: Date) => {
@@ -125,7 +147,7 @@ const ClubDetailScreen: React.FC = () => {
     return days;
   };
 
-  const hasEvent = (day: number, isCurrentMonth: boolean) => {
+  const hasEvent = useCallback((day: number, isCurrentMonth: boolean) => {
     if (!isCurrentMonth) return false;
     const checkDate = new Date(
       currentDate.getFullYear(),
@@ -138,7 +160,7 @@ const ClubDetailScreen: React.FC = () => {
         eventDate.getMonth() === checkDate.getMonth() &&
         eventDate.getDate() === checkDate.getDate()
     );
-  };
+  }, [currentDate, eventsDates]);
 
   const isSelected = (day: number, isCurrentMonth: boolean) => {
     if (!isCurrentMonth || !selectedDate) return false;
@@ -157,6 +179,18 @@ const ClubDetailScreen: React.FC = () => {
       day
     );
     setSelectedDate(clickedDate);
+    
+    // 해당 날짜의 일정 찾기
+    const dateStr = `${clickedDate.getFullYear()}-${String(clickedDate.getMonth() + 1).padStart(2, '0')}-${String(clickedDate.getDate()).padStart(2, '0')}`;
+    const schedule = schedules.find((s) => s.date === dateStr);
+    setSelectedSchedule(schedule || null);
+    
+    // 일정이 있으면 참가자 정보 로드
+    if (schedule) {
+      loadScheduleParticipants(schedule.id);
+    } else {
+      setScheduleParticipants([]);
+    }
   };
 
   const goToPreviousMonth = () => {
@@ -191,12 +225,66 @@ const ClubDetailScreen: React.FC = () => {
     return `${month}월 ${day}일 ${dayName}`;
   };
 
+  // 일정 로드 함수
+  const loadSchedules = useCallback(async (clubId: number) => {
+    try {
+      const { data: schedulesData, error } = await supabase
+        .from("club_personal_schedule")
+        .select("*")
+        .eq("club_user_id", clubId)
+        .order("date", { ascending: true });
+
+      if (error) {
+        console.error("일정 로드 오류:", error);
+        setSchedules([]);
+      } else {
+        setSchedules(schedulesData || []);
+      }
+    } catch (error) {
+      console.error("일정 로드 중 오류:", error);
+      setSchedules([]);
+    }
+  }, []);
+
+  // 일정 참가자 로드 함수
+  const loadScheduleParticipants = useCallback(async (scheduleId: number) => {
+    try {
+      const { data: participants, error } = await supabase
+        .from("schedule_participant")
+        .select(
+          `
+          *,
+          club_personal:club_personal_id (
+            personal_user:personal_user_id (
+              id,
+              personal_name,
+              profile_image_url
+            )
+          )
+        `
+        )
+        .eq("schedule_id", scheduleId);
+
+      if (error) {
+        console.error("참가자 로드 오류:", error);
+        setScheduleParticipants([]);
+      } else {
+        setScheduleParticipants(participants || []);
+      }
+    } catch (error) {
+      console.error("참가자 로드 중 오류:", error);
+      setScheduleParticipants([]);
+    }
+  }, []);
+
   // 동아리 데이터 로드
   useEffect(() => {
     if (id) {
-      loadClubData(parseInt(id));
+      const clubId = parseInt(id);
+      loadClubData(clubId);
+      loadSchedules(clubId);
     }
-  }, [id]);
+  }, [id, loadSchedules]);
 
   const loadClubData = async (clubId: number) => {
     try {
@@ -479,12 +567,15 @@ const ClubDetailScreen: React.FC = () => {
                             {selectedEvent.group} · {selectedEvent.participants}
                             명
                           </span>
+                          {selectedEvent.participants > 0 && selectedEvent.participantAvatars && selectedEvent.participantAvatars.length > 0 && (
                           <div className="schedule-event-participants">
-                            <div className="participant-avatar">👤</div>
-                            <div className="participant-avatar">👤</div>
-                            <div className="participant-avatar">👤</div>
-                            <div className="participant-avatar">👤</div>
+                              {selectedEvent.participantAvatars.slice(0, 4).map((avatar: string, index: number) => (
+                                <div key={index} className="participant-avatar">
+                                  <img src={avatar} alt={`참가자 ${index + 1}`} />
+                                </div>
+                              ))}
                           </div>
+                          )}
                         </div>
                         <div className="schedule-event-time">
                           • {selectedEvent.date.getFullYear()}년{" "}
@@ -648,18 +739,18 @@ const ClubDetailScreen: React.FC = () => {
         <div className="club-feed-section">
           <h2 className="section-title">동아리 활동 피드</h2>
           {club.feed.length > 0 ? (
-            <div className="feed-grid">
-              {club.feed.map((item) => (
-                <div key={item.id} className="feed-item">
-                  <img
-                    src={item.image}
-                    alt={item.caption}
-                    className="feed-image"
-                  />
-                  <div className="feed-caption">{item.caption}</div>
-                </div>
-              ))}
-            </div>
+          <div className="feed-grid">
+            {club.feed.map((item) => (
+              <div key={item.id} className="feed-item">
+                <img
+                  src={item.image}
+                  alt={item.caption}
+                  className="feed-image"
+                />
+                <div className="feed-caption">{item.caption}</div>
+              </div>
+            ))}
+          </div>
           ) : (
             <div className="feed-empty-state">
               <p>아직 활동 피드가 없습니다.</p>
