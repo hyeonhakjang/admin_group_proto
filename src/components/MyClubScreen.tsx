@@ -1412,54 +1412,55 @@ const MyClubScreen: React.FC = () => {
                 <h3 className="schedule-details-title">
                   {formatDateForEvent(selectedDate)} 일정
                 </h3>
-                {selectedEvent &&
-                hasEvent(
-                  selectedDate.getDate(),
-                  selectedDate.getMonth() === currentDate.getMonth() &&
-                    selectedDate.getFullYear() === currentDate.getFullYear()
-                ) ? (
-                  <>
-                    {!showEventDetail ? (
-                      <div
-                        className="schedule-event-card"
-                        onClick={() => setShowEventDetail(true)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <h4 className="schedule-event-title">
-                          {selectedEvent.title}
-                        </h4>
-                        <div className="schedule-event-info">
-                          <span className="schedule-event-group">
-                            {selectedEvent.group} · {selectedEvent.participants}
-                            명
-                          </span>
-                          {selectedEvent.participants > 0 &&
-                            selectedEvent.participantAvatars &&
-                            selectedEvent.participantAvatars.length > 0 && (
-                              <div className="schedule-event-participants">
-                                {selectedEvent.participantAvatars.map(
-                                  (avatar: string, index: number) => (
-                                    <div
-                                      key={index}
-                                      className="participant-avatar"
-                                    >
-                                      <img
-                                        src={avatar || "/profile-icon.png"}
-                                        alt="참가자"
-                                      />
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            )}
+                <div className="schedule-content-wrapper">
+                  {selectedEvent &&
+                  hasEvent(
+                    selectedDate.getDate(),
+                    selectedDate.getMonth() === currentDate.getMonth() &&
+                      selectedDate.getFullYear() === currentDate.getFullYear()
+                  ) ? (
+                    <>
+                      {!showEventDetail ? (
+                        <div
+                          className="schedule-event-card"
+                          onClick={() => setShowEventDetail(true)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <h4 className="schedule-event-title">
+                            {selectedEvent.title}
+                          </h4>
+                          <div className="schedule-event-info">
+                            <span className="schedule-event-group">
+                              {selectedEvent.group} · {selectedEvent.participants}
+                              명
+                            </span>
+                            {selectedEvent.participants > 0 &&
+                              selectedEvent.participantAvatars &&
+                              selectedEvent.participantAvatars.length > 0 && (
+                                <div className="schedule-event-participants">
+                                  {selectedEvent.participantAvatars.map(
+                                    (avatar: string, index: number) => (
+                                      <div
+                                        key={index}
+                                        className="participant-avatar"
+                                      >
+                                        <img
+                                          src={avatar || "/profile-icon.png"}
+                                          alt="참가자"
+                                        />
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              )}
+                          </div>
+                          <div className="schedule-event-time">
+                            • {selectedEvent.date.getFullYear()}년{" "}
+                            {selectedEvent.date.getMonth() + 1}월{" "}
+                            {selectedEvent.date.getDate()}일 {selectedEvent.time}
+                          </div>
                         </div>
-                        <div className="schedule-event-time">
-                          • {selectedEvent.date.getFullYear()}년{" "}
-                          {selectedEvent.date.getMonth() + 1}월{" "}
-                          {selectedEvent.date.getDate()}일 {selectedEvent.time}
-                        </div>
-                      </div>
-                    ) : (
+                      ) : (
                       <>
                         <div
                           className="event-detail-overlay"
@@ -1626,25 +1627,13 @@ const MyClubScreen: React.FC = () => {
                         </div>
                       </>
                     )}
-                  </>
-                ) : (
-                  <div className="schedule-event-card no-event-card">
-                    <p className="no-event-message">일정이 없습니다.</p>
-                    <button
-                      className="schedule-add-btn"
-                      onClick={() => {
-                        // TODO: 일정 추가 기능 구현
-                        alert("일정 추가 기능은 준비 중입니다.");
-                      }}
-                      aria-label="일정 추가"
-                    >
-                      <span className="schedule-add-icon">+</span>
-                      <span className="schedule-add-text">일정 추가</span>
-                    </button>
-                  </div>
-                )}
-                {/* 일정이 있어도 일정 추가 버튼 표시 */}
-                {selectedEvent && (
+                    </>
+                  ) : (
+                    <div className="schedule-event-card no-event-card">
+                      <p className="no-event-message">일정이 없습니다.</p>
+                    </div>
+                  )}
+                  {/* 일정 추가 버튼 - 일정이 있든 없든 항상 표시 */}
                   <button
                     className="schedule-add-btn"
                     onClick={() => {
@@ -1652,12 +1641,11 @@ const MyClubScreen: React.FC = () => {
                       alert("일정 추가 기능은 준비 중입니다.");
                     }}
                     aria-label="일정 추가"
-                    style={{ marginTop: "16px" }}
                   >
                     <span className="schedule-add-icon">+</span>
                     <span className="schedule-add-text">일정 추가</span>
                   </button>
-                )}
+                </div>
               </div>
             )}
           </div>
