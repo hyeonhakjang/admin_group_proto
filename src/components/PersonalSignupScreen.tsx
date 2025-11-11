@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import "./PersonalSignupScreen.css";
+
+interface University {
+  id: number;
+  univ_name: string;
+}
 
 const PersonalSignupScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -26,9 +31,65 @@ const PersonalSignupScreen: React.FC = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // 학교 검색 관련 상태
+  const [universities, setUniversities] = useState<University[]>([]);
+  const [universitySearch, setUniversitySearch] = useState("");
+  const [showUniversityDropdown, setShowUniversityDropdown] = useState(false);
+  const [filteredUniversities, setFilteredUniversities] = useState<University[]>([]);
+
+  // 학교 목록 로드
+  useEffect(() => {
+    const loadUniversities = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("university")
+          .select("id, univ_name")
+          .order("univ_name", { ascending: true });
+
+        if (error) {
+          console.error("학교 목록 로드 오류:", error);
+        } else if (data) {
+          setUniversities(data);
+          setFilteredUniversities(data);
+        }
+      } catch (err) {
+        console.error("학교 목록 로드 중 오류:", err);
+      }
+    };
+
+    loadUniversities();
+  }, []);
+
+  // 학교 검색어 변경 시 필터링
+  useEffect(() => {
+    if (universitySearch.trim() === "") {
+      setFilteredUniversities(universities);
+    } else {
+      const filtered = universities.filter((univ) =>
+        univ.univ_name.toLowerCase().includes(universitySearch.toLowerCase())
+      );
+      setFilteredUniversities(filtered);
+    }
+  }, [universitySearch, universities]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // 학교 검색 핸들러
+  const handleUniversitySearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setUniversitySearch(value);
+    setFormData((prev) => ({ ...prev, university: value }));
+    setShowUniversityDropdown(true);
+  };
+
+  // 학교 선택 핸들러
+  const handleUniversitySelect = (university: University) => {
+    setFormData((prev) => ({ ...prev, university: university.univ_name }));
+    setUniversitySearch(university.univ_name);
+    setShowUniversityDropdown(false);
   };
 
   const handleEmailVerification = () => {
@@ -196,15 +257,51 @@ const PersonalSignupScreen: React.FC = () => {
 
           <div className="form-group">
             <label className="form-label">학교</label>
-            <input
-              type="text"
-              name="university"
-              className="form-input"
-              placeholder="학교를 입력하세요"
-              value={formData.university}
-              onChange={handleChange}
-              required
-            />
+            <div className="university-search-wrapper">
+              <input
+                type="text"
+                name="university"
+                className="form-input university-search-input"
+                placeholder="학교를 검색하세요"
+                value={universitySearch}
+                onChange={handleUniversitySearch}
+                onFocus={() => setShowUniversityDropdown(true)}
+                onBlur={() => {
+                  // 드롭다운 외부 클릭 시 닫기 (약간의 지연을 두어 클릭 이벤트가 먼저 발생하도록)
+                  setTimeout(() => setShowUniversityDropdown(false), 200);
+                }}
+                required
+              />
+              {showUniversityDropdown && filteredUniversities.length > 0 && (
+                <div className="university-dropdown">
+                  {filteredUniversities.slice(0, 10).map((univ) => (
+                    <div
+                      key={univ.id}
+                      className="university-dropdown-item"
+                      onMouseDown={(e) => {
+                        // onBlur 이벤트보다 먼저 실행되도록
+                        e.preventDefault();
+                        handleUniversitySelect(univ);
+                      }}
+                    >
+                      {univ.univ_name}
+                    </div>
+                  ))}
+                  {filteredUniversities.length > 10 && (
+                    <div className="university-dropdown-more">
+                      외 {filteredUniversities.length - 10}개 더...
+                    </div>
+                  )}
+                </div>
+              )}
+              {showUniversityDropdown && filteredUniversities.length === 0 && universitySearch.trim() !== "" && (
+                <div className="university-dropdown">
+                  <div className="university-dropdown-item" style={{ color: "#999", cursor: "default" }}>
+                    검색 결과가 없습니다
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="form-group">

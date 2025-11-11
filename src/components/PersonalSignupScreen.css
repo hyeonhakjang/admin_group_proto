@@ -98,6 +98,63 @@
   border-color: #c34e00;
 }
 
+/* 학교 검색 관련 스타일 */
+.university-search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.university-search-input {
+  width: 100%;
+}
+
+.university-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  margin-top: 4px;
+}
+
+.university-dropdown-item {
+  padding: clamp(12px, 3vw, 14px);
+  cursor: pointer;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  border-bottom: 1px solid #f5f5f5;
+  transition: background-color 0.2s ease;
+}
+
+.university-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.university-dropdown-item:hover {
+  background-color: #f9f9f9;
+}
+
+.university-dropdown-item:active {
+  background-color: #f0f0f0;
+}
+
+.university-dropdown-more {
+  padding: clamp(10px, 2.5vw, 12px);
+  text-align: center;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 13px);
+  color: #666;
+  font-style: italic;
+  border-top: 1px solid #f5f5f5;
+}
+
 .verification-input-wrapper {
   display: flex;
   gap: clamp(8px, 2vw, 12px);
