@@ -247,7 +247,10 @@ const ClubDetailScreen: React.FC = () => {
 
       const profile = clubUser.club_user_profile?.[0] || null;
       const activityScore = profile?.score || (memberCount || 0) * 10;
-      const affiliation = clubUser.group_user?.group_name || "미지정";
+      const groupUser = Array.isArray(clubUser.group_user) 
+        ? clubUser.group_user[0] 
+        : clubUser.group_user;
+      const affiliation = groupUser?.group_name || "미지정";
 
       // 동아리 데이터 구성
       const clubData: ClubData = {
