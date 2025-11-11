@@ -628,8 +628,8 @@
 }
 
 .calendar-day.selected {
-  background: #c34e00;
-  color: white;
+  background: #c34e00 !important;
+  color: white !important;
 }
 
 .calendar-day.other-month {
