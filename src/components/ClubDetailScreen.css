@@ -806,6 +806,13 @@
   padding: 0 clamp(16px, 4vw, 24px);
 }
 
+.feed-empty-state {
+  padding: clamp(40px, 10vw, 60px) clamp(16px, 4vw, 20px);
+  text-align: center;
+  color: #666;
+  font-size: clamp(14px, 3.5vw, 16px);
+}
+
 .feed-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
