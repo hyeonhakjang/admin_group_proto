@@ -878,7 +878,7 @@ const MyClubScreen: React.FC = () => {
       // 참가자 정보 로드
       const loadParticipants = async () => {
         const { data: participants, count } = await supabase
-          .from("schedule_participant")
+          .from("club_personal_participant")
           .select(
             `
             *,
