@@ -685,6 +685,9 @@
   flex-direction: column;
   gap: clamp(10px, 2.5vw, 14px);
   transition: all 0.2s ease;
+  min-height: clamp(120px, 30vw, 180px);
+  align-items: center;
+  justify-content: center;
 }
 
 .schedule-event-card:hover {
@@ -1543,7 +1546,7 @@
   color: #888888;
   margin: 0;
   text-align: center;
-  padding: clamp(20px, 5vw, 30px) 0;
+  padding: clamp(40px, 10vw, 60px) 0;
 }
 
 /* 게시글 콘텐츠 스타일 */
