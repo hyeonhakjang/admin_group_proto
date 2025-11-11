@@ -1931,24 +1931,23 @@ const MyClubScreen: React.FC = () => {
                       <p className="no-event-message">일정이 없습니다.</p>
                     </div>
                   )}
-                  {/* 일정 추가 버튼 - 회장, 스태프, club_user 계정만 표시 */}
-                  {(userData?.type === "club" ||
-                    (userData?.type === "personal" &&
-                      selectedClub?.role &&
-                      (selectedClub.role === "회장" ||
-                        selectedClub.role === "스태프"))) && (
-                    <button
-                      className="schedule-add-btn"
-                      onClick={() => {
-                        // TODO: 일정 추가 기능 구현
-                        alert("일정 추가 기능은 준비 중입니다.");
-                      }}
-                      aria-label="일정 추가"
-                    >
-                      <span className="schedule-add-icon">+</span>
-                      <span className="schedule-add-text">일정 추가</span>
-                    </button>
-                  )}
+                  {/* 일정 추가 버튼 - 회장, 스태프만 표시 (club_user 계정 제외) */}
+                  {userData?.type === "personal" &&
+                    selectedClub?.role &&
+                    (selectedClub.role === "회장" ||
+                      selectedClub.role === "스태프") && (
+                      <button
+                        className="schedule-add-btn"
+                        onClick={() => {
+                          // TODO: 일정 추가 기능 구현
+                          alert("일정 추가 기능은 준비 중입니다.");
+                        }}
+                        aria-label="일정 추가"
+                      >
+                        <span className="schedule-add-icon">+</span>
+                        <span className="schedule-add-text">일정 추가</span>
+                      </button>
+                    )}
                 </div>
               </div>
             )}
@@ -1996,7 +1995,10 @@ const MyClubScreen: React.FC = () => {
                         onClick={() => {
                           // club_user 계정이고, 관리자가 아닌 경우에만 역할 변경 가능
                           // 회장도 역할 변경 가능하도록 수정
-                          if (userData?.type === "club" && member.role !== "관리자") {
+                          if (
+                            userData?.type === "club" &&
+                            member.role !== "관리자"
+                          ) {
                             setSelectedMemberForRole(
                               selectedMemberForRole === member.clubPersonalId
                                 ? null
@@ -2007,9 +2009,10 @@ const MyClubScreen: React.FC = () => {
                         disabled={member.role === "관리자"}
                       >
                         {member.role}
-                        {member.role !== "관리자" && userData?.type === "club" && (
-                          <span className="dropdown-icon">▼</span>
-                        )}
+                        {member.role !== "관리자" &&
+                          userData?.type === "club" && (
+                            <span className="dropdown-icon">▼</span>
+                          )}
                       </button>
                       {selectedMemberForRole === member.clubPersonalId &&
                         userData?.type === "club" &&
