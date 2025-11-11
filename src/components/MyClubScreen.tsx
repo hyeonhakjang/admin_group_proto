@@ -1628,7 +1628,7 @@ const MyClubScreen: React.FC = () => {
                     )}
                   </>
                 ) : (
-                  <div className="schedule-event-card">
+                  <div className="schedule-event-card no-event-card">
                     <p className="no-event-message">일정이 없습니다.</p>
                     <button
                       className="schedule-add-btn"
