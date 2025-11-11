@@ -37,7 +37,7 @@ const ClubDetailScreen: React.FC = () => {
   });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showEventDetail, setShowEventDetail] = useState(false);
-  
+
   // 일정 데이터 상태
   const [schedules, setSchedules] = useState<any[]>([]);
   const [selectedSchedule, setSelectedSchedule] = useState<any | null>(null);
@@ -88,7 +88,7 @@ const ClubDetailScreen: React.FC = () => {
   // 선택된 날짜의 일정 정보 (DB에서 로드된 데이터 기반)
   const selectedEvent = useMemo(() => {
     if (!selectedDate || !selectedSchedule) return null;
-    
+
     const formatTime = (timeStr: string) => {
       if (!timeStr) return "";
       const [hours, minutes] = timeStr.split(":");
@@ -107,13 +107,15 @@ const ClubDetailScreen: React.FC = () => {
       title: selectedSchedule.title || "일정",
       group: club?.name || "동아리",
       participants: scheduleParticipants.length,
-        date: selectedDate,
+      date: selectedDate,
       time: timeRange,
       location: "", // DB에 location 필드가 없으면 빈 문자열
       description: selectedSchedule.content || "",
       agenda: [], // DB에 agenda 필드가 없으면 빈 배열
-      participantAvatars: scheduleParticipants.map((p: any) => 
-        p.club_personal?.personal_user?.profile_image_url || "/profile-icon.png"
+      participantAvatars: scheduleParticipants.map(
+        (p: any) =>
+          p.club_personal?.personal_user?.profile_image_url ||
+          "/profile-icon.png"
       ),
     };
   }, [selectedDate, selectedSchedule, club, scheduleParticipants]);
@@ -147,20 +149,23 @@ const ClubDetailScreen: React.FC = () => {
     return days;
   };
 
-  const hasEvent = useCallback((day: number, isCurrentMonth: boolean) => {
-    if (!isCurrentMonth) return false;
-    const checkDate = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      day
-    );
-    return eventsDates.some(
-      (eventDate) =>
-        eventDate.getFullYear() === checkDate.getFullYear() &&
-        eventDate.getMonth() === checkDate.getMonth() &&
-        eventDate.getDate() === checkDate.getDate()
-    );
-  }, [currentDate, eventsDates]);
+  const hasEvent = useCallback(
+    (day: number, isCurrentMonth: boolean) => {
+      if (!isCurrentMonth) return false;
+      const checkDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        day
+      );
+      return eventsDates.some(
+        (eventDate) =>
+          eventDate.getFullYear() === checkDate.getFullYear() &&
+          eventDate.getMonth() === checkDate.getMonth() &&
+          eventDate.getDate() === checkDate.getDate()
+      );
+    },
+    [currentDate, eventsDates]
+  );
 
   const isSelected = (day: number, isCurrentMonth: boolean) => {
     if (!isCurrentMonth || !selectedDate) return false;
@@ -179,12 +184,14 @@ const ClubDetailScreen: React.FC = () => {
       day
     );
     setSelectedDate(clickedDate);
-    
+
     // 해당 날짜의 일정 찾기
-    const dateStr = `${clickedDate.getFullYear()}-${String(clickedDate.getMonth() + 1).padStart(2, '0')}-${String(clickedDate.getDate()).padStart(2, '0')}`;
+    const dateStr = `${clickedDate.getFullYear()}-${String(
+      clickedDate.getMonth() + 1
+    ).padStart(2, "0")}-${String(clickedDate.getDate()).padStart(2, "0")}`;
     const schedule = schedules.find((s) => s.date === dateStr);
     setSelectedSchedule(schedule || null);
-    
+
     // 일정이 있으면 참가자 정보 로드
     if (schedule) {
       loadScheduleParticipants(schedule.id);
@@ -567,15 +574,25 @@ const ClubDetailScreen: React.FC = () => {
                             {selectedEvent.group} · {selectedEvent.participants}
                             명
                           </span>
-                          {selectedEvent.participants > 0 && selectedEvent.participantAvatars && selectedEvent.participantAvatars.length > 0 && (
-                          <div className="schedule-event-participants">
-                              {selectedEvent.participantAvatars.slice(0, 4).map((avatar: string, index: number) => (
-                                <div key={index} className="participant-avatar">
-                                  <img src={avatar} alt={`참가자 ${index + 1}`} />
-                                </div>
-                              ))}
-                          </div>
-                          )}
+                          {selectedEvent.participants > 0 &&
+                            selectedEvent.participantAvatars &&
+                            selectedEvent.participantAvatars.length > 0 && (
+                              <div className="schedule-event-participants">
+                                {selectedEvent.participantAvatars
+                                  .slice(0, 4)
+                                  .map((avatar: string, index: number) => (
+                                    <div
+                                      key={index}
+                                      className="participant-avatar"
+                                    >
+                                      <img
+                                        src={avatar}
+                                        alt={`참가자 ${index + 1}`}
+                                      />
+                                    </div>
+                                  ))}
+                              </div>
+                            )}
                         </div>
                         <div className="schedule-event-time">
                           • {selectedEvent.date.getFullYear()}년{" "}
@@ -619,14 +636,16 @@ const ClubDetailScreen: React.FC = () => {
                                   {selectedEvent.time}
                                 </span>
                               </div>
-                              <div className="event-detail-row">
-                                <span className="event-detail-label">
-                                  장소:
-                                </span>
-                                <span className="event-detail-value">
-                                  {selectedEvent.location}
-                                </span>
-                              </div>
+                              {selectedEvent.location && (
+                                <div className="event-detail-row">
+                                  <span className="event-detail-label">
+                                    장소:
+                                  </span>
+                                  <span className="event-detail-value">
+                                    {selectedEvent.location}
+                                  </span>
+                                </div>
+                              )}
                               <div className="event-detail-row">
                                 <span className="event-detail-label">
                                   참가자:
@@ -637,22 +656,26 @@ const ClubDetailScreen: React.FC = () => {
                                 </span>
                               </div>
                             </div>
-                            <div className="event-detail-description">
-                              <h5 className="event-detail-section-title">
-                                상세 내용
-                              </h5>
-                              <p>{selectedEvent.description}</p>
-                            </div>
-                            <div className="event-detail-agenda">
-                              <h5 className="event-detail-section-title">
-                                일정표
-                              </h5>
-                              <ul className="event-agenda-list">
-                                {selectedEvent.agenda.map((item, index) => (
-                                  <li key={index}>{item}</li>
-                                ))}
-                              </ul>
-                            </div>
+                            {selectedEvent.description && (
+                              <div className="event-detail-description">
+                                <h5 className="event-detail-section-title">
+                                  상세 내용
+                                </h5>
+                                <p>{selectedEvent.description}</p>
+                              </div>
+                            )}
+                            {selectedEvent.agenda && selectedEvent.agenda.length > 0 && (
+                              <div className="event-detail-agenda">
+                                <h5 className="event-detail-section-title">
+                                  일정표
+                                </h5>
+                                <ul className="event-agenda-list">
+                                  {selectedEvent.agenda.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
 
                             {/* 댓글 섹션 */}
                             <div className="event-comments-section">
@@ -739,18 +762,18 @@ const ClubDetailScreen: React.FC = () => {
         <div className="club-feed-section">
           <h2 className="section-title">동아리 활동 피드</h2>
           {club.feed.length > 0 ? (
-          <div className="feed-grid">
-            {club.feed.map((item) => (
-              <div key={item.id} className="feed-item">
-                <img
-                  src={item.image}
-                  alt={item.caption}
-                  className="feed-image"
-                />
-                <div className="feed-caption">{item.caption}</div>
-              </div>
-            ))}
-          </div>
+            <div className="feed-grid">
+              {club.feed.map((item) => (
+                <div key={item.id} className="feed-item">
+                  <img
+                    src={item.image}
+                    alt={item.caption}
+                    className="feed-image"
+                  />
+                  <div className="feed-caption">{item.caption}</div>
+                </div>
+              ))}
+            </div>
           ) : (
             <div className="feed-empty-state">
               <p>아직 활동 피드가 없습니다.</p>
