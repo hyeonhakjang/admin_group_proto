@@ -1082,22 +1082,68 @@ const MyClubScreen: React.FC = () => {
           <div
             style={{
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
               minHeight: "calc(100vh - 200px)",
               padding: "clamp(40px, 10vw, 60px)",
+              gap: "clamp(24px, 6vw, 32px)",
             }}
           >
-            <p
+            <div
               style={{
-                fontFamily: '"Inter", "Noto Sans KR", sans-serif',
-                fontSize: "clamp(16px, 4vw, 18px)",
-                color: "#28201b",
-                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "clamp(8px, 2vw, 12px)",
               }}
             >
-              가입된 동아리가 없어요
-            </p>
+              <p
+                style={{
+                  fontFamily: '"Inter", "Noto Sans KR", sans-serif',
+                  fontSize: "clamp(16px, 4vw, 18px)",
+                  color: "#28201b",
+                  textAlign: "center",
+                  margin: "0",
+                }}
+              >
+                가입된 동아리가 없어요..
+              </p>
+              <p
+                style={{
+                  fontFamily: '"Inter", "Noto Sans KR", sans-serif',
+                  fontSize: "clamp(16px, 4vw, 18px)",
+                  color: "#28201b",
+                  textAlign: "center",
+                  margin: "0",
+                }}
+              >
+                가입할 동아리를 찾아봐요!
+              </p>
+            </div>
+            <button
+              onClick={() => navigate("/community")}
+              style={{
+                padding: "clamp(12px, 3vw, 14px) clamp(24px, 6vw, 32px)",
+                background: "#c34e00",
+                color: "white",
+                border: "none",
+                borderRadius: "12px",
+                fontFamily: '"Inter", "Noto Sans KR", sans-serif',
+                fontSize: "clamp(14px, 3.5vw, 16px)",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#a03e00";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#c34e00";
+              }}
+            >
+              동아리 탐색
+            </button>
           </div>
         </div>
       </div>
