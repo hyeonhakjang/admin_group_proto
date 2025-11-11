@@ -246,6 +246,47 @@
   color: #999999;
 }
 
+/* 생년월일 선택기 */
+.birthdate-selector {
+  display: flex;
+  gap: clamp(8px, 2vw, 12px);
+  align-items: center;
+  width: 100%;
+}
+
+.birthdate-select-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.birthdate-select {
+  width: 100%;
+  padding: clamp(12px, 3vw, 14px);
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  background: white;
+  outline: none;
+  box-sizing: border-box;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2328201b' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right clamp(12px, 3vw, 14px) center;
+  background-size: clamp(10px, 2.5vw, 12px) clamp(8px, 2vw, 10px);
+  padding-right: clamp(32px, 8vw, 40px);
+  cursor: pointer;
+}
+
+.birthdate-select:focus {
+  border-color: #c34e00;
+}
+
+.birthdate-select:hover {
+  border-color: #c34e00;
+}
+
 .verification-input-wrapper {
   display: flex;
   gap: clamp(8px, 2vw, 12px);

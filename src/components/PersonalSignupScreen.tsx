@@ -14,7 +14,9 @@ const PersonalSignupScreen: React.FC = () => {
     studentId: "",
     department: "",
     phone: "",
-    birthDate: "",
+    birthYear: "",
+    birthMonth: "",
+    birthDay: "",
   });
 
   const [error, setError] = useState("");
@@ -52,7 +54,9 @@ const PersonalSignupScreen: React.FC = () => {
     univ.toLowerCase().includes(universitySearch.toLowerCase())
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -64,12 +68,10 @@ const PersonalSignupScreen: React.FC = () => {
     setUniversitySearch("");
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-
 
     try {
       // 대학교 ID 찾기 (university 테이블에서)
@@ -109,7 +111,13 @@ const PersonalSignupScreen: React.FC = () => {
           student_num: formData.studentId,
           department: formData.department,
           phone_num: formData.phone,
-          birthdate: formData.birthDate || null,
+          birthdate:
+            formData.birthYear && formData.birthMonth && formData.birthDay
+              ? `${formData.birthYear}-${String(formData.birthMonth).padStart(
+                  2,
+                  "0"
+                )}-${String(formData.birthDay).padStart(2, "0")}`
+              : null,
           univ_id: univId,
         })
         .select()
@@ -309,14 +317,76 @@ const PersonalSignupScreen: React.FC = () => {
 
           <div className="form-group">
             <label className="form-label">생년월일</label>
-            <input
-              type="date"
-              name="birthDate"
-              className="form-input"
-              value={formData.birthDate}
-              onChange={handleChange}
-              required
-            />
+            <div className="birthdate-selector">
+              <div className="birthdate-select-wrapper">
+                <select
+                  name="birthYear"
+                  className="birthdate-select"
+                  value={formData.birthYear}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">년</option>
+                  {Array.from({ length: 100 }, (_, i) => {
+                    const year = new Date().getFullYear() - 18 - i;
+                    return (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div className="birthdate-select-wrapper">
+                <select
+                  name="birthMonth"
+                  className="birthdate-select"
+                  value={formData.birthMonth}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">월</option>
+                  {Array.from({ length: 12 }, (_, i) => {
+                    const month = i + 1;
+                    return (
+                      <option key={month} value={month}>
+                        {month}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div className="birthdate-select-wrapper">
+                <select
+                  name="birthDay"
+                  className="birthdate-select"
+                  value={formData.birthDay}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">일</option>
+                  {Array.from(
+                    {
+                      length: formData.birthYear && formData.birthMonth
+                        ? new Date(
+                            parseInt(formData.birthYear),
+                            parseInt(formData.birthMonth),
+                            0
+                          ).getDate()
+                        : 31,
+                    },
+                    (_, i) => {
+                      const day = i + 1;
+                      return (
+                        <option key={day} value={day}>
+                          {day}
+                        </option>
+                      );
+                    }
+                  )}
+                </select>
+              </div>
+            </div>
           </div>
 
           {error && <div className="signup-error">{error}</div>}
@@ -325,7 +395,6 @@ const PersonalSignupScreen: React.FC = () => {
           </button>
         </form>
       </div>
-
     </div>
   );
 };
