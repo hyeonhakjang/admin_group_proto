@@ -628,7 +628,7 @@
 }
 
 .calendar-day.selected {
-  background: #28201b;
+  background: #c34e00;
   color: white;
 }
 
@@ -3000,7 +3000,7 @@
 }
 
 .invite-btn {
-  background: #28201b;
+  background: #c34e00;
   color: white;
   border: none;
   border-radius: 8px;
@@ -3013,7 +3013,7 @@
 }
 
 .invite-btn:hover {
-  background: #1a1612;
+  background: #a03e00;
   transform: translateY(-1px);
 }
 
