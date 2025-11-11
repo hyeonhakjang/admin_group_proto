@@ -571,7 +571,11 @@ const MyClubScreen: React.FC = () => {
   );
 
   // 달력 관련 상태
-  const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 7)); // 2024년 9월 7일
+  const [currentDate, setCurrentDate] = useState(() => {
+    // 초기값을 현재 날짜로 설정
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showEventDetail, setShowEventDetail] = useState(false);
 
@@ -718,10 +722,13 @@ const MyClubScreen: React.FC = () => {
       setSelectedDate(null);
       setShowEventDetail(false);
     }
-    // 일정 탭으로 돌아올 때도 상태 초기화
+    // 일정 탭으로 돌아올 때 상태 초기화 및 현재 날짜로 설정
     if (tab === "schedule") {
       setSelectedDate(null);
       setShowEventDetail(false);
+      // 현재 날짜로 달력 설정
+      const today = new Date();
+      setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1));
     }
   };
 
@@ -754,20 +761,23 @@ const MyClubScreen: React.FC = () => {
     return days;
   };
 
-  const hasEvent = React.useCallback((day: number, isCurrentMonth: boolean) => {
-    if (!isCurrentMonth) return false;
-    const checkDate = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      day
-    );
-    return eventsDates.some(
-      (eventDate) =>
-        eventDate.getFullYear() === checkDate.getFullYear() &&
-        eventDate.getMonth() === checkDate.getMonth() &&
-        eventDate.getDate() === checkDate.getDate()
-    );
-  }, [currentDate, eventsDates]);
+  const hasEvent = React.useCallback(
+    (day: number, isCurrentMonth: boolean) => {
+      if (!isCurrentMonth) return false;
+      const checkDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        day
+      );
+      return eventsDates.some(
+        (eventDate) =>
+          eventDate.getFullYear() === checkDate.getFullYear() &&
+          eventDate.getMonth() === checkDate.getMonth() &&
+          eventDate.getDate() === checkDate.getDate()
+      );
+    },
+    [currentDate, eventsDates]
+  );
 
   const isSelected = (day: number, isCurrentMonth: boolean) => {
     if (!isCurrentMonth || !selectedDate) return false;
