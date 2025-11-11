@@ -671,15 +671,14 @@ const MyClubScreen: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
   // 일정 댓글 로드 함수
-  const loadScheduleComments = React.useCallback(
-    async (scheduleId: number) => {
-      if (!scheduleId) return;
+  const loadScheduleComments = React.useCallback(async (scheduleId: number) => {
+    if (!scheduleId) return;
 
-      try {
-        const { data: scheduleComments, error } = await supabase
-          .from("schedule_comment")
-          .select(
-            `
+    try {
+      const { data: scheduleComments, error } = await supabase
+        .from("schedule_comment")
+        .select(
+          `
           id,
           content,
           commented_date,
@@ -695,51 +694,51 @@ const MyClubScreen: React.FC = () => {
             )
           )
         `
-          )
-          .eq("schedule_id", scheduleId)
-          .order("commented_date", { ascending: false });
+        )
+        .eq("schedule_id", scheduleId)
+        .order("commented_date", { ascending: false });
 
-        if (error) {
-          console.error("댓글 로드 오류:", error);
-          setComments([]);
-          return;
-        }
+      if (error) {
+        console.error("댓글 로드 오류:", error);
+        setComments([]);
+        return;
+      }
 
-        if (scheduleComments) {
-          const formattedComments = scheduleComments.map((comment: any) => {
-            const clubPersonal = comment.club_personal;
-            const personalUser = clubPersonal?.personal_user;
-            const clubUser = clubPersonal?.club_user;
-            
-            // 개인 유저가 있으면 개인 유저 정보 사용, 없으면 클럽 유저 정보 사용
-            const authorName = personalUser?.personal_name || clubUser?.club_name || "익명";
-            const authorAvatar = personalUser?.profile_image_url || "/profile-icon.png";
-            
-            return {
-              id: comment.id,
-              author: authorName,
-              authorAvatar: authorAvatar,
-              content: comment.content,
-              createdAt: comment.commented_date
-                ? new Date(comment.commented_date).toLocaleDateString("ko-KR", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })
-                : "",
-            };
-          });
-          setComments(formattedComments);
-        } else {
-          setComments([]);
-        }
-      } catch (err) {
-        console.error("댓글 로드 중 오류:", err);
+      if (scheduleComments) {
+        const formattedComments = scheduleComments.map((comment: any) => {
+          const clubPersonal = comment.club_personal;
+          const personalUser = clubPersonal?.personal_user;
+          const clubUser = clubPersonal?.club_user;
+
+          // 개인 유저가 있으면 개인 유저 정보 사용, 없으면 클럽 유저 정보 사용
+          const authorName =
+            personalUser?.personal_name || clubUser?.club_name || "익명";
+          const authorAvatar =
+            personalUser?.profile_image_url || "/profile-icon.png";
+
+          return {
+            id: comment.id,
+            author: authorName,
+            authorAvatar: authorAvatar,
+            content: comment.content,
+            createdAt: comment.commented_date
+              ? new Date(comment.commented_date).toLocaleDateString("ko-KR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              : "",
+          };
+        });
+        setComments(formattedComments);
+      } else {
         setComments([]);
       }
-    },
-    []
-  );
+    } catch (err) {
+      console.error("댓글 로드 중 오류:", err);
+      setComments([]);
+    }
+  }, []);
 
   // 일정 댓글 추가 함수
   const handleAddComment = async () => {
@@ -754,23 +753,32 @@ const MyClubScreen: React.FC = () => {
       // 개인 계정 사용자: 이미 club_personal_id가 있음
       clubPersonalId = selectedClub.club_personal_id;
     } else if (userData?.type === "club" && selectedClub?.club_user_id) {
-      // 클럽 계정 사용자: club_user_id로 club_personal 찾기
-      // 클럽 계정 사용자는 자신의 클럽에 대한 club_personal 레코드를 찾거나 생성해야 함
-      const { data: clubPersonalList } = await supabase
+      // 클럽 계정 사용자: 해당 클럽의 club_personal 레코드 찾기
+      // club_user 계정이 자신의 클럽 일정에 댓글을 작성하는 경우,
+      // 해당 클럽의 첫 번째 club_personal 레코드를 사용
+      
+      const { data: clubPersonalList, error: clubPersonalError } = await supabase
         .from("club_personal")
         .select("id")
         .eq("club_user_id", selectedClub.club_user_id)
+        .eq("approved", true)
         .limit(1);
 
+      if (clubPersonalError) {
+        console.error("club_personal 조회 오류:", clubPersonalError);
+        alert("댓글을 작성할 수 없습니다. 동아리 정보를 불러오는 중 오류가 발생했습니다.");
+        return;
+      }
+
       if (clubPersonalList && clubPersonalList.length > 0) {
-        // 기존 club_personal 레코드 사용
+        // 해당 클럽의 첫 번째 club_personal 레코드 사용
         clubPersonalId = clubPersonalList[0].id;
       } else {
-        // 클럽 계정 사용자의 경우, club_user_id와 personal_user_id가 같은 경우를 찾거나
-        // 새로운 club_personal 레코드를 생성해야 할 수 있음
-        // 일단 에러 메시지 표시
-        console.error("club_personal 레코드를 찾을 수 없습니다.");
-        alert("댓글을 작성하려면 동아리 가입 정보가 필요합니다.");
+        // club_personal 레코드가 없는 경우 (클럽에 가입한 개인 사용자가 없는 경우)
+        console.error("club_personal 레코드를 찾을 수 없습니다.", {
+          club_user_id: selectedClub.club_user_id,
+        });
+        alert("댓글을 작성하려면 동아리에 가입한 회원이 있어야 합니다.");
         return;
       }
     }
@@ -779,6 +787,7 @@ const MyClubScreen: React.FC = () => {
       console.error("club_personal_id를 찾을 수 없습니다.", {
         selectedClub,
         userData,
+        selectedEvent,
       });
       alert("댓글을 작성할 수 없습니다. 동아리 가입 정보를 확인해주세요.");
       return;
