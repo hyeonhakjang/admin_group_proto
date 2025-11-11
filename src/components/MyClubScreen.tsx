@@ -321,16 +321,19 @@ const MyClubScreen: React.FC = () => {
         `
         )
         .eq("club_user_id", selectedClub.club_user_id)
-        .eq("approved", true);
+        .order("approved", { ascending: false })
+        .order("created_at", { ascending: true });
 
       if (error) {
         console.error("멤버 로드 오류:", error);
       } else if (members) {
         const transformedMembers = members.map((member: any) => ({
           id: member.personal_user?.id || member.id,
+          clubPersonalId: member.id, // club_personal 테이블의 id 저장
           name: member.personal_user?.personal_name || "이름 없음",
           email: member.personal_user?.email || "",
           role: member.role || "동아리원",
+          approved: member.approved || false,
           isOwner: member.role === "회장" || member.role === "관리자",
           avatar:
             member.personal_user?.profile_image_url || "/profile-icon.png",
@@ -342,6 +345,28 @@ const MyClubScreen: React.FC = () => {
       console.error("멤버 로드 중 오류:", error);
     }
   }, [selectedClub]);
+
+  // 멤버 승인 처리 함수
+  const handleApproveMember = React.useCallback(async (clubPersonalId: number) => {
+    try {
+      const { error } = await supabase
+        .from("club_personal")
+        .update({ approved: true })
+        .eq("id", clubPersonalId);
+
+      if (error) {
+        console.error("멤버 승인 오류:", error);
+        alert("멤버 승인 중 오류가 발생했습니다.");
+        return;
+      }
+
+      // 멤버 목록 다시 로드
+      await loadMembers();
+    } catch (error) {
+      console.error("멤버 승인 처리 중 오류:", error);
+      alert("멤버 승인 중 오류가 발생했습니다.");
+    }
+  }, [loadMembers]);
 
   // 선택된 동아리 변경 시 데이터 로드
   useEffect(() => {
@@ -1919,23 +1944,32 @@ const MyClubScreen: React.FC = () => {
                 <div key={member.id} className="member-item">
                   <div className="member-info">
                     <div className="member-avatar">
-                      <img src="/profile-icon.png" alt={member.name} />
+                      <img src={member.avatar} alt={member.name} />
                     </div>
                     <div className="member-details">
                       <div className="member-name">{member.name}</div>
                       <div className="member-email">{member.email}</div>
                     </div>
                   </div>
-                  <button
-                    className={`member-role-btn ${
-                      member.isOwner ? "owner-role" : ""
-                    }`}
-                  >
-                    {member.role}
-                    {!member.isOwner && (
-                      <span className="dropdown-icon">▼</span>
-                    )}
-                  </button>
+                  {member.approved ? (
+                    <button
+                      className={`member-role-btn ${
+                        member.isOwner ? "owner-role" : ""
+                      }`}
+                    >
+                      {member.role}
+                      {!member.isOwner && (
+                        <span className="dropdown-icon">▼</span>
+                      )}
+                    </button>
+                  ) : (
+                    <button
+                      className="member-approve-btn"
+                      onClick={() => handleApproveMember(member.clubPersonalId)}
+                    >
+                      승인
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

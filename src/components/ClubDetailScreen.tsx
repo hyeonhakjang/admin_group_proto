@@ -862,7 +862,8 @@ const ClubDetailScreen: React.FC = () => {
             </div>
             <div className="modal-body">
               <p style={{ textAlign: "center", padding: "20px" }}>
-                가입 신청이 완료되었습니다. 관리자의 승인 이후 활동하실 수 있습니다.
+                가입 신청이 완료되었습니다. 관리자의 승인 이후 활동하실 수
+                있습니다.
               </p>
             </div>
           </div>
