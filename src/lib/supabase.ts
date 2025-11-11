@@ -39,7 +39,9 @@ export interface ClubUser {
   manager_phone_num?: string;
   manager_student_num?: string;
   manager_department?: string;
-  approved: number;
+  approved: boolean;
+  bank?: string; // enum 타입
+  account_number?: string;
   refresh_token?: string;
   group_user_id?: number;
 }

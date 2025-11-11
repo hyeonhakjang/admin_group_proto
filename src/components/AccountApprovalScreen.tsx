@@ -36,7 +36,7 @@ interface ClubAccount {
   manager_phone_num?: string;
   manager_student_num?: string;
   manager_department?: string;
-  approved: number;
+  approved: boolean;
   created_at: string;
 }
 
@@ -116,11 +116,11 @@ const AccountApprovalScreen: React.FC = () => {
           console.error("계정 목록 로드 오류:", error);
         } else {
           if (activeTab === "pending") {
-            // 승인 요청: approved가 0인 계정
-            setClubAccounts((data || []).filter((acc) => acc.approved === 0));
+            // 승인 요청: approved가 false인 계정
+            setClubAccounts((data || []).filter((acc) => acc.approved === false));
           } else {
-            // 등록된 계정: approved가 1인 계정
-            setClubAccounts((data || []).filter((acc) => acc.approved === 1));
+            // 등록된 계정: approved가 true인 계정
+            setClubAccounts((data || []).filter((acc) => acc.approved === true));
           }
         }
       }
@@ -179,7 +179,7 @@ const AccountApprovalScreen: React.FC = () => {
           // 동아리 계정 승인
           const { error } = await supabase
             .from("club_user")
-            .update({ approved: 1 })
+            .update({ approved: true })
             .eq("id", accountId);
 
           if (error) {
@@ -273,9 +273,7 @@ const AccountApprovalScreen: React.FC = () => {
         >
           ←
         </button>
-        <h1 className="approval-header-title">
-          {accountType} 계정 승인
-        </h1>
+        <h1 className="approval-header-title">{accountType} 계정 승인</h1>
         <div style={{ width: "44px" }}></div> {/* 공간 맞춤 */}
       </div>
 
@@ -325,77 +323,75 @@ const AccountApprovalScreen: React.FC = () => {
           </div>
         ) : (
           <div className="approval-account-list">
-            {userData.type === "admin" ? (
-              // 캠퍼스 계정 목록
-              (filteredAccounts as GroupAccount[]).map((account) => (
-                <div key={account.id} className="approval-account-item">
-                  <button
-                    className="approval-account-name"
-                    onClick={() => handleAccountClick(account)}
-                  >
-                    {account.group_name}
-                  </button>
-                  {activeTab === "pending" ? (
-                    <div className="approval-account-actions">
-                      <button
-                        className="approval-button approve"
-                        onClick={() => handleApprove(account.id)}
-                      >
-                        승인
-                      </button>
-                      <button
-                        className="approval-button reject"
-                        onClick={() => handleReject(account.id)}
-                      >
-                        거부
-                      </button>
-                    </div>
-                  ) : (
+            {userData.type === "admin"
+              ? // 캠퍼스 계정 목록
+                (filteredAccounts as GroupAccount[]).map((account) => (
+                  <div key={account.id} className="approval-account-item">
                     <button
-                      className="approval-settings-button"
-                      onClick={() => handleSettings(account.id)}
+                      className="approval-account-name"
+                      onClick={() => handleAccountClick(account)}
                     >
-                      설정
+                      {account.group_name}
                     </button>
-                  )}
-                </div>
-              ))
-            ) : (
-              // 동아리 계정 목록
-              (filteredAccounts as ClubAccount[]).map((account) => (
-                <div key={account.id} className="approval-account-item">
-                  <button
-                    className="approval-account-name"
-                    onClick={() => handleAccountClick(account)}
-                  >
-                    {account.club_name}
-                  </button>
-                  {activeTab === "pending" ? (
-                    <div className="approval-account-actions">
+                    {activeTab === "pending" ? (
+                      <div className="approval-account-actions">
+                        <button
+                          className="approval-button approve"
+                          onClick={() => handleApprove(account.id)}
+                        >
+                          승인
+                        </button>
+                        <button
+                          className="approval-button reject"
+                          onClick={() => handleReject(account.id)}
+                        >
+                          거부
+                        </button>
+                      </div>
+                    ) : (
                       <button
-                        className="approval-button approve"
-                        onClick={() => handleApprove(account.id)}
+                        className="approval-settings-button"
+                        onClick={() => handleSettings(account.id)}
                       >
-                        승인
+                        설정
                       </button>
-                      <button
-                        className="approval-button reject"
-                        onClick={() => handleReject(account.id)}
-                      >
-                        거부
-                      </button>
-                    </div>
-                  ) : (
+                    )}
+                  </div>
+                ))
+              : // 동아리 계정 목록
+                (filteredAccounts as ClubAccount[]).map((account) => (
+                  <div key={account.id} className="approval-account-item">
                     <button
-                      className="approval-settings-button"
-                      onClick={() => handleSettings(account.id)}
+                      className="approval-account-name"
+                      onClick={() => handleAccountClick(account)}
                     >
-                      설정
+                      {account.club_name}
                     </button>
-                  )}
-                </div>
-              ))
-            )}
+                    {activeTab === "pending" ? (
+                      <div className="approval-account-actions">
+                        <button
+                          className="approval-button approve"
+                          onClick={() => handleApprove(account.id)}
+                        >
+                          승인
+                        </button>
+                        <button
+                          className="approval-button reject"
+                          onClick={() => handleReject(account.id)}
+                        >
+                          거부
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        className="approval-settings-button"
+                        onClick={() => handleSettings(account.id)}
+                      >
+                        설정
+                      </button>
+                    )}
+                  </div>
+                ))}
           </div>
         )}
       </div>
@@ -410,10 +406,7 @@ const AccountApprovalScreen: React.FC = () => {
               setSelectedAccount(null);
             }}
           ></div>
-          <div
-            className="approval-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="approval-modal" onClick={(e) => e.stopPropagation()}>
             <div className="approval-modal-header">
               <h2 className="approval-modal-title">계정 정보</h2>
               <button

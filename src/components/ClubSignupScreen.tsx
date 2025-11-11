@@ -168,7 +168,7 @@ const ClubSignupScreen: React.FC = () => {
       // 그룹 사용자 ID 사용 (이미 선택된 affiliatedGroupId 사용)
       const groupUserId = formData.affiliatedGroupId;
 
-      // 클럽 사용자 등록 (approved는 0으로 설정 - 캠퍼스 계정 승인 필요)
+      // 클럽 사용자 등록 (approved는 false로 설정 - 캠퍼스 계정 승인 필요)
       const { error: insertError } = await supabase
         .from("club_user")
         .insert({
@@ -180,7 +180,7 @@ const ClubSignupScreen: React.FC = () => {
           manager_phone_num: formData.contact,
           manager_student_num: undefined, // 폼에 없음
           manager_department: undefined, // 폼에 없음
-          approved: 0, // 캠퍼스 계정 승인 대기 상태
+          approved: false, // 캠퍼스 계정 승인 대기 상태
           group_user_id: groupUserId,
         })
         .select()

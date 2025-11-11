@@ -33,7 +33,7 @@ const MyClubScreen: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<
-    "posts" | "statistics" | "schedule" | "members" | "archive"
+    "posts" | "payout" | "schedule" | "members" | "archive"
   >("posts");
 
   // 사용자 정보 상태
@@ -157,9 +157,15 @@ const MyClubScreen: React.FC = () => {
         const minutes = Math.floor(diff / (1000 * 60));
         return minutes <= 0 ? "방금 전" : `${minutes}분 전`;
       }
-      return `오늘 ${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`;
+      return `오늘 ${date.getHours()}:${String(date.getMinutes()).padStart(
+        2,
+        "0"
+      )}`;
     } else if (days === 1) {
-      return `어제 ${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`;
+      return `어제 ${date.getHours()}:${String(date.getMinutes()).padStart(
+        2,
+        "0"
+      )}`;
     } else if (days < 7) {
       return `${days}일 전`;
     } else {
@@ -324,7 +330,8 @@ const MyClubScreen: React.FC = () => {
           email: member.personal_user?.email || "",
           role: member.role || "동아리원",
           isOwner: member.role === "회장" || member.role === "관리자",
-          avatar: member.personal_user?.profile_image_url || "/profile-icon.png",
+          avatar:
+            member.personal_user?.profile_image_url || "/profile-icon.png",
         }));
 
         setMembers(transformedMembers);
@@ -554,8 +561,12 @@ const MyClubScreen: React.FC = () => {
   // 검색 필터링된 멤버
   const filteredMembers = members.filter(
     (member) =>
-      (member.name || "").toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
-      (member.email || "").toLowerCase().includes(memberSearchQuery.toLowerCase())
+      (member.name || "")
+        .toLowerCase()
+        .includes(memberSearchQuery.toLowerCase()) ||
+      (member.email || "")
+        .toLowerCase()
+        .includes(memberSearchQuery.toLowerCase())
   );
 
   // 달력 관련 상태
@@ -696,7 +707,7 @@ const MyClubScreen: React.FC = () => {
     .filter((date): date is Date => date !== null);
 
   const handleTabClick = (
-    tab: "posts" | "statistics" | "schedule" | "members" | "archive"
+    tab: "posts" | "payout" | "schedule" | "members" | "archive"
   ) => {
     setActiveTab(tab);
     // 일정 탭이 아닌 다른 탭으로 이동할 때 일정 관련 상태 초기화
@@ -788,10 +799,9 @@ const MyClubScreen: React.FC = () => {
       // 참가자 수 로드
       const loadParticipants = async () => {
         const { count } = await supabase
-          .from("club_personal_participant")
+          .from("schedule_participant")
           .select("*", { count: "exact", head: true })
-          .eq("schedule_id", eventOnDate.id)
-          .eq("status", "attend");
+          .eq("schedule_id", eventOnDate.id);
 
         setSelectedEvent({
           id: eventOnDate.id,
@@ -799,9 +809,12 @@ const MyClubScreen: React.FC = () => {
           group: selectedClub?.name || "",
           participants: count || 0,
           date: clickedDate,
-          time: eventOnDate.started_at && eventOnDate.ended_at
-            ? `${formatTime(eventOnDate.started_at)} ~ ${formatTime(eventOnDate.ended_at)}`
-            : "시간 미정",
+          time:
+            eventOnDate.started_at && eventOnDate.ended_at
+              ? `${formatTime(eventOnDate.started_at)} ~ ${formatTime(
+                  eventOnDate.ended_at
+                )}`
+              : "시간 미정",
           location: "", // TODO: 장소 필드 추가 필요
           description: eventOnDate.content || "",
           agenda: [], // TODO: 일정표 필드 추가 필요
@@ -875,12 +888,12 @@ const MyClubScreen: React.FC = () => {
           data-node-id="12:3017"
         >
           {userData?.type !== "club" && (
-          <p
-            className="nav-title"
-            data-node-id="12:3019"
-            onClick={() => setShowClubModal(true)}
-            style={{ cursor: "pointer" }}
-          >
+            <p
+              className="nav-title"
+              data-node-id="12:3019"
+              onClick={() => setShowClubModal(true)}
+              style={{ cursor: "pointer" }}
+            >
               {selectedClub?.name || "동아리 선택"} ▼
             </p>
           )}
@@ -964,27 +977,27 @@ const MyClubScreen: React.FC = () => {
               </div>
             </div>
 
-            {/* Statistics Tab */}
+            {/* Payout Tab */}
             <div
-              className={`tab ${activeTab === "statistics" ? "active" : ""}`}
+              className={`tab ${activeTab === "payout" ? "active" : ""}`}
               data-name="Tab"
               data-node-id="12:3328"
-              onClick={() => handleTabClick("statistics")}
+              onClick={() => handleTabClick("payout")}
             >
               <div
                 className={`tab-underline ${
-                  activeTab === "statistics" ? "active" : ""
+                  activeTab === "payout" ? "active" : ""
                 }`}
                 data-name="Underline"
                 data-node-id="12:3330"
               >
                 <p
                   className={`tab-text ${
-                    activeTab === "statistics" ? "active" : ""
+                    activeTab === "payout" ? "active" : ""
                   }`}
                   data-node-id="12:3331"
                 >
-                  통계
+                  정산
                 </p>
               </div>
             </div>
@@ -1286,7 +1299,7 @@ const MyClubScreen: React.FC = () => {
             </div>
           </div>
         )}
-        {activeTab === "statistics" && (
+        {activeTab === "payout" && (
           <div className="statistics-content">
             <h2>통계</h2>
             <p>통계 콘텐츠가 여기에 표시됩니다.</p>
@@ -1467,10 +1480,13 @@ const MyClubScreen: React.FC = () => {
                                 일정표
                               </h5>
                               <ul className="event-agenda-list">
-                                {selectedEvent.agenda && selectedEvent.agenda.length > 0 ? (
-                                  selectedEvent.agenda.map((item: string, index: number) => (
-                                  <li key={index}>{item}</li>
-                                  ))
+                                {selectedEvent.agenda &&
+                                selectedEvent.agenda.length > 0 ? (
+                                  selectedEvent.agenda.map(
+                                    (item: string, index: number) => (
+                                      <li key={index}>{item}</li>
+                                    )
+                                  )
                                 ) : (
                                   <li>일정표 정보가 없습니다.</li>
                                 )}
@@ -2032,50 +2048,50 @@ const MyClubScreen: React.FC = () => {
                 </div>
               ) : (
                 clubs.map((club, index) => (
-                <div
-                  key={club.id}
-                  data-index={index}
-                  className={`club-modal-item ${
-                    draggedIndex === index ? "dragging" : ""
-                  } ${dragOverIndex === index ? "drag-over" : ""}`}
+                  <div
+                    key={club.id}
+                    data-index={index}
+                    className={`club-modal-item ${
+                      draggedIndex === index ? "dragging" : ""
+                    } ${dragOverIndex === index ? "drag-over" : ""}`}
                     draggable={userData?.type !== "club"}
-                  onDragStart={(e) => handleDragStart(e, index)}
-                  onDragOver={(e) => handleDragOver(e, index)}
-                  onDragEnter={(e) => {
-                    e.preventDefault();
-                    if (draggedIndex !== null && draggedIndex !== index) {
-                      setDragOverIndex(index);
-                    }
-                  }}
-                  onDrop={(e) => handleDrop(e, index)}
-                  onDragEnd={handleDragEnd}
-                  onTouchStart={(e) => handleTouchStart(index, e)}
-                  onTouchMove={handleTouchMove}
-                  onTouchEnd={handleTouchEnd}
-                  onClick={() => {
-                    if (!isDragging) {
-                      handleClubSelect(club);
-                    }
-                  }}
-                  style={{
-                    cursor:
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragEnter={(e) => {
+                      e.preventDefault();
+                      if (draggedIndex !== null && draggedIndex !== index) {
+                        setDragOverIndex(index);
+                      }
+                    }}
+                    onDrop={(e) => handleDrop(e, index)}
+                    onDragEnd={handleDragEnd}
+                    onTouchStart={(e) => handleTouchStart(index, e)}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    onClick={() => {
+                      if (!isDragging) {
+                        handleClubSelect(club);
+                      }
+                    }}
+                    style={{
+                      cursor:
                         userData?.type === "club"
                           ? "default"
                           : isDragging && draggedIndex === index
-                        ? "grabbing"
-                        : "grab",
-                  }}
-                >
-                  <div className="club-modal-avatar">
+                          ? "grabbing"
+                          : "grab",
+                    }}
+                  >
+                    <div className="club-modal-avatar">
                       <img
                         src={club.avatar}
                         alt={club.name}
                         draggable={false}
                       />
+                    </div>
+                    <div className="club-modal-name">{club.name}</div>
+                    <div className="club-modal-role">{club.role}</div>
                   </div>
-                  <div className="club-modal-name">{club.name}</div>
-                  <div className="club-modal-role">{club.role}</div>
-                </div>
                 ))
               )}
             </div>
