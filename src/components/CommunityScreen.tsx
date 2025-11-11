@@ -38,7 +38,6 @@ interface Post {
   comments: number;
 }
 
-
 const CommunityScreen: React.FC = () => {
   const navigate = useNavigate();
   const [activeTopTab, setActiveTopTab] = useState<"find-clubs" | "board">(
@@ -108,7 +107,9 @@ const CommunityScreen: React.FC = () => {
             id: club.id,
             name: club.club_name,
             category: club.category || ("기타" as ClubCategory),
-            description: `${club.group_user?.university?.univ_name || ""} ${club.club_name}`,
+            description: `${club.group_user?.university?.univ_name || ""} ${
+              club.club_name
+            }`,
             logo: "/profile-icon.png",
             cover: "/profile-icon.png",
             members: memberCount || 0,

@@ -59,7 +59,11 @@ const ClubSignupScreen: React.FC = () => {
   // 선택한 대학의 승인된 캠퍼스 공식 단체 로드
   useEffect(() => {
     const loadCampusGroups = async () => {
-      if (!formData.university || !formData.universityId || formData.noUniversity) {
+      if (
+        !formData.university ||
+        !formData.universityId ||
+        formData.noUniversity
+      ) {
         setCampusGroups([]);
         return;
       }

@@ -117,10 +117,14 @@ const AccountApprovalScreen: React.FC = () => {
         } else {
           if (activeTab === "pending") {
             // 승인 요청: approved가 false인 계정
-            setClubAccounts((data || []).filter((acc) => acc.approved === false));
+            setClubAccounts(
+              (data || []).filter((acc) => acc.approved === false)
+            );
           } else {
             // 등록된 계정: approved가 true인 계정
-            setClubAccounts((data || []).filter((acc) => acc.approved === true));
+            setClubAccounts(
+              (data || []).filter((acc) => acc.approved === true)
+            );
           }
         }
       }
@@ -473,4 +477,3 @@ const AccountApprovalScreen: React.FC = () => {
 };
 
 export default AccountApprovalScreen;
-

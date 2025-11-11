@@ -367,13 +367,14 @@ const PersonalSignupScreen: React.FC = () => {
                   <option value="">일</option>
                   {Array.from(
                     {
-                      length: formData.birthYear && formData.birthMonth
-                        ? new Date(
-                            parseInt(formData.birthYear),
-                            parseInt(formData.birthMonth),
-                            0
-                          ).getDate()
-                        : 31,
+                      length:
+                        formData.birthYear && formData.birthMonth
+                          ? new Date(
+                              parseInt(formData.birthYear),
+                              parseInt(formData.birthMonth),
+                              0
+                            ).getDate()
+                          : 31,
                     },
                     (_, i) => {
                       const day = i + 1;

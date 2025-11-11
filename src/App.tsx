@@ -68,10 +68,7 @@ function App() {
             element={<ComingSoonScreen title="글 작성" />}
           />
           <Route path="/profile" element={<ProfileScreen />} />
-          <Route
-            path="/account-approval"
-            element={<AccountApprovalScreen />}
-          />
+          <Route path="/account-approval" element={<AccountApprovalScreen />} />
         </Routes>
       </div>
     </BrowserRouter>

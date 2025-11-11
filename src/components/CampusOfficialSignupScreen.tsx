@@ -31,12 +31,12 @@ const CampusOfficialSignupScreen: React.FC = () => {
     try {
       // 단체명에서 대학교 이름 추출하여 univ_id 찾기
       let univId: number | null = null;
-      
+
       // 단체명에서 대학교 이름 추출 (예: "홍익대학교 컴퓨터공학과" -> "홍익대학교")
       const universityNames = await supabase
         .from("university")
         .select("id, univ_name");
-      
+
       if (universityNames.data) {
         for (const univ of universityNames.data) {
           if (formData.groupName.includes(univ.univ_name)) {
