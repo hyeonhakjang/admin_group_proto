@@ -23,7 +23,7 @@ const ScheduleAddScreen: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [location, setLocation] = useState("");
+  const [scheduleLocation, setScheduleLocation] = useState("");
   const [participationEnabled, setParticipationEnabled] = useState(false);
   const [content, setContent] = useState("");
   const [agenda, setAgenda] = useState("");
@@ -109,7 +109,7 @@ const ScheduleAddScreen: React.FC = () => {
         date: selectedDate.toISOString().split("T")[0],
         started_at: startTimeFormatted,
         ended_at: endTimeFormatted,
-        location: location.trim() || null,
+        location: scheduleLocation.trim() || null,
         participation_enabled: participationEnabled,
         content: content.trim() || null,
         agenda: agendaArray.length > 0 ? agendaArray : null,
@@ -220,8 +220,8 @@ const ScheduleAddScreen: React.FC = () => {
             type="text"
             className="schedule-add-input"
             placeholder="장소를 입력해주세요."
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            value={scheduleLocation}
+            onChange={(e) => setScheduleLocation(e.target.value)}
           />
         </div>
 
