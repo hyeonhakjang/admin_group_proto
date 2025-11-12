@@ -1993,12 +1993,13 @@ const MyClubScreen: React.FC = () => {
                           member.role === "관리자" ? "owner-role" : ""
                         }`}
                         onClick={() => {
-                          // club_user 계정이고, 관리자가 아닌 경우에만 역할 변경 가능
-                          // 회장도 역할 변경 가능하도록 수정
-                          if (
-                            userData?.type === "club" &&
-                            member.role !== "관리자"
-                          ) {
+                          // club_user 계정 또는 personal_user 계정 중 회장인 경우에만 역할 변경 가능
+                          const canChangeRole =
+                            (userData?.type === "club" ||
+                              (userData?.type === "personal" &&
+                                selectedClub?.role === "회장")) &&
+                            member.role !== "관리자";
+                          if (canChangeRole) {
                             setSelectedMemberForRole(
                               selectedMemberForRole === member.clubPersonalId
                                 ? null
@@ -2010,12 +2011,16 @@ const MyClubScreen: React.FC = () => {
                       >
                         {member.role}
                         {member.role !== "관리자" &&
-                          userData?.type === "club" && (
+                          (userData?.type === "club" ||
+                            (userData?.type === "personal" &&
+                              selectedClub?.role === "회장")) && (
                             <span className="dropdown-icon">▼</span>
                           )}
                       </button>
                       {selectedMemberForRole === member.clubPersonalId &&
-                        userData?.type === "club" &&
+                        (userData?.type === "club" ||
+                          (userData?.type === "personal" &&
+                            selectedClub?.role === "회장")) &&
                         member.role !== "관리자" && (
                           <div className="role-dropdown">
                             <button
