@@ -2036,11 +2036,13 @@ const MyClubScreen: React.FC = () => {
                         }`}
                         onClick={() => {
                           // club_user 계정 또는 personal_user 계정 중 회장인 경우에만 역할 변경 가능
+                          // 단, 회장 자기 자신은 역할 변경 불가
                           const canChangeRole =
                             (userData?.type === "club" ||
                               (userData?.type === "personal" &&
                                 selectedClub?.role === "회장")) &&
-                            member.role !== "관리자";
+                            member.role !== "관리자" &&
+                            member.role !== "회장";
                           if (canChangeRole) {
                             setSelectedMemberForRole(
                               selectedMemberForRole === member.clubPersonalId
@@ -2049,10 +2051,11 @@ const MyClubScreen: React.FC = () => {
                             );
                           }
                         }}
-                        disabled={member.role === "관리자"}
+                        disabled={member.role === "관리자" || member.role === "회장"}
                       >
                         {member.role}
                         {member.role !== "관리자" &&
+                          member.role !== "회장" &&
                           (userData?.type === "club" ||
                             (userData?.type === "personal" &&
                               selectedClub?.role === "회장")) && (
@@ -2063,7 +2066,8 @@ const MyClubScreen: React.FC = () => {
                         (userData?.type === "club" ||
                           (userData?.type === "personal" &&
                             selectedClub?.role === "회장")) &&
-                        member.role !== "관리자" && (
+                        member.role !== "관리자" &&
+                        member.role !== "회장" && (
                           <div className="role-dropdown">
                             <button
                               className="role-option"
