@@ -3077,6 +3077,8 @@
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .member-item:hover {
@@ -3198,7 +3200,7 @@
   border: 1px solid #e0e0e0;
   border-radius: clamp(8px, 2vw, 12px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+  z-index: 9999;
   min-width: 120px;
   overflow: hidden;
 }
