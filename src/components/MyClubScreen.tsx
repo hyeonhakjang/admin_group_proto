@@ -255,7 +255,8 @@ const MyClubScreen: React.FC = () => {
               article.club_personal?.personal_user?.id === userData.id;
 
             // 카테고리 추출 (club_personal_article_category에서)
-            const articleCategories = article.club_personal_article_category || [];
+            const articleCategories =
+              article.club_personal_article_category || [];
             const categoryNames = Array.isArray(articleCategories)
               ? articleCategories.map((cat: any) => cat.name).filter(Boolean)
               : [];
@@ -1981,8 +1982,11 @@ const MyClubScreen: React.FC = () => {
                       <button
                         className="schedule-add-btn"
                         onClick={() => {
-                          // TODO: 일정 추가 기능 구현
-                          alert("일정 추가 기능은 준비 중입니다.");
+                          // 선택된 날짜가 있으면 URL 파라미터로 전달
+                          const dateParam = selectedDate
+                            ? `?date=${selectedDate.toISOString()}`
+                            : "";
+                          navigate(`/myclub/schedule/add${dateParam}`);
                         }}
                         aria-label="일정 추가"
                       >

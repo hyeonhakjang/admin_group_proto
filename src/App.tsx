@@ -18,6 +18,7 @@ import PostDetailScreen from "./components/PostDetailScreen";
 import ComingSoonScreen from "./components/ComingSoonScreen";
 import ProfileScreen from "./components/ProfileScreen";
 import AccountApprovalScreen from "./components/AccountApprovalScreen";
+import ScheduleAddScreen from "./components/ScheduleAddScreen";
 import "./App.css";
 
 function App() {
@@ -69,6 +70,10 @@ function App() {
           />
           <Route path="/profile" element={<ProfileScreen />} />
           <Route path="/account-approval" element={<AccountApprovalScreen />} />
+          <Route
+            path="/myclub/schedule/add"
+            element={<ScheduleAddScreen />}
+          />
         </Routes>
       </div>
     </BrowserRouter>
