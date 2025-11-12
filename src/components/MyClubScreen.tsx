@@ -339,7 +339,21 @@ const MyClubScreen: React.FC = () => {
             member.personal_user?.profile_image_url || "/profile-icon.png",
         }));
 
-        setMembers(transformedMembers);
+        // 역할 순서로 정렬: 회장 - 스태프 - 회원
+        const roleOrder: { [key: string]: number } = {
+          관리자: 0,
+          회장: 1,
+          스태프: 2,
+          회원: 3,
+        };
+
+        const sortedMembers = transformedMembers.sort((a, b) => {
+          const aOrder = roleOrder[a.role] ?? 999;
+          const bOrder = roleOrder[b.role] ?? 999;
+          return aOrder - bOrder;
+        });
+
+        setMembers(sortedMembers);
       }
     } catch (error) {
       console.error("멤버 로드 중 오류:", error);
@@ -2051,7 +2065,9 @@ const MyClubScreen: React.FC = () => {
                             );
                           }
                         }}
-                        disabled={member.role === "관리자" || member.role === "회장"}
+                        disabled={
+                          member.role === "관리자" || member.role === "회장"
+                        }
                       >
                         {member.role}
                         {member.role !== "관리자" &&
