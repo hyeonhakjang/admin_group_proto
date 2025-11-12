@@ -33,7 +33,15 @@ const ScheduleAddScreen: React.FC = () => {
     const params = new URLSearchParams(location.search);
     const dateParam = params.get("date");
     if (dateParam) {
-      setSelectedDate(new Date(dateParam));
+      // 시간대 문제 방지를 위해 날짜 문자열을 직접 파싱
+      const date = new Date(dateParam);
+      // 로컬 시간대로 날짜 설정 (시간은 00:00:00으로 설정)
+      const localDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      );
+      setSelectedDate(localDate);
     }
 
     // 사용자 정보 로드
@@ -104,9 +112,15 @@ const ScheduleAddScreen: React.FC = () => {
         .map((line) => line.trim())
         .filter((line) => line.length > 0);
 
+      // 날짜를 YYYY-MM-DD 형식으로 변환 (시간대 문제 방지)
+      const year = selectedDate.getFullYear();
+      const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+      const day = String(selectedDate.getDate()).padStart(2, "0");
+      const dateString = `${year}-${month}-${day}`;
+
       const { error } = await supabase.from("club_personal_schedule").insert({
         title: title.trim(),
-        date: selectedDate.toISOString().split("T")[0],
+        date: dateString,
         started_at: startTimeFormatted,
         ended_at: endTimeFormatted,
         location: scheduleLocation.trim() || null,

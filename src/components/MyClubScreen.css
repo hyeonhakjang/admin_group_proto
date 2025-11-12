@@ -663,6 +663,17 @@
   background: white;
 }
 
+.schedule-events-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+  margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+.schedule-event-card.active {
+  border: 2px solid #c34e00;
+}
+
 .schedule-details {
   background: #fffcfa;
   border-radius: 20px;

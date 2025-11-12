@@ -769,6 +769,7 @@ const MyClubScreen: React.FC = () => {
   // 일정 데이터
   const [schedules, setSchedules] = useState<any[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [selectedEvents, setSelectedEvents] = useState<any[]>([]);
 
   // 일정 댓글 로드 함수
   const loadScheduleComments = React.useCallback(async (scheduleId: number) => {
@@ -1034,11 +1035,15 @@ const MyClubScreen: React.FC = () => {
       day
     );
     setSelectedDate(clickedDate);
+    setSelectedEvent(null); // 상세 보기 초기화
 
-    // 해당 날짜의 일정 찾기
-    const eventOnDate = schedules.find((schedule) => {
+    // 해당 날짜의 모든 일정 찾기
+    const eventsOnDate = schedules.filter((schedule) => {
       if (!schedule.date) return false;
-      const scheduleDate = new Date(schedule.date);
+      // 날짜 문자열을 YYYY-MM-DD 형식으로 파싱하여 시간대 문제 방지
+      const dateStr = schedule.date;
+      const [year, month, day] = dateStr.split("-").map(Number);
+      const scheduleDate = new Date(year, month - 1, day);
       return (
         scheduleDate.getFullYear() === clickedDate.getFullYear() &&
         scheduleDate.getMonth() === clickedDate.getMonth() &&
@@ -1046,52 +1051,70 @@ const MyClubScreen: React.FC = () => {
       );
     });
 
-    if (eventOnDate) {
-      // 참가자 정보 로드
-      const loadParticipants = async () => {
-        const { data: participants, count } = await supabase
-          .from("schedule_participant")
-          .select(
-            `
-            *,
-            club_personal:club_personal_id (
-              personal_user:personal_user_id (
-                id,
-                personal_name,
-                profile_image_url
+    if (eventsOnDate.length > 0) {
+      // 모든 일정의 참가자 정보 로드
+      const loadAllParticipants = async () => {
+        const eventsWithParticipants = await Promise.all(
+          eventsOnDate.map(async (eventOnDate) => {
+            const { data: participants, count } = await supabase
+              .from("schedule_participant")
+              .select(
+                `
+                *,
+                club_personal:club_personal_id (
+                  personal_user:personal_user_id (
+                    id,
+                    personal_name,
+                    profile_image_url
+                  )
+                )
+              `,
+                { count: "exact" }
               )
-            )
-          `,
-            { count: "exact" }
-          )
-          .eq("schedule_id", eventOnDate.id);
+              .eq("schedule_id", eventOnDate.id);
 
-        const participantAvatars = (participants || [])
-          .map((p: any) => p.club_personal?.personal_user?.profile_image_url)
-          .filter((url: string) => url) // null/undefined 제거
-          .slice(0, 4); // 최대 4개만 표시
+            const participantAvatars = (participants || [])
+              .map((p: any) => p.club_personal?.personal_user?.profile_image_url)
+              .filter((url: string) => url) // null/undefined 제거
+              .slice(0, 4); // 최대 4개만 표시
 
-        setSelectedEvent({
-          id: eventOnDate.id,
-          title: eventOnDate.title || "",
-          group: selectedClub?.name || "",
-          participants: count || 0,
-          participantAvatars: participantAvatars,
-          date: clickedDate,
-          time:
-            eventOnDate.started_at && eventOnDate.ended_at
-              ? `${formatTime(eventOnDate.started_at)} ~ ${formatTime(
-                  eventOnDate.ended_at
-                )}`
-              : "시간 미정",
-          location: "", // TODO: 장소 필드 추가 필요
-          description: eventOnDate.content || "",
-          agenda: [], // TODO: 일정표 필드 추가 필요
-        });
+            // agenda 필드 처리 (배열 또는 null일 수 있음)
+            const agendaList = Array.isArray(eventOnDate.agenda)
+              ? eventOnDate.agenda
+              : eventOnDate.agenda
+              ? [eventOnDate.agenda]
+              : [];
+
+            return {
+              id: eventOnDate.id,
+              title: eventOnDate.title || "",
+              group: selectedClub?.name || "",
+              participants: count || 0,
+              participantAvatars: participantAvatars,
+              date: clickedDate,
+              time:
+                eventOnDate.started_at && eventOnDate.ended_at
+                  ? `${formatTime(eventOnDate.started_at)} ~ ${formatTime(
+                      eventOnDate.ended_at
+                    )}`
+                  : "시간 미정",
+              location: eventOnDate.location || "",
+              description: eventOnDate.content || "",
+              agenda: agendaList,
+            };
+          })
+        );
+
+        setSelectedEvents(eventsWithParticipants);
+        // 첫 번째 일정을 기본 선택
+        if (eventsWithParticipants.length > 0) {
+          setSelectedEvent(eventsWithParticipants[0]);
+        }
       };
 
-      loadParticipants();
+      loadAllParticipants();
     } else {
+      setSelectedEvents([]);
       setSelectedEvent(null);
     }
   };
@@ -1763,7 +1786,7 @@ const MyClubScreen: React.FC = () => {
                   {formatDateForEvent(selectedDate)} 일정
                 </h3>
                 <div className="schedule-content-wrapper">
-                  {selectedEvent &&
+                  {selectedEvents.length > 0 &&
                   hasEvent(
                     selectedDate.getDate(),
                     selectedDate.getMonth() === currentDate.getMonth() &&
@@ -1771,45 +1794,55 @@ const MyClubScreen: React.FC = () => {
                   ) ? (
                     <>
                       {!showEventDetail ? (
-                        <div
-                          className="schedule-event-card"
-                          onClick={() => setShowEventDetail(true)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <h4 className="schedule-event-title">
-                            {selectedEvent.title}
-                          </h4>
-                          <div className="schedule-event-info">
-                            <span className="schedule-event-group">
-                              {selectedEvent.group} ·{" "}
-                              {selectedEvent.participants}명
-                            </span>
-                            {selectedEvent.participants > 0 &&
-                              selectedEvent.participantAvatars &&
-                              selectedEvent.participantAvatars.length > 0 && (
-                                <div className="schedule-event-participants">
-                                  {selectedEvent.participantAvatars.map(
-                                    (avatar: string, index: number) => (
-                                      <div
-                                        key={index}
-                                        className="participant-avatar"
-                                      >
-                                        <img
-                                          src={avatar || "/profile-icon.png"}
-                                          alt="참가자"
-                                        />
-                                      </div>
-                                    )
+                        <div className="schedule-events-list">
+                          {selectedEvents.map((event, index) => (
+                            <div
+                              key={event.id || index}
+                              className={`schedule-event-card ${
+                                selectedEvent?.id === event.id ? "active" : ""
+                              }`}
+                              onClick={() => {
+                                setSelectedEvent(event);
+                                setShowEventDetail(true);
+                              }}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <h4 className="schedule-event-title">
+                                {event.title}
+                              </h4>
+                              <div className="schedule-event-info">
+                                <span className="schedule-event-group">
+                                  {event.group} · {event.participants}명
+                                </span>
+                                {event.participants > 0 &&
+                                  event.participantAvatars &&
+                                  event.participantAvatars.length > 0 && (
+                                    <div className="schedule-event-participants">
+                                      {event.participantAvatars.map(
+                                        (avatar: string, idx: number) => (
+                                          <div
+                                            key={idx}
+                                            className="participant-avatar"
+                                          >
+                                            <img
+                                              src={
+                                                avatar || "/profile-icon.png"
+                                              }
+                                              alt="참가자"
+                                            />
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
                                   )}
-                                </div>
-                              )}
-                          </div>
-                          <div className="schedule-event-time">
-                            • {selectedEvent.date.getFullYear()}년{" "}
-                            {selectedEvent.date.getMonth() + 1}월{" "}
-                            {selectedEvent.date.getDate()}일{" "}
-                            {selectedEvent.time}
-                          </div>
+                              </div>
+                              <div className="schedule-event-time">
+                                • {event.date.getFullYear()}년{" "}
+                                {event.date.getMonth() + 1}월{" "}
+                                {event.date.getDate()}일 {event.time}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       ) : (
                         <>
@@ -1982,10 +2015,19 @@ const MyClubScreen: React.FC = () => {
                       <button
                         className="schedule-add-btn"
                         onClick={() => {
-                          // 선택된 날짜가 있으면 URL 파라미터로 전달
-                          const dateParam = selectedDate
-                            ? `?date=${selectedDate.toISOString()}`
-                            : "";
+                          // 선택된 날짜가 있으면 URL 파라미터로 전달 (시간대 문제 방지)
+                          let dateParam = "";
+                          if (selectedDate) {
+                            const year = selectedDate.getFullYear();
+                            const month = String(
+                              selectedDate.getMonth() + 1
+                            ).padStart(2, "0");
+                            const day = String(selectedDate.getDate()).padStart(
+                              2,
+                              "0"
+                            );
+                            dateParam = `?date=${year}-${month}-${day}`;
+                          }
                           navigate(`/myclub/schedule/add${dateParam}`);
                         }}
                         aria-label="일정 추가"
