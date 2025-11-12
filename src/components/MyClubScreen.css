@@ -3081,6 +3081,10 @@
   z-index: 1;
 }
 
+.member-item.dropdown-open {
+  z-index: 10000;
+}
+
 .member-item:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transform: translateY(-1px);
@@ -3200,7 +3204,7 @@
   border: 1px solid #e0e0e0;
   border-radius: clamp(8px, 2vw, 12px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 9999;
+  z-index: 10001;
   min-width: 120px;
   overflow: hidden;
 }

@@ -2011,7 +2011,14 @@ const MyClubScreen: React.FC = () => {
             {/* 멤버 리스트 */}
             <div className="members-list">
               {filteredMembers.map((member) => (
-                <div key={member.id} className="member-item">
+                <div
+                  key={member.id}
+                  className={`member-item ${
+                    selectedMemberForRole === member.clubPersonalId
+                      ? "dropdown-open"
+                      : ""
+                  }`}
+                >
                   <div className="member-info">
                     <div className="member-avatar">
                       <img src={member.avatar} alt={member.name} />
