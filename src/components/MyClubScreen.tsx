@@ -588,8 +588,13 @@ const MyClubScreen: React.FC = () => {
     .filter((post) => {
       // 공지글 필터
       if (showNoticeOnly && !post.isNotice) return false;
-      // 카테고리 필터
-      if (selectedCategory && post.category !== selectedCategory) return false;
+      // 카테고리 필터 (categories 배열에 선택된 카테고리가 포함되어 있는지 확인)
+      if (selectedCategory) {
+        const hasCategory =
+          (post.categories && post.categories.includes(selectedCategory)) ||
+          post.category === selectedCategory;
+        if (!hasCategory) return false;
+      }
       return true;
     })
     .sort((a, b) => {
