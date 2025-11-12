@@ -1958,7 +1958,42 @@ const MyClubScreen: React.FC = () => {
             {/* 멤버 헤더 */}
             <div className="members-header">
               <h2 className="members-title">멤버</h2>
-              <button className="invite-btn">+ Invite</button>
+              <button
+                className="invite-btn"
+                onClick={async () => {
+                  if (!selectedClub?.club_user_id) {
+                    alert("동아리 정보를 불러올 수 없습니다.");
+                    return;
+                  }
+
+                  // 동아리 상세 페이지 URL 생성
+                  const inviteUrl = `${window.location.origin}/community/club/${selectedClub.club_user_id}`;
+
+                  try {
+                    // 클립보드에 복사
+                    await navigator.clipboard.writeText(inviteUrl);
+                    alert("초대 링크가 클립보드에 복사되었습니다!");
+                  } catch (err) {
+                    console.error("클립보드 복사 실패:", err);
+                    // 클립보드 API가 실패한 경우, 텍스트 영역을 사용한 대체 방법
+                    const textArea = document.createElement("textarea");
+                    textArea.value = inviteUrl;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-999999px";
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                      document.execCommand("copy");
+                      alert("초대 링크가 클립보드에 복사되었습니다!");
+                    } catch (e) {
+                      alert(`초대 링크: ${inviteUrl}`);
+                    }
+                    document.body.removeChild(textArea);
+                  }
+                }}
+              >
+                + Invite
+              </button>
             </div>
 
             {/* 검색 필드 */}
