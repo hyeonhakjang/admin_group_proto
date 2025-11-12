@@ -1074,7 +1074,9 @@ const MyClubScreen: React.FC = () => {
               .eq("schedule_id", eventOnDate.id);
 
             const participantAvatars = (participants || [])
-              .map((p: any) => p.club_personal?.personal_user?.profile_image_url)
+              .map(
+                (p: any) => p.club_personal?.personal_user?.profile_image_url
+              )
               .filter((url: string) => url) // null/undefined 제거
               .slice(0, 4); // 최대 4개만 표시
 
@@ -1798,9 +1800,7 @@ const MyClubScreen: React.FC = () => {
                           {selectedEvents.map((event, index) => (
                             <div
                               key={event.id || index}
-                              className={`schedule-event-card ${
-                                selectedEvent?.id === event.id ? "active" : ""
-                              }`}
+                              className="schedule-event-card"
                               onClick={() => {
                                 setSelectedEvent(event);
                                 setShowEventDetail(true);
