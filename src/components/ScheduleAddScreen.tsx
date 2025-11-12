@@ -229,9 +229,7 @@ const ScheduleAddScreen: React.FC = () => {
         <div className="schedule-add-section">
           <label className="schedule-add-label">참가 신청</label>
           <div className="schedule-add-toggle-wrapper">
-            <span className="schedule-add-toggle-label">
-              참가 신청 활성화
-            </span>
+            <span className="schedule-add-toggle-label">참가 신청 활성화</span>
             <label className="schedule-add-toggle-switch">
               <input
                 type="checkbox"
@@ -272,4 +270,3 @@ const ScheduleAddScreen: React.FC = () => {
 };
 
 export default ScheduleAddScreen;
-
