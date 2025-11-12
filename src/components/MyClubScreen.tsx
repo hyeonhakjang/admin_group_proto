@@ -213,6 +213,9 @@ const MyClubScreen: React.FC = () => {
               personal_name,
               profile_image_url
             )
+          ),
+          club_personal_article_category:club_personal_article_category (
+            name
           )
         `
         )
@@ -251,6 +254,14 @@ const MyClubScreen: React.FC = () => {
               userData.type === "personal" &&
               article.club_personal?.personal_user?.id === userData.id;
 
+            // 카테고리 추출 (club_personal_article_category에서)
+            const articleCategories = article.club_personal_article_category || [];
+            const categoryNames = Array.isArray(articleCategories)
+              ? articleCategories.map((cat: any) => cat.name).filter(Boolean)
+              : [];
+            // 첫 번째 카테고리를 기본으로 사용 (하위 호환성)
+            const primaryCategory = categoryNames[0] || "";
+
             return {
               id: article.id,
               author: authorName,
@@ -259,7 +270,8 @@ const MyClubScreen: React.FC = () => {
               title: article.title || "",
               content: article.content || "",
               isNotice: false, // TODO: 공지글 여부는 별도 필드 필요
-              category: "잡담", // TODO: 카테고리는 별도 필드 필요
+              category: primaryCategory, // 첫 번째 카테고리
+              categories: categoryNames, // 모든 카테고리 배열
               likes: likeCount || 0,
               comments: commentCount || 0,
               views: 0, // TODO: 조회수는 별도 필드 필요
@@ -268,6 +280,17 @@ const MyClubScreen: React.FC = () => {
             };
           })
         );
+
+        // 모든 게시글의 카테고리를 수집하여 고유한 카테고리 목록 생성
+        const allCategories = new Set<string>();
+        transformedPosts.forEach((post) => {
+          if (post.categories && post.categories.length > 0) {
+            post.categories.forEach((cat: string) => allCategories.add(cat));
+          } else if (post.category) {
+            allCategories.add(post.category);
+          }
+        });
+        setCategories(Array.from(allCategories).sort());
 
         setPosts(transformedPosts);
       } else {
@@ -557,7 +580,7 @@ const MyClubScreen: React.FC = () => {
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [posts, setPosts] = useState<any[]>([]);
 
-  const categories = ["잡담", "모집", "홍보"];
+  const [categories, setCategories] = useState<string[]>([]);
   const sortOptions = ["최신순", "인기순"];
 
   // 게시글 필터링 및 정렬
