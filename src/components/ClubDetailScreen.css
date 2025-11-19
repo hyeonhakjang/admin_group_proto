@@ -37,7 +37,8 @@
   align-items: flex-start;
   justify-content: flex-start;
   gap: clamp(8px, 2vw, 12px);
-  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 24px) clamp(16px, 4vw, 24px) clamp(16px, 4vw, 24px);
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 24px) clamp(16px, 4vw, 24px)
+    clamp(16px, 4vw, 24px);
   width: 100%;
   box-sizing: border-box;
 }
@@ -86,9 +87,9 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-end;
-  gap: clamp(4px, 1vw, 6px);
+  gap: clamp(12px, 3vw, 16px);
   min-width: clamp(80px, 20vw, 90px);
 }
 
@@ -105,6 +106,7 @@
   text-align: left;
   overflow: visible;
   min-width: 0;
+  margin-left: clamp(8px, 2vw, 12px);
 }
 
 .club-name {
