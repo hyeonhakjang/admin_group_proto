@@ -114,9 +114,10 @@
 .club-name {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 700;
-  font-size: clamp(20px, 5vw, 24px);
+  font-size: clamp(16px, 4vw, 24px);
   color: #28201b;
   margin: 0;
+  word-break: break-word;
 }
 
 .club-stats-section {
@@ -919,17 +920,19 @@
 /* 반응형 */
 @media (max-width: 480px) {
   .club-header-section {
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     gap: clamp(12px, 3vw, 16px);
   }
 
-  .club-logo-section {
-    align-self: flex-start;
+  .club-logo {
+    width: clamp(60px, 15vw, 80px);
+    height: clamp(60px, 15vw, 80px);
   }
 
   .club-info-wrapper {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
   }
 
   .club-detail-content {
@@ -948,16 +951,18 @@
 
 @media (max-width: 360px) {
   .club-header-section {
+    flex-direction: row;
     gap: clamp(10px, 2.5vw, 12px);
   }
 
   .club-logo {
-    width: 70px;
-    height: 70px;
+    width: clamp(56px, 14vw, 70px);
+    height: clamp(56px, 14vw, 70px);
   }
 
   .club-info-wrapper {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
   }
 
   .club-name {
