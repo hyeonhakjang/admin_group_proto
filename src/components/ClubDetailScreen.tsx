@@ -487,10 +487,10 @@ const ClubDetailScreen: React.FC = () => {
       <div className="club-detail-content">
         {/* 인스타그램 스타일 프로필 섹션 */}
         <div className="club-profile-section">
-          {/* 프로필 로고 */}
+          {/* 프로필 로고와 이름/카테고리 */}
           <div className="club-logo-section">
             <img src={club.logo} alt={club.name} className="club-logo" />
-            {/* 동아리 이름과 카테고리 (로고 위에 배치) */}
+            {/* 동아리 이름과 카테고리 (로고 아래에 배치) */}
             <div className="club-name-section">
               <h1 className="club-name">{club.name}</h1>
               <span className="club-category">{club.category}</span>
