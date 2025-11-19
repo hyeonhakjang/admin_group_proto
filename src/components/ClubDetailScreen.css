@@ -22,7 +22,9 @@
   z-index: 100;
   padding: clamp(12px, 3vw, 16px);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(6px, 1.5vw, 8px);
   min-height: 64px;
   pointer-events: none; /* 컨테이너는 클릭 이벤트 차단 */
   width: 100%;
@@ -57,10 +59,19 @@
   backdrop-filter: blur(4px);
   pointer-events: auto; /* 버튼은 클릭 가능 */
   z-index: 101;
+  align-self: flex-start;
 }
 
 .back-btn:hover {
   background: white;
+}
+
+.club-header-title {
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 700;
+  margin: 0;
+  color: #28201b;
+  pointer-events: auto;
 }
 
 /* Main Content */
@@ -517,6 +528,13 @@
 .event-back-btn:hover {
   opacity: 0.8;
   transform: translateX(-2px);
+}
+
+.event-detail-header {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1.5vw, 8px);
+  width: 100%;
 }
 
 .event-detail-title {

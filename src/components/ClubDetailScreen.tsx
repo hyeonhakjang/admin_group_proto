@@ -481,6 +481,7 @@ const ClubDetailScreen: React.FC = () => {
         <button className="back-btn" onClick={() => navigate(-1)}>
           ← 뒤로가기
         </button>
+        <h1 className="club-header-title">동아리 상세</h1>
       </div>
 
       {/* Main Content */}
@@ -691,15 +692,17 @@ const ClubDetailScreen: React.FC = () => {
                         ></div>
                         <div className="schedule-event-detail-card">
                           <div className="schedule-event-detail-card-inner">
-                            <button
-                              className="event-back-btn"
-                              onClick={() => setShowEventDetail(false)}
-                            >
-                              ← 뒤로가기
-                            </button>
-                            <h4 className="event-detail-title">
-                              {selectedEvent.title}
-                            </h4>
+                            <div className="event-detail-header">
+                              <button
+                                className="event-back-btn"
+                                onClick={() => setShowEventDetail(false)}
+                              >
+                                ← 뒤로가기
+                              </button>
+                              <h4 className="event-detail-title">
+                                {selectedEvent.title}
+                              </h4>
+                            </div>
                             <div className="event-detail-info">
                               <div className="event-detail-row">
                                 <span className="event-detail-label">
