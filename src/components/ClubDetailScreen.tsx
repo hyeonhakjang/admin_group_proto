@@ -487,29 +487,33 @@ const ClubDetailScreen: React.FC = () => {
       <div className="club-detail-content">
         {/* 인스타그램 스타일 프로필 섹션 */}
         <div className="club-profile-section">
-          {/* 프로필 로고와 이름/카테고리 */}
-          <div className="club-logo-section">
-            <img src={club.logo} alt={club.name} className="club-logo" />
-            {/* 동아리 이름과 카테고리 (로고 아래에 배치) */}
-            <div className="club-name-section">
-              <h1 className="club-name">{club.name}</h1>
-              <span className="club-category">{club.category}</span>
-            </div>
+          {/* Section A: 동아리 이름과 카테고리 (한 줄) */}
+          <div className="club-name-section">
+            <h1 className="club-name">{club.name}</h1>
+            <span className="club-category">{club.category}</span>
           </div>
 
-          {/* 통계 (피드, 멤버, 활동점수) */}
-          <div className="club-stats-section">
-            <div className="stat-item">
-              <span className="stat-value">{club.postCount || 0}</span>
-              <span className="stat-label">피드</span>
+          {/* Section B & C: 로고와 통계 */}
+          <div className="club-logo-stats-wrapper">
+            {/* Section B: 동아리 로고 */}
+            <div className="club-logo-section">
+              <img src={club.logo} alt={club.name} className="club-logo" />
             </div>
-            <div className="stat-item">
-              <span className="stat-value">{club.members}</span>
-              <span className="stat-label">멤버</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value">{club.activityScore}</span>
-              <span className="stat-label">활동점수</span>
+
+            {/* Section C: 통계 (피드, 멤버, 활동점수) */}
+            <div className="club-stats-section">
+              <div className="stat-item">
+                <span className="stat-value">{club.postCount || 0}</span>
+                <span className="stat-label">피드</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-value">{club.members}</span>
+                <span className="stat-label">멤버</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-value">{club.activityScore}</span>
+                <span className="stat-label">활동점수</span>
+              </div>
             </div>
           </div>
         </div>
