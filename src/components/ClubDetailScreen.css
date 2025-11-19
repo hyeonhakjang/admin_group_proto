@@ -35,6 +35,7 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  justify-content: space-between;
   gap: clamp(16px, 4vw, 20px);
   padding: clamp(16px, 4vw, 24px) 0;
   width: 100%;
@@ -75,8 +76,8 @@
 }
 
 .club-logo {
-  width: clamp(80px, 20vw, 100px);
-  height: clamp(80px, 20vw, 100px);
+  width: clamp(100px, 25vw, 120px);
+  height: clamp(100px, 25vw, 120px);
   border-radius: 16px;
   border: 4px solid white;
   background: white;
@@ -91,6 +92,8 @@
   gap: clamp(12px, 3vw, 16px);
   flex: 1;
   min-width: 0; /* flex 아이템이 축소될 수 있도록 */
+  align-items: flex-end;
+  text-align: right;
 }
 
 .club-info-section {
@@ -98,6 +101,7 @@
   flex-direction: column;
   gap: clamp(4px, 1vw, 6px);
   flex: 1;
+  align-items: flex-end;
 }
 
 .club-category {
@@ -109,6 +113,7 @@
   padding: 4px 10px;
   border-radius: 6px;
   width: fit-content;
+  margin-left: auto;
 }
 
 .club-name {
@@ -118,6 +123,7 @@
   color: #28201b;
   margin: 0;
   word-break: break-word;
+  text-align: right;
 }
 
 .club-stats-section {
@@ -922,17 +928,19 @@
   .club-header-section {
     flex-direction: row;
     align-items: flex-start;
+    justify-content: space-between;
     gap: clamp(12px, 3vw, 16px);
   }
 
   .club-logo {
-    width: clamp(60px, 15vw, 80px);
-    height: clamp(60px, 15vw, 80px);
+    width: clamp(80px, 20vw, 100px);
+    height: clamp(80px, 20vw, 100px);
   }
 
   .club-info-wrapper {
     flex: 1;
     min-width: 0;
+    align-items: flex-end;
   }
 
   .club-detail-content {
@@ -952,17 +960,19 @@
 @media (max-width: 360px) {
   .club-header-section {
     flex-direction: row;
+    justify-content: space-between;
     gap: clamp(10px, 2.5vw, 12px);
   }
 
   .club-logo {
-    width: clamp(56px, 14vw, 70px);
-    height: clamp(56px, 14vw, 70px);
+    width: clamp(70px, 17.5vw, 90px);
+    height: clamp(70px, 17.5vw, 90px);
   }
 
   .club-info-wrapper {
     flex: 1;
     min-width: 0;
+    align-items: flex-end;
   }
 
   .club-name {
