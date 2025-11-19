@@ -970,12 +970,12 @@
   }
 
   .club-logo-section {
-    min-width: clamp(70px, 17.5vw, 85px);
+    min-width: clamp(90px, 22.5vw, 110px);
   }
 
   .club-logo {
-    width: clamp(70px, 17.5vw, 85px);
-    height: clamp(70px, 17.5vw, 85px);
+    width: clamp(90px, 22.5vw, 110px);
+    height: clamp(90px, 22.5vw, 110px);
   }
 
   .club-name-section {
@@ -983,12 +983,12 @@
   }
 
   .club-name {
-    font-size: clamp(12px, 3vw, 14px);
+    font-size: clamp(16px, 4vw, 20px);
   }
 
   .club-category {
-    font-size: clamp(10px, 2.5vw, 11px);
-    padding: 3px 6px;
+    font-size: clamp(12px, 3vw, 14px);
+    padding: clamp(4px, 1vw, 5px) clamp(8px, 2vw, 10px);
   }
 
   .club-stats-section {
@@ -1023,12 +1023,12 @@
   }
 
   .club-logo-section {
-    min-width: clamp(64px, 16vw, 80px);
+    min-width: clamp(80px, 20vw, 100px);
   }
 
   .club-logo {
-    width: clamp(64px, 16vw, 80px);
-    height: clamp(64px, 16vw, 80px);
+    width: clamp(80px, 20vw, 100px);
+    height: clamp(80px, 20vw, 100px);
   }
 
   .club-name-section {
@@ -1036,12 +1036,12 @@
   }
 
   .club-name {
-    font-size: clamp(11px, 2.75vw, 13px);
+    font-size: clamp(15px, 3.75vw, 18px);
   }
 
   .club-category {
-    font-size: clamp(9px, 2.25vw, 10px);
-    padding: 2px 5px;
+    font-size: clamp(11px, 2.75vw, 13px);
+    padding: clamp(3px, 0.75vw, 4px) clamp(7px, 1.75vw, 9px);
   }
 
   .club-stats-section {
@@ -1051,11 +1051,11 @@
   }
 
   .stat-value {
-    font-size: clamp(14px, 3.5vw, 16px);
+    font-size: clamp(18px, 4.5vw, 22px);
   }
 
   .stat-label {
-    font-size: clamp(11px, 2.75vw, 13px);
+    font-size: clamp(13px, 3.25vw, 15px);
   }
 
   .club-detail-content {
@@ -1090,12 +1090,12 @@
   }
 
   .club-logo-section {
-    min-width: clamp(60px, 15vw, 70px);
+    min-width: clamp(70px, 17.5vw, 90px);
   }
 
   .club-logo {
-    width: clamp(60px, 15vw, 70px);
-    height: clamp(60px, 15vw, 70px);
+    width: clamp(70px, 17.5vw, 90px);
+    height: clamp(70px, 17.5vw, 90px);
   }
 
   .club-name-section {
@@ -1103,12 +1103,12 @@
   }
 
   .club-name {
-    font-size: clamp(10px, 2.5vw, 12px);
+    font-size: clamp(14px, 3.5vw, 17px);
   }
 
   .club-category {
-    font-size: clamp(8px, 2vw, 9px);
-    padding: 2px 4px;
+    font-size: clamp(10px, 2.5vw, 12px);
+    padding: clamp(3px, 0.75vw, 4px) clamp(6px, 1.5vw, 8px);
   }
 
   .club-stats-section {
@@ -1118,11 +1118,11 @@
   }
 
   .stat-value {
-    font-size: clamp(13px, 3.25vw, 15px);
+    font-size: clamp(16px, 4vw, 20px);
   }
 
   .stat-label {
-    font-size: clamp(10px, 2.5vw, 11px);
+    font-size: clamp(12px, 3vw, 14px);
   }
 
   .club-detail-content {
@@ -1192,11 +1192,11 @@
   }
 
   .stat-value {
-    font-size: 12px;
+    font-size: clamp(14px, 3.5vw, 18px);
   }
 
   .stat-label {
-    font-size: 9px;
+    font-size: clamp(11px, 2.75vw, 13px);
   }
 
   .club-detail-content {
