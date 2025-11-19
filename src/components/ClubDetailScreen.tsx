@@ -491,12 +491,12 @@ const ClubDetailScreen: React.FC = () => {
           <div className="club-logo-stats-wrapper">
             {/* Section B: 동아리 로고 */}
             <div className="club-logo-section">
-              <img src={club.logo} alt={club.name} className="club-logo" />
-              {/* Section A: 동아리 이름과 카테고리 (로고 바로 아래) */}
+              {/* Section A: 동아리 이름과 카테고리 (로고 위) */}
               <div className="club-name-section">
                 <h1 className="club-name">{club.name}</h1>
                 <span className="club-category">{club.category}</span>
               </div>
+              <img src={club.logo} alt={club.name} className="club-logo" />
             </div>
 
             {/* Section C: 통계 (피드, 멤버, 활동점수) */}
