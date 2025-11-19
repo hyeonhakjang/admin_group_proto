@@ -3243,3 +3243,214 @@
 .role-option:active {
   background-color: #eeeeee;
 }
+
+/* 사이드 네비게이션 모달 */
+.side-nav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.side-nav-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: clamp(280px, 70vw, 320px);
+  max-width: 90vw;
+  background-color: #fffcfa;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  animation: slideInRight 0.3s ease;
+  overflow-y: auto;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.side-nav-close-btn {
+  position: absolute;
+  top: clamp(12px, 3vw, 16px);
+  right: clamp(12px, 3vw, 16px);
+  background: transparent;
+  border: none;
+  font-size: clamp(20px, 5vw, 24px);
+  color: #28201b;
+  cursor: pointer;
+  padding: clamp(4px, 1vw, 8px);
+  width: clamp(32px, 8vw, 40px);
+  height: clamp(32px, 8vw, 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.side-nav-close-btn:hover {
+  color: #c34e00;
+  background-color: rgba(195, 78, 0, 0.1);
+  border-radius: 50%;
+}
+
+/* 섹션 A: 프로필 정보 */
+.side-nav-profile-section {
+  padding: clamp(60px, 15vw, 80px) clamp(20px, 5vw, 24px) clamp(20px, 5vw, 24px);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.side-nav-profile-info {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
+  cursor: pointer;
+  padding: clamp(8px, 2vw, 12px);
+  border-radius: clamp(8px, 2vw, 12px);
+  transition: background-color 0.2s ease;
+}
+
+.side-nav-profile-info:hover {
+  background-color: #f5f5f5;
+}
+
+.side-nav-profile-info:active {
+  background-color: #eeeeee;
+}
+
+.side-nav-profile-image {
+  width: clamp(56px, 14vw, 64px);
+  height: clamp(56px, 14vw, 64px);
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid #e0e0e0;
+}
+
+.side-nav-profile-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 6px);
+}
+
+.side-nav-profile-name {
+  font-size: clamp(16px, 4vw, 18px);
+  font-weight: 600;
+  color: #28201b;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+}
+
+.side-nav-profile-role {
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 400;
+  color: #666666;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+}
+
+.side-nav-arrow {
+  font-size: clamp(20px, 5vw, 24px);
+  color: #888888;
+  font-weight: 300;
+  flex-shrink: 0;
+}
+
+/* 섹션 B: 동아리 페이지 관리 */
+.side-nav-section {
+  padding: clamp(16px, 4vw, 20px) clamp(20px, 5vw, 24px);
+}
+
+.side-nav-page-manage-btn {
+  width: 100%;
+  padding: clamp(12px, 3vw, 14px) clamp(16px, 4vw, 20px);
+  background-color: #c34e00;
+  color: #ffffff;
+  border: none;
+  border-radius: clamp(8px, 2vw, 12px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 600;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.side-nav-page-manage-btn:hover {
+  background-color: #a03d00;
+}
+
+.side-nav-page-manage-btn:active {
+  background-color: #8a3400;
+}
+
+/* 섹션 C: 관리 기능 리스트 */
+.side-nav-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 8px);
+}
+
+.side-nav-menu-item {
+  width: 100%;
+  padding: clamp(14px, 3.5vw, 16px) clamp(16px, 4vw, 20px);
+  background-color: transparent;
+  color: #28201b;
+  border: none;
+  border-radius: clamp(8px, 2vw, 12px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 500;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.side-nav-menu-item:hover {
+  background-color: #f5f5f5;
+  color: #c34e00;
+}
+
+.side-nav-menu-item:active {
+  background-color: #eeeeee;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  .side-nav-panel {
+    width: clamp(260px, 75vw, 300px);
+  }
+
+  .side-nav-profile-section {
+    padding: clamp(50px, 12vw, 70px) clamp(16px, 4vw, 20px) clamp(16px, 4vw, 20px);
+  }
+}
+
+@media (max-width: 360px) {
+  .side-nav-panel {
+    width: clamp(240px, 80vw, 280px);
+  }
+
+  .side-nav-profile-section {
+    padding: clamp(45px, 11vw, 60px) clamp(12px, 3vw, 16px) clamp(12px, 3vw, 16px);
+  }
+}

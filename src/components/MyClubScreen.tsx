@@ -47,6 +47,14 @@ const MyClubScreen: React.FC = () => {
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  // 사이드 네비게이션 모달 상태
+  const [showSideNav, setShowSideNav] = useState(false);
+  const [profileInfo, setProfileInfo] = useState<{
+    nickname: string;
+    role: string;
+    profileImage: string;
+  } | null>(null);
+
   // 가입된 동아리 목록
   const [clubs, setClubs] = useState<Club[]>([]);
 
@@ -485,6 +493,61 @@ const MyClubScreen: React.FC = () => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedClub?.club_user_id, activeTab]);
+
+  // 프로필 정보 로드 (동아리 내부용)
+  useEffect(() => {
+    const loadProfileInfo = async () => {
+      if (!userData || !selectedClub?.club_personal_id) return;
+
+      try {
+        if (userData.type === "personal") {
+          const { data: clubPersonal, error } = await supabase
+            .from("club_personal")
+            .select(
+              `
+              role,
+              personal_user:personal_user_id (
+                id,
+                personal_name,
+                profile_image_url
+              )
+            `
+            )
+            .eq("id", selectedClub.club_personal_id)
+            .single();
+
+          if (error) {
+            console.error("프로필 정보 로드 오류:", error);
+            return;
+          }
+
+          if (clubPersonal) {
+            const personalUser = Array.isArray(clubPersonal.personal_user)
+              ? clubPersonal.personal_user[0]
+              : clubPersonal.personal_user;
+            setProfileInfo({
+              nickname:
+                personalUser?.personal_name || userData.name,
+              role: clubPersonal.role || "동아리원",
+              profileImage:
+                personalUser?.profile_image_url ||
+                "/profile-icon.png",
+            });
+          }
+        } else if (userData.type === "club") {
+          setProfileInfo({
+            nickname: selectedClub.name || userData.name,
+            role: "관리자",
+            profileImage: "/profile-icon.png",
+          });
+        }
+      } catch (error) {
+        console.error("프로필 정보 로드 중 오류:", error);
+      }
+    };
+
+    loadProfileInfo();
+  }, [userData, selectedClub]);
 
   const handleClubSelect = (club: Club) => {
     if (!isDragging) {
@@ -1365,6 +1428,8 @@ const MyClubScreen: React.FC = () => {
               className="profile-icon"
               data-name="profileIcon"
               data-node-id="9:641"
+              onClick={() => setShowSideNav(true)}
+              style={{ cursor: "pointer" }}
             >
               <img alt="Menu Icon" className="icon" src="/hamburger-menu.png" />
             </div>
@@ -2866,6 +2931,127 @@ const MyClubScreen: React.FC = () => {
               </div>
             </>
           )}
+        </>
+      )}
+
+      {/* 사이드 네비게이션 모달 */}
+      {showSideNav && (
+        <>
+          {/* 오버레이 */}
+          <div
+            className="side-nav-overlay"
+            onClick={() => setShowSideNav(false)}
+          ></div>
+          {/* 사이드 네비게이션 패널 */}
+          <div className="side-nav-panel">
+            {/* 닫기 버튼 */}
+            <button
+              className="side-nav-close-btn"
+              onClick={() => setShowSideNav(false)}
+              aria-label="닫기"
+            >
+              ✕
+            </button>
+
+            {/* 섹션 A: 프로필 정보 */}
+            <div className="side-nav-profile-section">
+              <div
+                className="side-nav-profile-info"
+                onClick={() => {
+                  setShowSideNav(false);
+                  navigate("/myclub/profile/edit");
+                }}
+              >
+                <img
+                  src={profileInfo?.profileImage || "/profile-icon.png"}
+                  alt="프로필"
+                  className="side-nav-profile-image"
+                />
+                <div className="side-nav-profile-text">
+                  <div className="side-nav-profile-name">
+                    {profileInfo?.nickname || "사용자"}
+                  </div>
+                  <div className="side-nav-profile-role">
+                    {profileInfo?.role || "동아리원"}
+                  </div>
+                </div>
+                <span className="side-nav-arrow">›</span>
+              </div>
+            </div>
+
+            {/* 섹션 B: 동아리 페이지 관리 */}
+            <div className="side-nav-section">
+              <button
+                className="side-nav-page-manage-btn"
+                onClick={() => {
+                  setShowSideNav(false);
+                  navigate("/myclub/page/edit");
+                }}
+              >
+                동아리 페이지 관리
+              </button>
+            </div>
+
+            {/* 섹션 C: 관리 기능 리스트 */}
+            <div className="side-nav-section">
+              <div className="side-nav-menu-list">
+                <button
+                  className="side-nav-menu-item"
+                  onClick={() => {
+                    setShowSideNav(false);
+                    navigate("/myclub/manage/members");
+                  }}
+                >
+                  멤버 관리
+                </button>
+                <button
+                  className="side-nav-menu-item"
+                  onClick={() => {
+                    setShowSideNav(false);
+                    navigate("/myclub/manage/account");
+                  }}
+                >
+                  통장 등록
+                </button>
+                <button
+                  className="side-nav-menu-item"
+                  onClick={() => {
+                    setShowSideNav(false);
+                    navigate("/myclub/manage/accounting");
+                  }}
+                >
+                  회계 내역
+                </button>
+                <button
+                  className="side-nav-menu-item"
+                  onClick={() => {
+                    setShowSideNav(false);
+                    navigate("/myclub/manage/events");
+                  }}
+                >
+                  행사 관리
+                </button>
+                <button
+                  className="side-nav-menu-item"
+                  onClick={() => {
+                    setShowSideNav(false);
+                    navigate("/myclub/manage/archive");
+                  }}
+                >
+                  비공개 자료
+                </button>
+                <button
+                  className="side-nav-menu-item"
+                  onClick={() => {
+                    setShowSideNav(false);
+                    navigate("/myclub/manage/approvals");
+                  }}
+                >
+                  가입 신청 관리
+                </button>
+              </div>
+            </div>
+          </div>
         </>
       )}
     </div>
