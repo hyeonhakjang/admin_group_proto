@@ -14,6 +14,9 @@
   display: flex;
   flex-direction: column;
   gap: clamp(16px, 4vw, 24px);
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
 }
 
 .club-account-header {
@@ -75,6 +78,7 @@
   gap: clamp(8px, 2vw, 12px);
   cursor: pointer;
   min-height: 140px;
+  width: 100%;
 }
 
 .club-account-card.empty {
@@ -119,6 +123,7 @@
   font-size: clamp(15px, 3.75vw, 18px);
   font-weight: 600;
   cursor: pointer;
+  width: 100%;
 }
 
 .bank-list-item span {
@@ -130,6 +135,7 @@
   display: flex;
   flex-direction: column;
   gap: clamp(12px, 3vw, 16px);
+  width: 100%;
 }
 
 .bank-input-field {
@@ -149,6 +155,7 @@
   border-radius: 12px;
   font-size: clamp(14px, 3.5vw, 16px);
   font-family: "Inter", "Noto Sans KR", sans-serif;
+  width: 100%;
 }
 
 .primary-btn {
@@ -160,6 +167,7 @@
   font-size: clamp(15px, 3.75vw, 18px);
   font-weight: 700;
   cursor: pointer;
+  width: 100%;
 }
 
 .secondary-text {
@@ -171,6 +179,12 @@
   font-size: clamp(13px, 3.25vw, 15px);
   color: #888888;
   margin: 0;
+}
+
+@media (min-width: 768px) {
+  .club-account-inner {
+    max-width: 640px;
+  }
 }
 
 @media (max-width: 360px) {
