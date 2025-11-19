@@ -90,7 +90,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: clamp(12px, 3vw, 16px);
-  min-width: clamp(80px, 20vw, 90px);
+  min-width: clamp(100px, 25vw, 120px);
 }
 
 /* Section A: 동아리 이름과 카테고리 (로고 바로 아래) */
@@ -112,7 +112,7 @@
 .club-name {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 700;
-  font-size: clamp(14px, 3.5vw, 16px);
+  font-size: clamp(18px, 4.5vw, 22px);
   color: #28201b;
   margin: 0;
   word-break: keep-all;
@@ -126,10 +126,10 @@
 .club-category {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 500;
-  font-size: clamp(11px, 2.5vw, 12px);
+  font-size: clamp(13px, 3.25vw, 15px);
   color: #c34e00;
   background: #fff5f0;
-  padding: 4px 8px;
+  padding: clamp(5px, 1.25vw, 6px) clamp(10px, 2.5vw, 12px);
   border-radius: 6px;
   display: inline-block;
   white-space: nowrap;
@@ -138,8 +138,8 @@
 }
 
 .club-logo {
-  width: clamp(80px, 20vw, 90px);
-  height: clamp(80px, 20vw, 90px);
+  width: clamp(100px, 25vw, 120px);
+  height: clamp(100px, 25vw, 120px);
   border-radius: 50%;
   border: 2px solid #e0e0e0;
   background: white;
@@ -170,7 +170,7 @@
 .stat-value {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 600;
-  font-size: clamp(16px, 4vw, 18px);
+  font-size: clamp(20px, 5vw, 24px);
   color: #28201b;
   line-height: 1.2;
   white-space: nowrap;
@@ -179,7 +179,7 @@
 .stat-label {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 400;
-  font-size: clamp(12px, 3vw, 14px);
+  font-size: clamp(14px, 3.5vw, 16px);
   color: #666666;
   line-height: 1.2;
   white-space: nowrap;
