@@ -464,32 +464,30 @@ const ClubDetailScreen: React.FC = () => {
         </button>
       </div>
 
-      {/* Section Hero: 커버 이미지 */}
-      <div className="club-hero-section">
-        <img src={club.cover} alt={club.name} className="club-cover-image" />
-      </div>
-
       {/* Main Content */}
       <div className="club-detail-content">
-        {/* Section A: 로고 */}
-        <div className="club-logo-section">
-          <img src={club.logo} alt={club.name} className="club-logo" />
-        </div>
-
-        {/* Section B & C: 정보 + 통계 */}
-        <div className="club-info-wrapper">
-          <div className="club-info-section">
-            <span className="club-category">{club.category}</span>
-            <h1 className="club-name">{club.name}</h1>
+        {/* Section A & B & C: 로고 + 정보 + 통계 */}
+        <div className="club-header-section">
+          {/* Section A: 로고 */}
+          <div className="club-logo-section">
+            <img src={club.logo} alt={club.name} className="club-logo" />
           </div>
-          <div className="club-stats-section">
-            <div className="stat-item">
-              <span className="stat-value">{club.members}</span>
-              <span className="stat-label">멤버</span>
+
+          {/* Section B & C: 정보 + 통계 */}
+          <div className="club-info-wrapper">
+            <div className="club-info-section">
+              <span className="club-category">{club.category}</span>
+              <h1 className="club-name">{club.name}</h1>
             </div>
-            <div className="stat-item">
-              <span className="stat-value">{club.activityScore}</span>
-              <span className="stat-label">활동점수</span>
+            <div className="club-stats-section">
+              <div className="stat-item">
+                <span className="stat-value">{club.members}</span>
+                <span className="stat-label">멤버</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-value">{club.activityScore}</span>
+                <span className="stat-label">활동점수</span>
+              </div>
             </div>
           </div>
         </div>
