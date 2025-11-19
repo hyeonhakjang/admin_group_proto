@@ -1757,6 +1757,56 @@
   transition: background 0.2s ease;
 }
 
+/* 정산 섹션 */
+.statistics-content {
+  background: white;
+  border-radius: 20px;
+  padding: clamp(16px, 4vw, 24px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.5vw, 12px);
+}
+
+.payout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(12px, 3vw, 16px);
+  flex-wrap: wrap;
+}
+
+.payout-register-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(6px, 1.5vw, 8px);
+  padding: clamp(10px, 2.5vw, 12px) clamp(14px, 3.5vw, 18px);
+  border-radius: 999px;
+  border: none;
+  background: #c34e00;
+  color: white;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(13px, 3vw, 15px);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.payout-register-btn .schedule-add-icon {
+  font-size: clamp(16px, 4vw, 20px);
+}
+
+.payout-register-btn:hover {
+  background: #a03d00;
+  transform: translateY(-1px);
+}
+
+.payout-description {
+  color: #666666;
+  font-size: clamp(13px, 3.25vw, 15px);
+  margin: 0;
+}
+
 .more-menu-item:hover {
   background: #f5f5f5;
 }

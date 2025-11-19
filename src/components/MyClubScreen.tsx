@@ -1797,9 +1797,20 @@ const MyClubScreen: React.FC = () => {
           </div>
         )}
         {activeTab === "payout" && (
-          <div className="statistics-content">
-            <h2>정산</h2>
-            <p>정산 콘텐츠가 여기에 표시됩니다.</p>
+          <div className="statistics-content payout-overview">
+            <div className="payout-header">
+              <h2>정산</h2>
+              <button
+                className="payout-register-btn"
+                onClick={() => navigate("/myclub/payout/register")}
+              >
+                <span className="schedule-add-icon">+</span>
+                정산 등록
+              </button>
+            </div>
+            <p className="payout-description">
+              멤버들에게 요청할 정산을 등록하고 진행 상황을 관리할 수 있습니다.
+            </p>
           </div>
         )}
         {activeTab === "schedule" && (
