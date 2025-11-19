@@ -143,6 +143,32 @@ const MyClubScreen: React.FC = () => {
     }
   }, [userData, loadClubs]);
 
+  // URL 파라미터에서 탭과 날짜 읽기
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get("tab");
+    const dateParam = params.get("date");
+
+    // 탭 파라미터가 있으면 해당 탭으로 설정
+    if (tabParam && ["posts", "payout", "schedule", "members", "archive"].includes(tabParam)) {
+      setActiveTab(tabParam as "posts" | "payout" | "schedule" | "members" | "archive");
+    }
+
+    // 날짜 파라미터가 있으면 해당 날짜 선택
+    if (dateParam && tabParam === "schedule") {
+      try {
+        // YYYY-MM-DD 형식의 날짜 파싱
+        const [year, month, day] = dateParam.split("-").map(Number);
+        const parsedDate = new Date(year, month - 1, day);
+        setSelectedDate(parsedDate);
+        // 해당 날짜가 포함된 월로 달력 이동
+        setCurrentDate(new Date(year, month - 1, 1));
+      } catch (error) {
+        console.error("날짜 파라미터 파싱 오류:", error);
+      }
+    }
+  }, [location.search]);
+
   // 날짜 포맷팅 헬퍼 함수
   const formatDate = (dateString: string) => {
     if (!dateString) return "";

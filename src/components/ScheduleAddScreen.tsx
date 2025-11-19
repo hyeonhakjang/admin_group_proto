@@ -139,7 +139,8 @@ const ScheduleAddScreen: React.FC = () => {
       }
 
       alert("일정이 등록되었습니다.");
-      navigate(-1); // 이전 페이지로 돌아가기
+      // 내 동아리 일정 페이지로 이동하고 해당 날짜 선택 상태로 표시
+      navigate(`/myclub?tab=schedule&date=${dateString}`);
     } catch (error) {
       console.error("일정 저장 중 오류:", error);
       alert("일정 저장 중 오류가 발생했습니다.");
@@ -281,7 +282,7 @@ const ScheduleAddScreen: React.FC = () => {
           onClick={handleSubmit}
           disabled={!isSubmitEnabled}
         >
-          완료
+          작성 완료
         </button>
       </div>
     </div>
