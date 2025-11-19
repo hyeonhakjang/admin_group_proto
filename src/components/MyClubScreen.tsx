@@ -1803,9 +1803,9 @@ const MyClubScreen: React.FC = () => {
               <button
                 className="payout-register-btn"
                 onClick={() => navigate("/myclub/payout/register")}
+                aria-label="정산 등록"
               >
-                <span className="schedule-add-icon">+</span>
-                정산 등록
+                <span className="floating-write-icon">+</span>
               </button>
             </div>
             <p className="payout-description">
