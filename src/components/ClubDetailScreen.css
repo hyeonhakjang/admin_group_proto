@@ -33,9 +33,12 @@
 /* Header Section: 로고 + 정보 + 통계 */
 .club-header-section {
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
   gap: clamp(16px, 4vw, 20px);
   padding: clamp(16px, 4vw, 24px) 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .back-btn {
