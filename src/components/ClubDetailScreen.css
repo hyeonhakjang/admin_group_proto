@@ -30,13 +30,13 @@
   flex-shrink: 0; /* 축소 방지 */
 }
 
-/* Header Section: 로고 + 정보 + 통계 */
-.club-header-section {
+/* 인스타그램 스타일 프로필 섹션 */
+.club-profile-section {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: clamp(16px, 4vw, 20px);
+  gap: clamp(20px, 5vw, 32px);
   padding: clamp(16px, 4vw, 24px) 0;
   width: 100%;
   box-sizing: border-box;
@@ -70,87 +70,80 @@
   gap: clamp(16px, 4vw, 20px);
 }
 
-/* Section A: Logo */
+/* 프로필 로고 */
 .club-logo-section {
   flex-shrink: 0;
 }
 
 .club-logo {
-  width: clamp(100px, 25vw, 120px);
-  height: clamp(100px, 25vw, 120px);
-  border-radius: 16px;
-  border: 4px solid white;
+  width: clamp(80px, 20vw, 90px);
+  height: clamp(80px, 20vw, 90px);
+  border-radius: 50%;
+  border: 2px solid #e0e0e0;
   background: white;
   object-fit: cover;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Section B & C: Info + Stats */
-.club-info-wrapper {
+/* 통계 섹션 (피드, 멤버, 활동점수) */
+.club-stats-section {
   display: flex;
-  flex-direction: column;
-  gap: clamp(12px, 3vw, 16px);
+  gap: clamp(20px, 5vw, 32px);
   flex: 1;
-  min-width: 0; /* flex 아이템이 축소될 수 있도록 */
-  align-items: flex-end;
-  text-align: right;
+  justify-content: center;
+  align-items: center;
 }
 
-.club-info-section {
+/* 동아리 이름과 카테고리 섹션 */
+.club-name-section {
   display: flex;
-  flex-direction: column;
-  gap: clamp(4px, 1vw, 6px);
-  flex: 1;
-  align-items: flex-end;
-}
-
-.club-category {
-  font-family: "Inter", "Noto Sans KR", sans-serif;
-  font-weight: 600;
-  font-size: clamp(12px, 3vw, 14px);
-  color: #c34e00;
-  background: #fff5f0;
-  padding: 4px 10px;
-  border-radius: 6px;
-  width: fit-content;
-  margin-left: auto;
+  align-items: center;
+  gap: clamp(8px, 2vw, 12px);
+  padding: 0;
+  margin-top: clamp(-8px, -2vw, -4px);
 }
 
 .club-name {
   font-family: "Inter", "Noto Sans KR", sans-serif;
-  font-weight: 700;
-  font-size: clamp(16px, 4vw, 24px);
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
   color: #28201b;
   margin: 0;
   word-break: break-word;
-  text-align: right;
 }
 
-.club-stats-section {
-  display: flex;
-  gap: clamp(16px, 4vw, 24px);
-  flex-shrink: 0;
+.club-category {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666666;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  width: auto;
+  margin: 0;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: clamp(2px, 0.5vw, 4px);
 }
 
 .stat-value {
   font-family: "Inter", "Noto Sans KR", sans-serif;
-  font-weight: 700;
-  font-size: clamp(18px, 4.5vw, 22px);
-  color: #c34e00;
+  font-weight: 600;
+  font-size: clamp(16px, 4vw, 18px);
+  color: #28201b;
+  line-height: 1.2;
 }
 
 .stat-label {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 400;
-  font-size: clamp(11px, 2.5vw, 12px);
-  color: #888888;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #28201b;
+  line-height: 1.2;
 }
 
 /* Section D: Description */
@@ -925,22 +918,17 @@
 
 /* 반응형 */
 @media (max-width: 480px) {
-  .club-header-section {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: clamp(12px, 3vw, 16px);
+  .club-profile-section {
+    gap: clamp(16px, 4vw, 24px);
   }
 
   .club-logo {
-    width: clamp(80px, 20vw, 100px);
-    height: clamp(80px, 20vw, 100px);
+    width: clamp(70px, 17.5vw, 85px);
+    height: clamp(70px, 17.5vw, 85px);
   }
 
-  .club-info-wrapper {
-    flex: 1;
-    min-width: 0;
-    align-items: flex-end;
+  .club-stats-section {
+    gap: clamp(12px, 3vw, 20px);
   }
 
   .club-detail-content {
@@ -958,29 +946,29 @@
 }
 
 @media (max-width: 360px) {
-  .club-header-section {
-    flex-direction: row;
-    justify-content: space-between;
-    gap: clamp(10px, 2.5vw, 12px);
+  .club-profile-section {
+    gap: clamp(12px, 3vw, 20px);
   }
 
   .club-logo {
-    width: clamp(70px, 17.5vw, 90px);
-    height: clamp(70px, 17.5vw, 90px);
+    width: clamp(64px, 16vw, 80px);
+    height: clamp(64px, 16vw, 80px);
   }
 
-  .club-info-wrapper {
-    flex: 1;
-    min-width: 0;
-    align-items: flex-end;
+  .club-stats-section {
+    gap: clamp(10px, 2.5vw, 16px);
   }
 
   .club-name {
-    font-size: 18px;
+    font-size: clamp(13px, 3.25vw, 15px);
   }
 
   .stat-value {
-    font-size: 16px;
+    font-size: clamp(14px, 3.5vw, 16px);
+  }
+
+  .stat-label {
+    font-size: clamp(11px, 2.75vw, 13px);
   }
 
   .club-detail-content {

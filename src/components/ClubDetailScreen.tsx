@@ -21,6 +21,7 @@ interface ClubData {
     youtube?: string;
   };
   feed: Array<{ id: number; image: string; caption: string }>;
+  postCount: number;
 }
 
 const ClubDetailScreen: React.FC = () => {
@@ -399,6 +400,23 @@ const ClubDetailScreen: React.FC = () => {
         .eq("club_user_id", clubId)
         .eq("approved", true);
 
+      // 게시물 수 계산
+      const { data: clubPersonals } = await supabase
+        .from("club_personal")
+        .select("id")
+        .eq("club_user_id", clubId)
+        .eq("approved", true);
+
+      let postCount = 0;
+      if (clubPersonals && clubPersonals.length > 0) {
+        const clubPersonalIds = clubPersonals.map((cp) => cp.id);
+        const { count: articleCount } = await supabase
+          .from("club_personal_article")
+          .select("*", { count: "exact", head: true })
+          .in("club_personal_id", clubPersonalIds);
+        postCount = articleCount || 0;
+      }
+
       const activityScore = clubUser.score || (memberCount || 0) * 10;
       const groupUser = Array.isArray(clubUser.group_user)
         ? clubUser.group_user[0]
@@ -422,6 +440,7 @@ const ClubDetailScreen: React.FC = () => {
           youtube: clubUser.youtube_url || undefined,
         },
         feed: [], // 피드는 별도로 구현 필요
+        postCount: postCount, // 게시물 수 추가
       };
 
       setClub(clubData);
@@ -466,30 +485,34 @@ const ClubDetailScreen: React.FC = () => {
 
       {/* Main Content */}
       <div className="club-detail-content">
-        {/* Section A & B & C: 로고 + 정보 + 통계 */}
-        <div className="club-header-section">
-          {/* Section A: 로고 */}
+        {/* 인스타그램 스타일 프로필 섹션 */}
+        <div className="club-profile-section">
+          {/* 프로필 로고 */}
           <div className="club-logo-section">
             <img src={club.logo} alt={club.name} className="club-logo" />
           </div>
 
-          {/* Section B & C: 정보 + 통계 */}
-          <div className="club-info-wrapper">
-            <div className="club-info-section">
-              <span className="club-category">{club.category}</span>
-              <h1 className="club-name">{club.name}</h1>
+          {/* 통계 (피드, 멤버, 활동점수) */}
+          <div className="club-stats-section">
+            <div className="stat-item">
+              <span className="stat-value">{club.postCount || 0}</span>
+              <span className="stat-label">피드</span>
             </div>
-            <div className="club-stats-section">
-              <div className="stat-item">
-                <span className="stat-value">{club.members}</span>
-                <span className="stat-label">멤버</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-value">{club.activityScore}</span>
-                <span className="stat-label">활동점수</span>
-              </div>
+            <div className="stat-item">
+              <span className="stat-value">{club.members}</span>
+              <span className="stat-label">멤버</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-value">{club.activityScore}</span>
+              <span className="stat-label">활동점수</span>
             </div>
           </div>
+        </div>
+
+        {/* 동아리 이름과 카테고리 */}
+        <div className="club-name-section">
+          <h1 className="club-name">{club.name}</h1>
+          <span className="club-category">{club.category}</span>
         </div>
 
         {/* Section D: 소개글 */}
