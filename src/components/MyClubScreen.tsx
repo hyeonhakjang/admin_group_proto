@@ -158,8 +158,13 @@ const MyClubScreen: React.FC = () => {
     const dateParam = params.get("date");
 
     // 탭 파라미터가 있으면 해당 탭으로 설정
-    if (tabParam && ["posts", "payout", "schedule", "members", "archive"].includes(tabParam)) {
-      setActiveTab(tabParam as "posts" | "payout" | "schedule" | "members" | "archive");
+    if (
+      tabParam &&
+      ["posts", "payout", "schedule", "members", "archive"].includes(tabParam)
+    ) {
+      setActiveTab(
+        tabParam as "posts" | "payout" | "schedule" | "members" | "archive"
+      );
     }
 
     // 날짜 파라미터가 있으면 해당 날짜 선택
@@ -526,12 +531,10 @@ const MyClubScreen: React.FC = () => {
               ? clubPersonal.personal_user[0]
               : clubPersonal.personal_user;
             setProfileInfo({
-              nickname:
-                personalUser?.personal_name || userData.name,
+              nickname: personalUser?.personal_name || userData.name,
               role: clubPersonal.role || "동아리원",
               profileImage:
-                personalUser?.profile_image_url ||
-                "/profile-icon.png",
+                personalUser?.profile_image_url || "/profile-icon.png",
             });
           }
         } else if (userData.type === "club") {

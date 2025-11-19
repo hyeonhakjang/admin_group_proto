@@ -22,6 +22,8 @@ import ScheduleAddScreen from "./components/ScheduleAddScreen";
 import ClubAccountScreen from "./components/ClubAccountScreen";
 import ClubAccountRegisterScreen from "./components/ClubAccountRegisterScreen";
 import ClubAccountBankInputScreen from "./components/ClubAccountBankInputScreen";
+import PayoutRegisterScreen from "./components/PayoutRegisterScreen";
+import PayoutMemberSearchScreen from "./components/PayoutMemberSearchScreen";
 import "./App.css";
 
 function App() {
@@ -73,10 +75,7 @@ function App() {
           />
           <Route path="/profile" element={<ProfileScreen />} />
           <Route path="/account-approval" element={<AccountApprovalScreen />} />
-          <Route
-            path="/myclub/schedule/add"
-            element={<ScheduleAddScreen />}
-          />
+          <Route path="/myclub/schedule/add" element={<ScheduleAddScreen />} />
           <Route
             path="/myclub/manage/account"
             element={<ClubAccountScreen />}
@@ -88,6 +87,14 @@ function App() {
           <Route
             path="/myclub/manage/account/register/:bankId"
             element={<ClubAccountBankInputScreen />}
+          />
+          <Route
+            path="/myclub/payout/register"
+            element={<PayoutRegisterScreen />}
+          />
+          <Route
+            path="/myclub/payout/register/members"
+            element={<PayoutMemberSearchScreen />}
           />
         </Routes>
       </div>

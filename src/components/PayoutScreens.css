@@ -1,0 +1,334 @@
+.payout-screen {
+  min-height: 100vh;
+  background: #fffcfa;
+  padding-bottom: 120px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  color: #28201b;
+  display: flex;
+  flex-direction: column;
+}
+
+.payout-inner {
+  flex: 1;
+  padding: clamp(16px, 4vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 24px);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.payout-header-block {
+  width: 100%;
+  background-color: #fffcfa;
+  padding: clamp(12px, 3vw, 16px) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(6px, 1.5vw, 8px);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.payout-title {
+  font-size: clamp(22px, 5.5vw, 28px);
+  font-weight: 700;
+  margin: 0;
+}
+
+.payout-back-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 8px;
+  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 16px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #28201b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+}
+
+.payout-back-btn:hover {
+  background: white;
+}
+
+.payout-card {
+  background: white;
+  border-radius: 16px;
+  padding: clamp(16px, 4vw, 20px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.payout-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1.5vw, 8px);
+}
+
+.payout-form-field label {
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+}
+
+.payout-form-field input,
+.payout-form-field textarea {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: clamp(12px, 3vw, 14px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.payout-form-field textarea {
+  resize: none;
+  min-height: 100px;
+}
+
+.payout-select-members {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(8px, 2vw, 12px);
+  padding: clamp(12px, 3vw, 14px);
+  border: 1px dashed #c34e00;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.payout-select-members button {
+  border: none;
+  background: #c34e00;
+  color: white;
+  border-radius: 999px;
+  padding: clamp(8px, 2vw, 10px) clamp(14px, 3.5vw, 18px);
+  font-size: clamp(13px, 3vw, 15px);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.payout-member-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.payout-member-item {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.5vw, 14px);
+  padding: clamp(10px, 2.5vw, 14px);
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  background: #fffcfa;
+}
+
+.payout-member-name {
+  flex: 1;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+}
+
+.payout-member-amount {
+  width: clamp(90px, 22vw, 140px);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: clamp(13px, 3.25vw, 15px);
+  text-align: right;
+}
+
+.payout-remove-btn {
+  border: none;
+  background: transparent;
+  color: #c34e00;
+  font-size: clamp(16px, 4vw, 20px);
+  cursor: pointer;
+}
+
+.payout-submit-btn {
+  width: 100%;
+  background: #c34e00;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: clamp(14px, 3.5vw, 18px);
+  font-size: clamp(15px, 3.75vw, 18px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.payout-submit-btn:hover {
+  background: #a03d00;
+}
+
+.member-search-tabs {
+  display: flex;
+  border: 1px solid #e0e0e0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.member-search-tab {
+  flex: 1;
+  text-align: center;
+  padding: clamp(10px, 2.5vw, 12px);
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: clamp(13px, 3.25vw, 15px);
+}
+
+.member-search-tab.active {
+  background: #c34e00;
+  color: white;
+}
+
+.member-search-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.5vw, 12px);
+}
+
+.member-search-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: clamp(12px, 3vw, 14px);
+}
+
+.member-search-actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.5vw, 12px);
+}
+
+.member-search-select-btn {
+  border: none;
+  border-radius: 999px;
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  font-size: clamp(12px, 3vw, 14px);
+  background: #c34e00;
+  color: white;
+  cursor: pointer;
+}
+
+.member-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1px solid #c34e00;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: white;
+  background: #c34e00;
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 16px);
+}
+
+.search-input-wrapper input {
+  border: none;
+  flex: 1;
+  outline: none;
+  font-size: clamp(13px, 3.25vw, 15px);
+}
+
+.search-input-wrapper span {
+  color: #888888;
+}
+
+.member-select-all {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px dashed #c34e00;
+  border-radius: 12px;
+  padding: clamp(12px, 3vw, 14px);
+}
+
+.member-select-all button {
+  border: none;
+  background: #c34e00;
+  color: white;
+  border-radius: 999px;
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  font-size: clamp(12px, 3vw, 14px);
+  cursor: pointer;
+}
+
+.member-search-footer {
+  margin-top: clamp(12px, 3vw, 16px);
+}
+
+.member-search-footer button {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  background: #c34e00;
+  color: white;
+  padding: clamp(12px, 3vw, 14px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.payout-calendar {
+  background: white;
+  border-radius: 16px;
+  padding: clamp(16px, 4vw, 24px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.payout-calendar-title {
+  font-size: clamp(16px, 4vw, 20px);
+  font-weight: 700;
+  margin: 0 0 clamp(12px, 3vw, 16px);
+}
+
+.payout-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1vw, 8px);
+}
+
+.payout-calendar-day {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.payout-calendar-day.other-month {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.payout-calendar-day.selected {
+  background: #c34e00;
+  color: white;
+  border-color: transparent;
+}
+
