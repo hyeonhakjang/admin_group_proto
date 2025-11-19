@@ -168,15 +168,7 @@ const ScheduleAddScreen: React.FC = () => {
           ✕
         </button>
         <h1 className="schedule-add-title">일정 추가</h1>
-        <button
-          className={`schedule-add-submit-btn ${
-            isSubmitEnabled ? "enabled" : "disabled"
-          }`}
-          onClick={handleSubmit}
-          disabled={!isSubmitEnabled}
-        >
-          완료
-        </button>
+        <div className="schedule-add-header-spacer"></div>
       </div>
 
       {/* 메인 컨텐츠 */}
@@ -278,6 +270,19 @@ const ScheduleAddScreen: React.FC = () => {
             rows={6}
           />
         </div>
+      </div>
+
+      {/* 하단 완료 버튼 */}
+      <div className="schedule-add-footer">
+        <button
+          className={`schedule-add-submit-btn ${
+            isSubmitEnabled ? "enabled" : "disabled"
+          }`}
+          onClick={handleSubmit}
+          disabled={!isSubmitEnabled}
+        >
+          완료
+        </button>
       </div>
     </div>
   );
