@@ -80,6 +80,7 @@
   gap: clamp(12px, 3vw, 16px);
   width: 100%;
   flex-wrap: nowrap;
+  margin-left: clamp(-8px, -2vw, -4px);
 }
 
 /* Section B: 프로필 로고 */
@@ -106,7 +107,7 @@
   text-align: left;
   overflow: visible;
   min-width: 0;
-  margin-left: clamp(8px, 2vw, 12px);
+  margin-left: clamp(12px, 3vw, 16px);
 }
 
 .club-name {
