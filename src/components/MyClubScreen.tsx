@@ -2197,7 +2197,8 @@ const MyClubScreen: React.FC = () => {
                               </div>
 
                               {/* 참석/불참 버튼 - 참가 신청 활성화된 일정만 표시 */}
-                              {selectedEvent.participationEnabled === true &&
+                              {selectedEvent &&
+                                selectedEvent.participationEnabled === true &&
                                 userData?.type === "personal" &&
                                 selectedClub?.club_personal_id && (
                                   <div className="event-attendance-section">
