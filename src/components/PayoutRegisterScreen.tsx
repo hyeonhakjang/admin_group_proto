@@ -115,23 +115,35 @@ const PayoutRegisterScreen: React.FC = () => {
           </div>
 
           {members.length > 0 && (
-            <div className="payout-member-list">
+            <div className="payout-registered-member-list">
+              <h3 className="payout-registered-member-list-title">
+                등록한 정산 멤버
+              </h3>
               {members.map((member) => (
-                <div key={member.id} className="payout-member-item">
-                  <div className="payout-member-name">{member.name}</div>
-                  <input
-                    type="number"
-                    min={0}
-                    className="payout-member-amount"
-                    value={member.amount}
-                    onChange={(event) =>
-                      handleAmountChange(member.id, event.target.value)
-                    }
-                  />
+                <div key={member.id} className="payout-registered-member-item">
+                  <div className="payout-registered-member-name">
+                    {member.name}
+                  </div>
+                  <div className="payout-registered-member-amount-wrapper">
+                    <input
+                      type="number"
+                      min={0}
+                      className="payout-registered-member-amount"
+                      value={member.amount}
+                      onChange={(event) =>
+                        handleAmountChange(member.id, event.target.value)
+                      }
+                      placeholder="금액 입력"
+                    />
+                    <span className="payout-registered-member-amount-unit">
+                      원
+                    </span>
+                  </div>
                   <button
                     type="button"
-                    className="payout-remove-btn"
+                    className="payout-registered-member-remove-btn"
                     onClick={() => handleRemoveMember(member.id)}
+                    aria-label="제거"
                   >
                     ×
                   </button>
@@ -151,4 +163,3 @@ const PayoutRegisterScreen: React.FC = () => {
 };
 
 export default PayoutRegisterScreen;
-

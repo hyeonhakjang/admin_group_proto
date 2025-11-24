@@ -257,6 +257,114 @@
   transform: scale(0.95);
 }
 
+/* 등록한 정산 멤버 리스트 */
+.payout-registered-member-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+  margin-top: clamp(8px, 2vw, 12px);
+}
+
+.payout-registered-member-list-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  margin: 0;
+}
+
+.payout-registered-member-item {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
+  padding: clamp(12px, 3vw, 16px);
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.payout-registered-member-item:hover {
+  border-color: #c34e00;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.payout-registered-member-name {
+  flex: 1;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  min-width: 0;
+}
+
+.payout-registered-member-amount-wrapper {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 1vw, 6px);
+  flex-shrink: 0;
+}
+
+.payout-registered-member-amount {
+  width: clamp(100px, 25vw, 150px);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 12px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  text-align: right;
+  background: white;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.payout-registered-member-amount:focus {
+  border-color: #c34e00;
+  box-shadow: 0 0 0 3px rgba(195, 78, 0, 0.1);
+}
+
+.payout-registered-member-amount::placeholder {
+  color: #888888;
+  text-align: left;
+}
+
+.payout-registered-member-amount-unit {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #666666;
+  white-space: nowrap;
+}
+
+.payout-registered-member-remove-btn {
+  border: none;
+  background: transparent;
+  color: #c34e00;
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 300;
+  cursor: pointer;
+  width: clamp(32px, 8vw, 40px);
+  height: clamp(32px, 8vw, 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.payout-registered-member-remove-btn:hover {
+  background: #fff5f0;
+  transform: scale(1.1);
+}
+
+.payout-registered-member-remove-btn:active {
+  transform: scale(0.95);
+}
+
 .payout-submit-btn {
   width: 100%;
   padding: clamp(14px, 3.5vw, 16px);
@@ -357,7 +465,8 @@
 .member-search-actions {
   display: flex;
   align-items: center;
-  gap: clamp(10px, 2.5vw, 12px);
+  gap: clamp(8px, 2vw, 10px);
+  flex-shrink: 0;
 }
 
 .member-search-select-btn {
@@ -606,6 +715,15 @@
     text-align: left;
   }
 
+  .payout-registered-member-item {
+    padding: clamp(10px, 2.5vw, 14px);
+    gap: clamp(10px, 2.5vw, 14px);
+  }
+
+  .payout-registered-member-amount {
+    width: clamp(90px, 22vw, 130px);
+  }
+
   .member-search-tabs {
     border-radius: clamp(10px, 2.5vw, 12px);
   }
@@ -667,6 +785,33 @@
 
   .payout-member-name {
     font-size: clamp(13px, 3.25vw, 15px);
+  }
+
+  .payout-registered-member-item {
+    padding: clamp(8px, 2vw, 12px);
+    gap: clamp(8px, 2vw, 10px);
+    flex-wrap: wrap;
+  }
+
+  .payout-registered-member-name {
+    width: 100%;
+    font-size: clamp(13px, 3.25vw, 15px);
+  }
+
+  .payout-registered-member-amount-wrapper {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .payout-registered-member-amount {
+    width: 100%;
+    font-size: clamp(13px, 3.25vw, 15px);
+  }
+
+  .payout-registered-member-remove-btn {
+    width: clamp(28px, 7vw, 36px);
+    height: clamp(28px, 7vw, 36px);
+    font-size: clamp(18px, 4.5vw, 22px);
   }
 
   .payout-submit-btn {
@@ -885,6 +1030,30 @@
 
   .payout-calendar {
     padding: clamp(12px, 3vw, 16px);
+  }
+
+  .payout-registered-member-item {
+    padding: clamp(6px, 1.5vw, 10px);
+    gap: clamp(6px, 1.5vw, 8px);
+  }
+
+  .payout-registered-member-name {
+    font-size: clamp(12px, 3vw, 13px);
+  }
+
+  .payout-registered-member-amount {
+    font-size: clamp(12px, 3vw, 13px);
+    padding: clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 10px);
+  }
+
+  .payout-registered-member-amount-unit {
+    font-size: clamp(12px, 3vw, 13px);
+  }
+
+  .payout-registered-member-remove-btn {
+    width: clamp(24px, 6vw, 32px);
+    height: clamp(24px, 6vw, 32px);
+    font-size: clamp(16px, 4vw, 20px);
   }
 }
 

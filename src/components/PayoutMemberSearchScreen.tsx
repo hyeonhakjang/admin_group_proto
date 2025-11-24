@@ -218,9 +218,6 @@ const PayoutMemberSearchScreen: React.FC = () => {
                     <div className="member-role">{member.role}</div>
                   </div>
                   <div className="member-search-actions">
-                    {selectedIds.includes(member.id) && (
-                      <span className="member-check">✓</span>
-                    )}
                     <button
                       type="button"
                       className="member-search-select-btn"
@@ -228,6 +225,9 @@ const PayoutMemberSearchScreen: React.FC = () => {
                     >
                       {selectedIds.includes(member.id) ? "해제" : "선택"}
                     </button>
+                    {selectedIds.includes(member.id) && (
+                      <span className="member-check">✓</span>
+                    )}
                   </div>
                 </div>
               ))}
