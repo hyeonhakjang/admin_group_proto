@@ -16,6 +16,7 @@ const PayoutRegisterScreen: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [members, setMembers] = useState<SelectedMember[]>([]);
+  const [bulkAmount, setBulkAmount] = useState<string>("");
 
   useEffect(() => {
     const stored = sessionStorage.getItem(STORAGE_KEY);
@@ -45,6 +46,16 @@ const PayoutRegisterScreen: React.FC = () => {
 
   const handleRemoveMember = (id: string) => {
     setMembers((prev) => prev.filter((member) => member.id !== id));
+  };
+
+  const handleApplyBulkAmount = () => {
+    const parsed = Number(bulkAmount);
+    if (Number.isNaN(parsed) || parsed < 0) {
+      alert("0원 이상의 숫자를 입력해 주세요.");
+      return;
+    }
+    setMembers((prev) => prev.map((member) => ({ ...member, amount: parsed })));
+    alert(`등록된 멤버 ${members.length}명의 금액이 ${parsed.toLocaleString()}원으로 통일되었습니다.`);
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -119,6 +130,25 @@ const PayoutRegisterScreen: React.FC = () => {
               <h3 className="payout-registered-member-list-title">
                 등록한 정산 멤버
               </h3>
+              <div className="payout-registered-member-bulk">
+                <div className="payout-registered-member-bulk-input">
+                  <input
+                    type="number"
+                    min={0}
+                    value={bulkAmount}
+                    onChange={(event) => setBulkAmount(event.target.value)}
+                    placeholder="일괄 적용할 금액"
+                  />
+                  <span>원</span>
+                </div>
+                <button
+                  type="button"
+                  className="payout-registered-member-bulk-btn"
+                  onClick={handleApplyBulkAmount}
+                >
+                  전체 금액 통일
+                </button>
+              </div>
               {members.map((member) => (
                 <div key={member.id} className="payout-registered-member-item">
                   <div className="payout-registered-member-name">
