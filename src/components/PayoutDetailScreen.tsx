@@ -49,7 +49,6 @@ const PayoutDetailScreen: React.FC = () => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    // 동아리 계좌 정보 로드
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (stored) {
       setAccountInfo(JSON.parse(stored));
@@ -60,6 +59,36 @@ const PayoutDetailScreen: React.FC = () => {
       setSelectedClub(JSON.parse(storedClub));
     }
   }, []);
+
+  useEffect(() => {
+    const fetchClubAccount = async () => {
+      if (!selectedClub?.club_user_id) return;
+      try {
+        const { data, error } = await supabase
+          .from("club_user")
+          .select("bank_name, bank_account_number")
+          .eq("id", selectedClub.club_user_id)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        if (data?.bank_name && data?.bank_account_number) {
+          const info = {
+            bankName: data.bank_name,
+            accountNumber: data.bank_account_number,
+          };
+          setAccountInfo(info);
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(info));
+        }
+      } catch (error) {
+        console.error("동아리 계좌 정보 로드 오류:", error);
+      }
+    };
+
+    fetchClubAccount();
+  }, [selectedClub?.club_user_id]);
 
   useEffect(() => {
     const loadPayoutDetail = async () => {
@@ -100,8 +129,8 @@ const PayoutDetailScreen: React.FC = () => {
               minute: "2-digit",
             })
           : "";
-        const participants: PayoutParticipant[] = (data.payout_participant ||
-          []
+        const participants: PayoutParticipant[] = (
+          data.payout_participant || []
         ).map((participant: any) => ({
           id: participant.id,
           club_personal_id: participant.club_personal_id,
@@ -152,20 +181,15 @@ const PayoutDetailScreen: React.FC = () => {
       return;
     }
 
-    // 은행 이름 인코딩
     const encodedBankName = encodeURIComponent(accountInfo.bankName);
     const amount = payout.userAmount;
     const accountNo = accountInfo.accountNumber;
 
-    // 토스 앱 URL 생성
     const tossUrl = `supertoss://send?amount=${amount}&bank=${encodedBankName}&accountNo=${accountNo}&origin=qr`;
 
-    // 토스 앱 열기 시도
     window.location.href = tossUrl;
 
-    // 토스 앱이 설치되지 않은 경우를 대비해 약간의 지연 후 처리
     setTimeout(() => {
-      // 토스 웹 버전으로 리다이렉트하거나 안내 메시지 표시
       alert("토스 앱이 설치되어 있지 않습니다. 토스 앱을 설치해주세요.");
     }, 1000);
   };
@@ -200,7 +224,11 @@ const PayoutDetailScreen: React.FC = () => {
             }
           : prev
       );
-      alert(newStatus ? "송금 완료로 표시되었습니다." : "송금 완료 표시가 취소되었습니다.");
+      alert(
+        newStatus
+          ? "송금 완료로 표시되었습니다."
+          : "송금 완료 표시가 취소되었습니다."
+      );
     } catch (error) {
       console.error("송금 상태 업데이트 오류:", error);
       alert("송금 상태를 업데이트하는 중 오류가 발생했습니다.");
@@ -304,4 +332,3 @@ const PayoutDetailScreen: React.FC = () => {
 };
 
 export default PayoutDetailScreen;
-
