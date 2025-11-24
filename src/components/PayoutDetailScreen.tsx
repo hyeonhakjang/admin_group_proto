@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BottomTabBar from "./BottomTabBar";
+import { supabase } from "../lib/supabase";
 import "./PayoutScreens.css";
 
 const LOCAL_STORAGE_KEY = "clubAccountInfo";
@@ -10,8 +11,23 @@ interface ClubAccountInfo {
   accountNumber: string;
 }
 
+interface StoredClub {
+  id: number;
+  name: string;
+  club_user_id?: number;
+  club_personal_id?: number;
+  role?: string;
+}
+
+interface PayoutParticipant {
+  id: number;
+  club_personal_id: number;
+  payout_amount: number;
+  status: "pending" | "paid" | "unpaid";
+}
+
 interface PayoutDetail {
-  id: string;
+  id: number;
   title: string;
   totalMembers: number;
   requestDate: string;
@@ -19,6 +35,7 @@ interface PayoutDetail {
   description: string;
   userAmount: number;
   userStatus: "pending" | "paid" | "unpaid";
+  participants: PayoutParticipant[];
 }
 
 const PayoutDetailScreen: React.FC = () => {
@@ -27,6 +44,9 @@ const PayoutDetailScreen: React.FC = () => {
   const [payout, setPayout] = useState<PayoutDetail | null>(null);
   const [accountInfo, setAccountInfo] = useState<ClubAccountInfo | null>(null);
   const [isPaid, setIsPaid] = useState(false);
+  const [selectedClub, setSelectedClub] = useState<StoredClub | null>(null);
+  const [participantId, setParticipantId] = useState<number | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     // 동아리 계좌 정보 로드
@@ -35,24 +55,96 @@ const PayoutDetailScreen: React.FC = () => {
       setAccountInfo(JSON.parse(stored));
     }
 
-    // 정산 상세 정보 로드 (mock 데이터)
-    if (id) {
-      // TODO: 실제 데이터베이스에서 정산 정보 로드
-      const mockPayout: PayoutDetail = {
-        id: id,
-        title: "11월 회비 정산",
-        totalMembers: 15,
-        requestDate: "2025-11-15",
-        requestTime: "14:30",
-        description:
-          "11월 정기 회비를 정산합니다. 회비는 동아리 활동비로 사용됩니다.",
-        userAmount: 50000,
-        userStatus: "pending",
-      };
-      setPayout(mockPayout);
-      setIsPaid(mockPayout.userStatus === "paid");
+    const storedClub = sessionStorage.getItem("selectedClub");
+    if (storedClub) {
+      setSelectedClub(JSON.parse(storedClub));
     }
-  }, [id]);
+  }, []);
+
+  useEffect(() => {
+    const loadPayoutDetail = async () => {
+      if (!id) return;
+
+      try {
+        const { data, error } = await supabase
+          .from("club_personal_payout")
+          .select(
+            `
+            id,
+            title,
+            content,
+            applied_date,
+            created_at,
+            payout_participant (
+              id,
+              club_personal_id,
+              payout_amount,
+              status
+            )
+          `
+          )
+          .eq("id", Number(id))
+          .single();
+
+        if (error || !data) {
+          throw error || new Error("정산 정보를 찾을 수 없습니다.");
+        }
+
+        const requestDate =
+          data.applied_date ||
+          data.created_at ||
+          new Date().toISOString().split("T")[0];
+        const requestTime = data.created_at
+          ? new Date(data.created_at).toLocaleTimeString("ko-KR", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : "";
+        const participants: PayoutParticipant[] = (data.payout_participant ||
+          []
+        ).map((participant: any) => ({
+          id: participant.id,
+          club_personal_id: participant.club_personal_id,
+          payout_amount: participant.payout_amount || 0,
+          status:
+            participant.status === "paid"
+              ? "paid"
+              : participant.status === "unpaid"
+              ? "unpaid"
+              : "pending",
+        }));
+
+        const totalMembers = participants.length;
+        const currentParticipant = participants.find(
+          (participant) =>
+            String(participant.club_personal_id) ===
+            String(selectedClub?.club_personal_id || "")
+        );
+
+        const payoutDetail: PayoutDetail = {
+          id: data.id,
+          title: data.title,
+          totalMembers,
+          requestDate,
+          requestTime,
+          description: data.content || "정산 설명이 없습니다.",
+          userAmount: currentParticipant?.payout_amount || 0,
+          userStatus: currentParticipant?.status || "pending",
+          participants,
+        };
+
+        setPayout(payoutDetail);
+        setIsPaid(currentParticipant?.status === "paid");
+        setParticipantId(currentParticipant?.id || null);
+      } catch (error) {
+        console.error("정산 상세 로드 오류:", error);
+        alert("정산 정보를 불러오는 중 오류가 발생했습니다.");
+        navigate(-1);
+      }
+    };
+
+    loadPayoutDetail();
+  }, [id, navigate, selectedClub?.club_personal_id]);
 
   const handleTossTransfer = () => {
     if (!accountInfo || !payout) {
@@ -78,17 +170,42 @@ const PayoutDetailScreen: React.FC = () => {
     }, 1000);
   };
 
-  const handlePaymentToggle = () => {
+  const handlePaymentToggle = async () => {
     if (!payout) return;
+    if (!participantId) {
+      alert("정산 참가자 정보가 없습니다.");
+      return;
+    }
 
     const newStatus = !isPaid;
-    setIsPaid(newStatus);
+    const nextStatus = newStatus ? "paid" : "pending";
 
-    // TODO: 실제 데이터베이스에 송금 완료 상태 업데이트
-    if (newStatus) {
-      alert("송금 완료로 표시되었습니다.");
-    } else {
-      alert("송금 완료 표시가 취소되었습니다.");
+    try {
+      setIsUpdating(true);
+      const { error } = await supabase
+        .from("payout_participant")
+        .update({ status: nextStatus })
+        .eq("id", participantId);
+
+      if (error) {
+        throw error;
+      }
+
+      setIsPaid(newStatus);
+      setPayout((prev) =>
+        prev
+          ? {
+              ...prev,
+              userStatus: nextStatus as "pending" | "paid" | "unpaid",
+            }
+          : prev
+      );
+      alert(newStatus ? "송금 완료로 표시되었습니다." : "송금 완료 표시가 취소되었습니다.");
+    } catch (error) {
+      console.error("송금 상태 업데이트 오류:", error);
+      alert("송금 상태를 업데이트하는 중 오류가 발생했습니다.");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -175,6 +292,7 @@ const PayoutDetailScreen: React.FC = () => {
               isPaid ? "status-paid" : "status-unpaid"
             }`}
             onClick={handlePaymentToggle}
+            disabled={isUpdating}
           >
             {isPaid ? "✓ 송금 완료" : "송금 미완료"}
           </button>
