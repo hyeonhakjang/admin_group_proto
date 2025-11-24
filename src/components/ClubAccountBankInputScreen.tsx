@@ -51,8 +51,9 @@ const ClubAccountBankInputScreen: React.FC = () => {
           >
             ← 뒤로가기
           </button>
-          <h1 className="club-account-title">계좌 입력</h1>
         </header>
+
+        <h1 className="club-account-title">계좌 입력</h1>
 
         <section>
           <h2 className="club-account-section-title">선택한 은행</h2>

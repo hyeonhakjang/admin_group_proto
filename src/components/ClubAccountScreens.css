@@ -35,25 +35,23 @@
   z-index: 100;
   padding: clamp(12px, 3vw, 16px);
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: clamp(6px, 1.5vw, 8px);
+  align-items: center;
   min-height: 64px;
   pointer-events: none; /* 컨테이너는 클릭 이벤트 차단 */
   box-sizing: border-box;
   flex-shrink: 0; /* 축소 방지 */
 }
 
-.club-account-header .club-account-back-btn {
-  margin-bottom: 0;
-}
-
 .club-account-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
   font-size: clamp(22px, 5.5vw, 28px);
   font-weight: 700;
   margin: 0;
+  margin-top: clamp(6px, 1.5vw, 8px);
+  margin-bottom: clamp(16px, 4vw, 24px);
   color: #28201b;
-  pointer-events: auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .club-account-back-btn {
@@ -67,7 +65,6 @@
   padding: 8px 0;
   pointer-events: auto; /* 버튼은 클릭 가능 */
   z-index: 101;
-  align-self: flex-start;
   box-sizing: border-box;
   transition: color 0.2s ease;
 }

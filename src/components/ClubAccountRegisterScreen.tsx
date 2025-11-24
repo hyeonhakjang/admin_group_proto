@@ -17,8 +17,9 @@ const ClubAccountRegisterScreen: React.FC = () => {
           >
             ← 뒤로가기
           </button>
-          <h1 className="club-account-title">계좌 등록</h1>
         </header>
+
+        <h1 className="club-account-title">계좌 등록</h1>
 
         <section>
           <h2 className="club-account-section-title">

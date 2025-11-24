@@ -58,10 +58,9 @@ const PayoutRegisterScreen: React.FC = () => {
       return;
     }
     alert(
-      `정산 "${title}"이 등록되었습니다. (멤버 ${members.length}명, 총 ${members.reduce(
-        (sum, member) => sum + member.amount,
-        0
-      )}원)`
+      `정산 "${title}"이 등록되었습니다. (멤버 ${
+        members.length
+      }명, 총 ${members.reduce((sum, member) => sum + member.amount, 0)}원)`
     );
     setTitle("");
     setDescription("");
@@ -75,8 +74,9 @@ const PayoutRegisterScreen: React.FC = () => {
           <button className="payout-back-btn" onClick={() => navigate(-1)}>
             ← 뒤로가기
           </button>
-          <h1 className="payout-title">정산 등록</h1>
         </header>
+
+        <h1 className="payout-title">정산 등록</h1>
 
         <form className="payout-card" onSubmit={handleSubmit}>
           <div className="payout-form-field">

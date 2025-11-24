@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomTabBar from "./BottomTabBar";
 import "./PayoutScreens.css";
@@ -69,7 +69,9 @@ const PayoutMemberSearchScreen: React.FC = () => {
 
   const toggleMember = (id: string) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((memberId) => memberId !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((memberId) => memberId !== id)
+        : [...prev, id]
     );
   };
 
@@ -159,18 +161,23 @@ const PayoutMemberSearchScreen: React.FC = () => {
           <button className="payout-back-btn" onClick={() => navigate(-1)}>
             ← 뒤로가기
           </button>
-          <h1 className="payout-title">정산 멤버 검색</h1>
         </header>
+
+        <h1 className="payout-title">정산 멤버 검색</h1>
 
         <div className="member-search-tabs">
           <button
-            className={`member-search-tab ${activeTab === "members" ? "active" : ""}`}
+            className={`member-search-tab ${
+              activeTab === "members" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("members")}
           >
             멤버 검색
           </button>
           <button
-            className={`member-search-tab ${activeTab === "events" ? "active" : ""}`}
+            className={`member-search-tab ${
+              activeTab === "events" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("events")}
           >
             행사 검색
@@ -187,7 +194,9 @@ const PayoutMemberSearchScreen: React.FC = () => {
                 </p>
               </div>
               <button type="button" onClick={handleSelectAll}>
-                {selectedIds.length === mockMembers.length ? "선택 해제" : "전체 선택"}
+                {selectedIds.length === mockMembers.length
+                  ? "선택 해제"
+                  : "전체 선택"}
               </button>
             </div>
 
@@ -280,7 +289,9 @@ const PayoutMemberSearchScreen: React.FC = () => {
                       className={`payout-calendar-day ${
                         day.isCurrentMonth ? "" : "other-month"
                       } ${isSelected ? "selected" : ""}`}
-                      onClick={() => handleDayClick(day.date, day.isCurrentMonth)}
+                      onClick={() =>
+                        handleDayClick(day.date, day.isCurrentMonth)
+                      }
                     >
                       {day.date}
                     </div>
