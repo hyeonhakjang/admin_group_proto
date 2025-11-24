@@ -1,9 +1,25 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 import BottomTabBar from "./BottomTabBar";
 import "./PayoutScreens.css";
 
 const STORAGE_KEY = "payoutSelectedMembers";
+
+interface UserData {
+  type: "personal" | "club" | "group" | "admin";
+  id: number;
+  username: string;
+  name: string;
+  email: string;
+}
+
+interface Club {
+  id: number;
+  name: string;
+  club_user_id?: number;
+  club_personal_id?: number;
+}
 
 interface Member {
   id: string;
@@ -11,44 +27,52 @@ interface Member {
   role: string;
 }
 
-interface EventItem {
-  id: string;
-  title: string;
-  date: string;
-  participants: Member[];
-}
-
-const mockMembers: Member[] = [
-  { id: "m1", name: "이동아리", role: "리더" },
-  { id: "m2", name: "김홍익", role: "총무" },
-  { id: "m3", name: "박동아리", role: "멤버" },
-  { id: "m4", name: "최활동", role: "멤버" },
-  { id: "m5", name: "정기획", role: "기획" },
-];
-
-const mockEvents: EventItem[] = [
-  {
-    id: "e1",
-    title: "11월 정기 모임",
-    date: "2025-11-10",
-    participants: mockMembers.slice(0, 3),
-  },
-  {
-    id: "e2",
-    title: "해커톤 준비",
-    date: "2025-11-14",
-    participants: mockMembers.slice(2, 5),
-  },
-];
-
 const PayoutMemberSearchScreen: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"members" | "events">("members");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [searchText, setSearchText] = useState("");
-  const [currentDate, setCurrentDate] = useState(() => new Date());
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [currentDate, setCurrentDate] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+  // userData는 나중에 사용할 수 있으므로 유지
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [selectedClub, setSelectedClub] = useState<Club | null>(null);
+  const [schedules, setSchedules] = useState<any[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
 
+  // 사용자 정보 및 동아리 정보 로드
+  useEffect(() => {
+    const loadUserData = () => {
+      const storedUser =
+        localStorage.getItem("user") || sessionStorage.getItem("user");
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        setUserData(user);
+      }
+    };
+
+    const loadSelectedClub = () => {
+      const storedClub = sessionStorage.getItem("selectedClub");
+      if (storedClub) {
+        try {
+          const club = JSON.parse(storedClub);
+          setSelectedClub(club);
+        } catch (error) {
+          console.error("동아리 정보 파싱 오류:", error);
+        }
+      }
+    };
+
+    loadUserData();
+    loadSelectedClub();
+  }, []);
+
+  // 선택된 멤버 로드
   useEffect(() => {
     const stored = sessionStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -61,11 +85,85 @@ const PayoutMemberSearchScreen: React.FC = () => {
     }
   }, []);
 
+  // 일정 데이터 로드
+  const loadSchedules = React.useCallback(async () => {
+    if (!selectedClub?.club_user_id) return;
+
+    try {
+      const { data: schedules, error } = await supabase
+        .from("club_personal_schedule")
+        .select("*")
+        .eq("club_user_id", selectedClub.club_user_id)
+        .order("date", { ascending: true });
+
+      if (error) {
+        console.error("일정 로드 오류:", error);
+        setSchedules([]);
+      } else {
+        setSchedules(schedules || []);
+      }
+    } catch (error) {
+      console.error("일정 로드 중 오류:", error);
+      setSchedules([]);
+    }
+  }, [selectedClub?.club_user_id]);
+
+  // 멤버 데이터 로드
+  const loadMembers = React.useCallback(async () => {
+    if (!selectedClub?.club_user_id) return;
+
+    try {
+      const { data: membersData, error } = await supabase
+        .from("club_personal")
+        .select(
+          `
+          id,
+          role,
+          personal_user:personal_user_id (
+            id,
+            personal_name
+          )
+        `
+        )
+        .eq("club_user_id", selectedClub.club_user_id)
+        .eq("approved", true);
+
+      if (error) {
+        console.error("멤버 로드 오류:", error);
+        setMembers([]);
+      } else {
+        const transformedMembers: Member[] = (membersData || []).map(
+          (member: any) => {
+            const personalUser = Array.isArray(member.personal_user)
+              ? member.personal_user[0]
+              : member.personal_user;
+            return {
+              id: String(personalUser?.id || member.id),
+              name: personalUser?.personal_name || "이름 없음",
+              role: member.role || "동아리원",
+            };
+          }
+        );
+        setMembers(transformedMembers);
+      }
+    } catch (error) {
+      console.error("멤버 로드 중 오류:", error);
+      setMembers([]);
+    }
+  }, [selectedClub?.club_user_id]);
+
+  useEffect(() => {
+    if (selectedClub?.club_user_id) {
+      loadSchedules();
+      loadMembers();
+    }
+  }, [selectedClub?.club_user_id, loadSchedules, loadMembers]);
+
   const filteredMembers = useMemo(() => {
-    return mockMembers.filter((member) =>
+    return members.filter((member) =>
       member.name.toLowerCase().includes(searchText.toLowerCase())
     );
-  }, [searchText]);
+  }, [members, searchText]);
 
   const toggleMember = (id: string) => {
     setSelectedIds((prev) =>
@@ -76,10 +174,10 @@ const PayoutMemberSearchScreen: React.FC = () => {
   };
 
   const handleSelectAll = () => {
-    if (selectedIds.length === mockMembers.length) {
+    if (selectedIds.length === members.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(mockMembers.map((member) => member.id));
+      setSelectedIds(members.map((member) => member.id));
     }
   };
 
@@ -107,6 +205,52 @@ const PayoutMemberSearchScreen: React.FC = () => {
     return days;
   };
 
+  const getKoreanMonthYear = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    return `${year}년 ${month}월`;
+  };
+
+  // 일정이 있는 날짜들 계산
+  const eventsDates = React.useMemo(() => {
+    return schedules
+      .map((schedule) => {
+        if (schedule.date) {
+          const date = new Date(schedule.date);
+          return date;
+        }
+        return null;
+      })
+      .filter((date): date is Date => date !== null);
+  }, [schedules]);
+
+  const hasEvent = React.useCallback(
+    (day: number, isCurrentMonth: boolean) => {
+      if (!isCurrentMonth) return false;
+      const checkDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        day
+      );
+      return eventsDates.some(
+        (eventDate) =>
+          eventDate.getFullYear() === checkDate.getFullYear() &&
+          eventDate.getMonth() === checkDate.getMonth() &&
+          eventDate.getDate() === checkDate.getDate()
+      );
+    },
+    [currentDate, eventsDates]
+  );
+
+  const isSelected = (day: number, isCurrentMonth: boolean) => {
+    if (!isCurrentMonth || !selectedDate) return false;
+    return (
+      selectedDate.getFullYear() === currentDate.getFullYear() &&
+      selectedDate.getMonth() === currentDate.getMonth() &&
+      selectedDate.getDate() === day
+    );
+  };
+
   const handleDayClick = (day: number, isCurrentMonth: boolean) => {
     if (!isCurrentMonth) return;
     const clickedDate = new Date(
@@ -114,9 +258,27 @@ const PayoutMemberSearchScreen: React.FC = () => {
       currentDate.getMonth(),
       day
     );
-    const formatted = clickedDate.toISOString().split("T")[0];
-    const event = mockEvents.find((item) => item.date === formatted);
-    setSelectedEventId(event ? event.id : null);
+    setSelectedDate(clickedDate);
+
+    // 해당 날짜의 일정 찾기
+    const eventsOnDate = schedules.filter((schedule) => {
+      if (!schedule.date) return false;
+      const dateStr = schedule.date;
+      const [year, month, dayNum] = dateStr.split("-").map(Number);
+      const scheduleDate = new Date(year, month - 1, dayNum);
+      return (
+        scheduleDate.getFullYear() === clickedDate.getFullYear() &&
+        scheduleDate.getMonth() === clickedDate.getMonth() &&
+        scheduleDate.getDate() === clickedDate.getDate()
+      );
+    });
+
+    if (eventsOnDate.length > 0) {
+      // 첫 번째 일정 선택
+      setSelectedEventId(eventsOnDate[0].id);
+    } else {
+      setSelectedEventId(null);
+    }
   };
 
   const goToPreviousMonth = () => {
@@ -132,26 +294,70 @@ const PayoutMemberSearchScreen: React.FC = () => {
   };
 
   const handleMemberComplete = () => {
-    const selectedMembers = mockMembers
+    const selectedMembers = members
       .filter((member) => selectedIds.includes(member.id))
       .map((member) => ({ ...member, amount: 0 }));
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(selectedMembers));
     navigate(-1);
   };
 
-  const handleEventComplete = () => {
+  const handleEventComplete = async () => {
     if (!selectedEventId) {
       alert("행사를 선택해 주세요.");
       return;
     }
-    const event = mockEvents.find((item) => item.id === selectedEventId);
-    if (!event) return;
-    const eventMembers = event.participants.map((member) => ({
-      ...member,
-      amount: 0,
-    }));
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(eventMembers));
-    navigate(-1);
+
+    try {
+      // 선택된 일정의 참가자 정보 가져오기
+      const { data: participants, error } = await supabase
+        .from("schedule_participant")
+        .select(
+          `
+          *,
+          club_personal:club_personal_id (
+            personal_user:personal_user_id (
+              id,
+              personal_name
+            )
+          )
+        `
+        )
+        .eq("schedule_id", selectedEventId);
+
+      if (error) {
+        console.error("참가자 정보 로드 오류:", error);
+        alert("참가자 정보를 불러오는 중 오류가 발생했습니다.");
+        return;
+      }
+
+      // 참가자 정보를 멤버 형식으로 변환
+      const eventMembers = (participants || []).map((participant: any) => {
+        const clubPersonal = Array.isArray(participant.club_personal)
+          ? participant.club_personal[0]
+          : participant.club_personal;
+        const personalUser = Array.isArray(clubPersonal?.personal_user)
+          ? clubPersonal.personal_user[0]
+          : clubPersonal?.personal_user;
+
+        return {
+          id: String(personalUser?.id || participant.club_personal_id),
+          name: personalUser?.personal_name || "이름 없음",
+          role: clubPersonal?.role || "동아리원",
+          amount: 0,
+        };
+      });
+
+      if (eventMembers.length === 0) {
+        alert("선택한 행사에 참가자가 없습니다.");
+        return;
+      }
+
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(eventMembers));
+      navigate(-1);
+    } catch (error) {
+      console.error("행사 참가자 로드 중 오류:", error);
+      alert("행사 참가자 정보를 불러오는 중 오류가 발생했습니다.");
+    }
   };
 
   return (
@@ -194,7 +400,7 @@ const PayoutMemberSearchScreen: React.FC = () => {
                 </p>
               </div>
               <button type="button" onClick={handleSelectAll}>
-                {selectedIds.length === mockMembers.length
+                {selectedIds.length === members.length
                   ? "선택 해제"
                   : "전체 선택"}
               </button>
@@ -241,7 +447,7 @@ const PayoutMemberSearchScreen: React.FC = () => {
           </>
         ) : (
           <>
-            <div className="payout-calendar">
+            <div className="calendar-container">
               <div className="calendar-header">
                 <button
                   className="calendar-nav-btn"
@@ -251,7 +457,7 @@ const PayoutMemberSearchScreen: React.FC = () => {
                   &lt;
                 </button>
                 <h2 className="calendar-month-year">
-                  {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
+                  {getKoreanMonthYear(currentDate)}
                 </h2>
                 <button
                   className="calendar-nav-btn"
@@ -262,36 +468,41 @@ const PayoutMemberSearchScreen: React.FC = () => {
                 </button>
               </div>
               <div className="calendar-weekdays">
-                {["일", "월", "화", "수", "목", "금", "토"].map((label) => (
-                  <div key={label} className="calendar-weekday">
-                    {label}
-                  </div>
-                ))}
+                {["일", "월", "화", "수", "목", "금", "토"].map(
+                  (label, index) => (
+                    <div key={index} className="calendar-weekday">
+                      {label}
+                    </div>
+                  )
+                )}
               </div>
-              <div className="payout-calendar-grid">
-                {getDaysInMonth(currentDate).map((day, index) => {
-                  const isSelected =
-                    day.isCurrentMonth &&
-                    mockEvents.some((event) => {
-                      const eventDate = new Date(event.date);
-                      return (
-                        eventDate.getFullYear() === currentDate.getFullYear() &&
-                        eventDate.getMonth() === currentDate.getMonth() &&
-                        eventDate.getDate() === day.date &&
-                        event.id === selectedEventId
-                      );
-                    });
+              <div className="calendar-grid">
+                {getDaysInMonth(currentDate).map((dayData, index) => {
+                  const hasEventOnDay = hasEvent(
+                    dayData.date,
+                    dayData.isCurrentMonth
+                  );
+                  const isSelectedDay = isSelected(
+                    dayData.date,
+                    dayData.isCurrentMonth
+                  );
+
                   return (
                     <div
                       key={index}
-                      className={`payout-calendar-day ${
-                        day.isCurrentMonth ? "" : "other-month"
-                      } ${isSelected ? "selected" : ""}`}
+                      className={`calendar-day ${
+                        !dayData.isCurrentMonth ? "other-month" : ""
+                      } ${isSelectedDay ? "selected" : ""}`}
                       onClick={() =>
-                        handleDayClick(day.date, day.isCurrentMonth)
+                        handleDayClick(dayData.date, dayData.isCurrentMonth)
                       }
                     >
-                      {day.date}
+                      <span className="calendar-day-number">
+                        {dayData.date}
+                      </span>
+                      {hasEventOnDay && (
+                        <div className="calendar-event-dot"></div>
+                      )}
                     </div>
                   );
                 })}

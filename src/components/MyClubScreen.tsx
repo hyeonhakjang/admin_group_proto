@@ -176,7 +176,9 @@ const MyClubScreen: React.FC = () => {
 
           // 첫 번째 동아리를 기본 선택
           if (clubsList.length > 0 && !selectedClub) {
-            setSelectedClub(clubsList[0]);
+            const firstClub = clubsList[0];
+            setSelectedClub(firstClub);
+            sessionStorage.setItem("selectedClub", JSON.stringify(firstClub));
           }
         }
       } else if (userData.type === "club") {
@@ -200,6 +202,7 @@ const MyClubScreen: React.FC = () => {
 
           setClubs([club]);
           setSelectedClub(club);
+          sessionStorage.setItem("selectedClub", JSON.stringify(club));
         }
       }
     } catch (error) {
@@ -621,6 +624,8 @@ const MyClubScreen: React.FC = () => {
   const handleClubSelect = (club: Club) => {
     if (!isDragging) {
       setSelectedClub(club);
+      // sessionStorage에 저장하여 다른 페이지에서 사용할 수 있도록 함
+      sessionStorage.setItem("selectedClub", JSON.stringify(club));
       setShowClubModal(false);
     }
   };
@@ -1869,8 +1874,9 @@ const MyClubScreen: React.FC = () => {
           <div className="payout-content">
             {payouts.length === 0 ? (
               <div className="payout-empty-state">
-                <p className="payout-description">
-                  멤버들에게 요청할 정산을 등록하고 진행 상황을 관리할 수 있습니다.
+            <p className="payout-description">
+                  멤버들에게 요청할 정산을 등록하고 진행 상황을 관리할 수
+                  있습니다.
                 </p>
               </div>
             ) : (
@@ -1924,14 +1930,13 @@ const MyClubScreen: React.FC = () => {
                                 {/* 섹션 B-C: 정산 요청 날짜, 섹션 B-D: 자신의 정산 현황 (같은 줄) */}
                                 <div className="payout-item-footer">
                                   <span className="payout-item-date">
-                                    {new Date(payout.requestDate).toLocaleDateString(
-                                      "ko-KR",
-                                      {
-                                        year: "numeric",
-                                        month: "long",
-                                        day: "numeric",
-                                      }
-                                    )}
+                                    {new Date(
+                                      payout.requestDate
+                                    ).toLocaleDateString("ko-KR", {
+                                      year: "numeric",
+                                      month: "long",
+                                      day: "numeric",
+                                    })}
                                   </span>
                                   <span
                                     className={`payout-item-status ${
