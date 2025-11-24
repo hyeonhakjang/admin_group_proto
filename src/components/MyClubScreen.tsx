@@ -3457,6 +3457,15 @@ const MyClubScreen: React.FC = () => {
                 >
                   가입 신청 관리
                 </button>
+                <button
+                  className="side-nav-menu-item"
+                  onClick={() => {
+                    setShowSideNav(false);
+                    navigate("/myclub/manage/payout");
+                  }}
+                >
+                  정산 관리
+                </button>
               </div>
             </div>
           </div>
