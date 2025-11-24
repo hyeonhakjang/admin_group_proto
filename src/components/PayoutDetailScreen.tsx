@@ -188,10 +188,6 @@ const PayoutDetailScreen: React.FC = () => {
     const tossUrl = `supertoss://send?amount=${amount}&bank=${encodedBankName}&accountNo=${accountNo}&origin=qr`;
 
     window.location.href = tossUrl;
-
-    setTimeout(() => {
-      alert("토스 앱이 설치되어 있지 않습니다. 토스 앱을 설치해주세요.");
-    }, 1000);
   };
 
   const handlePaymentToggle = async () => {
