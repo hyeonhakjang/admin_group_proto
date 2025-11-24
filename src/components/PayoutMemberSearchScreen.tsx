@@ -38,6 +38,9 @@ const PayoutMemberSearchScreen: React.FC = () => {
   });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+  const [selectedEvents, setSelectedEvents] = useState<any[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
+  const [showEventDetail, setShowEventDetail] = useState(false);
   // userData는 나중에 사용할 수 있으므로 유지
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -251,6 +254,23 @@ const PayoutMemberSearchScreen: React.FC = () => {
     );
   };
 
+  const formatTime = (timeString: string) => {
+    if (!timeString) return "";
+    const [hours, minutes] = timeString.split(":");
+    const hour = parseInt(hours);
+    const period = hour >= 12 ? "오후" : "오전";
+    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+    return `${period} ${displayHour}:${minutes}`;
+  };
+
+  const formatDateForEvent = (date: Date) => {
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+    const dayName = days[date.getDay()];
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${month}월 ${day}일 ${dayName}`;
+  };
+
   const handleDayClick = (day: number, isCurrentMonth: boolean) => {
     if (!isCurrentMonth) return;
     const clickedDate = new Date(
@@ -259,8 +279,10 @@ const PayoutMemberSearchScreen: React.FC = () => {
       day
     );
     setSelectedDate(clickedDate);
+    setSelectedEvent(null);
+    setShowEventDetail(false);
 
-    // 해당 날짜의 일정 찾기
+    // 해당 날짜의 모든 일정 찾기
     const eventsOnDate = schedules.filter((schedule) => {
       if (!schedule.date) return false;
       const dateStr = schedule.date;
@@ -274,9 +296,70 @@ const PayoutMemberSearchScreen: React.FC = () => {
     });
 
     if (eventsOnDate.length > 0) {
-      // 첫 번째 일정 선택
-      setSelectedEventId(eventsOnDate[0].id);
+      // 모든 일정의 참가자 정보 로드
+      const loadAllParticipants = async () => {
+        const eventsWithParticipants = await Promise.all(
+          eventsOnDate.map(async (eventOnDate) => {
+            const { data: participants, count } = await supabase
+              .from("schedule_participant")
+              .select(
+                `
+                *,
+                club_personal:club_personal_id (
+                  personal_user:personal_user_id (
+                    id,
+                    personal_name,
+                    profile_image_url
+                  )
+                )
+              `,
+                { count: "exact" }
+              )
+              .eq("schedule_id", eventOnDate.id);
+
+            const participantAvatars = (participants || [])
+              .map(
+                (p: any) => p.club_personal?.personal_user?.profile_image_url
+              )
+              .filter((url: string) => url)
+              .slice(0, 4);
+
+            // agenda 필드 처리
+            const agendaList = Array.isArray(eventOnDate.agenda)
+              ? eventOnDate.agenda
+              : eventOnDate.agenda
+              ? [eventOnDate.agenda]
+              : [];
+
+            return {
+              id: eventOnDate.id,
+              title: eventOnDate.title || "",
+              group: selectedClub?.name || "",
+              participants: count || 0,
+              participantAvatars: participantAvatars,
+              date: clickedDate,
+              time:
+                eventOnDate.started_at && eventOnDate.ended_at
+                  ? `${formatTime(eventOnDate.started_at)} ~ ${formatTime(
+                      eventOnDate.ended_at
+                    )}`
+                  : "시간 미정",
+              location: eventOnDate.location || "",
+              description: eventOnDate.content || "",
+              agenda: agendaList,
+            };
+          })
+        );
+
+        setSelectedEvents(eventsWithParticipants);
+        if (eventsWithParticipants.length > 0) {
+          setSelectedEventId(eventsWithParticipants[0].id);
+        }
+      };
+
+      loadAllParticipants();
     } else {
+      setSelectedEvents([]);
       setSelectedEventId(null);
     }
   };
@@ -285,12 +368,20 @@ const PayoutMemberSearchScreen: React.FC = () => {
     setCurrentDate(
       new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
     );
+    setSelectedDate(null);
+    setSelectedEvents([]);
+    setSelectedEvent(null);
+    setShowEventDetail(false);
   };
 
   const goToNextMonth = () => {
     setCurrentDate(
       new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
     );
+    setSelectedDate(null);
+    setSelectedEvents([]);
+    setSelectedEvent(null);
+    setShowEventDetail(false);
   };
 
   const handleMemberComplete = () => {
@@ -301,12 +392,7 @@ const PayoutMemberSearchScreen: React.FC = () => {
     navigate(-1);
   };
 
-  const handleEventComplete = async () => {
-    if (!selectedEventId) {
-      alert("행사를 선택해 주세요.");
-      return;
-    }
-
+  const handleEventSelect = async (eventId: number) => {
     try {
       // 선택된 일정의 참가자 정보 가져오기
       const { data: participants, error } = await supabase
@@ -318,11 +404,12 @@ const PayoutMemberSearchScreen: React.FC = () => {
             personal_user:personal_user_id (
               id,
               personal_name
-            )
+            ),
+            role
           )
         `
         )
-        .eq("schedule_id", selectedEventId);
+        .eq("schedule_id", eventId);
 
       if (error) {
         console.error("참가자 정보 로드 오류:", error);
@@ -358,6 +445,14 @@ const PayoutMemberSearchScreen: React.FC = () => {
       console.error("행사 참가자 로드 중 오류:", error);
       alert("행사 참가자 정보를 불러오는 중 오류가 발생했습니다.");
     }
+  };
+
+  const handleEventComplete = async () => {
+    if (!selectedEventId) {
+      alert("행사를 선택해 주세요.");
+      return;
+    }
+    await handleEventSelect(selectedEventId);
   };
 
   return (
@@ -508,6 +603,170 @@ const PayoutMemberSearchScreen: React.FC = () => {
                 })}
               </div>
             </div>
+
+            {/* 일정 상세 정보 */}
+            {selectedDate && (
+              <div className="schedule-details">
+                <h3 className="schedule-details-title">
+                  {formatDateForEvent(selectedDate)} 일정
+                </h3>
+                <div className="schedule-content-wrapper">
+                  {selectedEvents.length > 0 &&
+                  hasEvent(
+                    selectedDate.getDate(),
+                    selectedDate.getMonth() === currentDate.getMonth() &&
+                      selectedDate.getFullYear() === currentDate.getFullYear()
+                  ) ? (
+                    <>
+                      {!showEventDetail ? (
+                        <div className="schedule-events-list">
+                          {selectedEvents.map((event, index) => (
+                            <div
+                              key={event.id || index}
+                              className="schedule-event-card"
+                              onClick={() => {
+                                setSelectedEvent(event);
+                                setShowEventDetail(true);
+                              }}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <h4 className="schedule-event-title">
+                                {event.title}
+                              </h4>
+                              <div className="schedule-event-info">
+                                <span className="schedule-event-group">
+                                  {event.group} · {event.participants}명
+                                </span>
+                                {event.participants > 0 &&
+                                  event.participantAvatars &&
+                                  event.participantAvatars.length > 0 && (
+                                    <div className="schedule-event-participants">
+                                      {event.participantAvatars.map(
+                                        (avatar: string, idx: number) => (
+                                          <div
+                                            key={idx}
+                                            className="participant-avatar"
+                                          >
+                                            <img
+                                              src={
+                                                avatar || "/profile-icon.png"
+                                              }
+                                              alt="참가자"
+                                            />
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  )}
+                              </div>
+                              <div className="schedule-event-time">
+                                • {event.date.getFullYear()}년{" "}
+                                {event.date.getMonth() + 1}월{" "}
+                                {event.date.getDate()}일 {event.time}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <>
+                          <div
+                            className="event-detail-overlay"
+                            onClick={() => setShowEventDetail(false)}
+                          ></div>
+                          <div className="schedule-event-detail-card">
+                            <div className="schedule-event-detail-card-inner">
+                              <button
+                                className="event-back-btn"
+                                onClick={() => setShowEventDetail(false)}
+                              >
+                                ← 뒤로가기
+                              </button>
+                              <h4 className="event-detail-title">
+                                {selectedEvent.title}
+                              </h4>
+                              <div className="event-detail-info">
+                                <div className="event-detail-row">
+                                  <span className="event-detail-label">
+                                    날짜:
+                                  </span>
+                                  <span className="event-detail-value">
+                                    {selectedEvent.date.getFullYear()}년{" "}
+                                    {selectedEvent.date.getMonth() + 1}월{" "}
+                                    {selectedEvent.date.getDate()}일
+                                  </span>
+                                </div>
+                                <div className="event-detail-row">
+                                  <span className="event-detail-label">
+                                    시간:
+                                  </span>
+                                  <span className="event-detail-value">
+                                    {selectedEvent.time}
+                                  </span>
+                                </div>
+                                <div className="event-detail-row">
+                                  <span className="event-detail-label">
+                                    장소:
+                                  </span>
+                                  <span className="event-detail-value">
+                                    {selectedEvent.location}
+                                  </span>
+                                </div>
+                                <div className="event-detail-row">
+                                  <span className="event-detail-label">
+                                    참가자:
+                                  </span>
+                                  <span className="event-detail-value">
+                                    {selectedEvent.group} ·{" "}
+                                    {selectedEvent.participants}명
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="event-detail-description">
+                                <h5 className="event-detail-section-title">
+                                  상세 내용
+                                </h5>
+                                <p>{selectedEvent.description}</p>
+                              </div>
+                              <div className="event-detail-agenda">
+                                <h5 className="event-detail-section-title">
+                                  일정표
+                                </h5>
+                                <ul className="event-agenda-list">
+                                  {selectedEvent.agenda &&
+                                  selectedEvent.agenda.length > 0 ? (
+                                    selectedEvent.agenda.map(
+                                      (item: string, index: number) => (
+                                        <li key={index}>{item}</li>
+                                      )
+                                    )
+                                  ) : (
+                                    <li>일정표 정보가 없습니다.</li>
+                                  )}
+                                </ul>
+                              </div>
+                              <div className="event-detail-actions">
+                                <button
+                                  className="event-select-for-payout-btn"
+                                  onClick={() =>
+                                    handleEventSelect(selectedEvent.id)
+                                  }
+                                >
+                                  이 행사 참가자 정산에 추가
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <div className="schedule-event-card no-event-card">
+                      <p>이 날짜에는 일정이 없습니다.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="member-search-footer">
               <button type="button" onClick={handleEventComplete}>
