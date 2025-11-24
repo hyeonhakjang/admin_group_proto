@@ -175,6 +175,7 @@
   box-sizing: border-box;
   transition: all 0.2s ease;
   gap: clamp(12px, 3vw, 16px);
+  flex-direction: row;
 }
 
 .member-item:hover {
@@ -214,6 +215,7 @@
   gap: clamp(4px, 1vw, 6px);
   flex: 1;
   min-width: 0;
+  align-items: flex-start;
 }
 
 .member-name {
