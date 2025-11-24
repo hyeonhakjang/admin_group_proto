@@ -46,38 +46,6 @@ const ClubDetailScreen: React.FC = () => {
   const [selectedSchedule, setSelectedSchedule] = useState<any | null>(null);
   const [scheduleParticipants, setScheduleParticipants] = useState<any[]>([]);
 
-  // 댓글 상태
-  const [newComment, setNewComment] = useState("");
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      author: "김홍익",
-      avatar: "/profile-icon.png",
-      content: "참여하겠습니다!",
-      time: "오늘 18:30",
-    },
-    {
-      id: 2,
-      author: "이동아리",
-      avatar: "/profile-icon.png",
-      content: "노트북 필수인가요?",
-      time: "오늘 18:25",
-    },
-  ]);
-
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      const comment = {
-        id: comments.length + 1,
-        author: "홍익대 HICC",
-        avatar: "/profile-icon.png",
-        content: newComment,
-        time: "방금 전",
-      };
-      setComments([comment, ...comments]);
-      setNewComment("");
-    }
-  };
 
   // 일정이 있는 날짜들 (DB에서 로드된 데이터 기반)
   const eventsDates = useMemo(() => {
