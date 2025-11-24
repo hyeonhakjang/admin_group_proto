@@ -58,7 +58,7 @@ const ClubAccountScreen: React.FC = () => {
               </>
             ) : (
               <>
-                <div style={{ fontSize: "32px" }}>＋</div>
+                <div className="empty-card-icon">＋</div>
                 <p>계좌를 등록해 주세요</p>
               </>
             )}

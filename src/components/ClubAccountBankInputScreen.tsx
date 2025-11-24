@@ -57,7 +57,7 @@ const ClubAccountBankInputScreen: React.FC = () => {
         <section>
           <h2 className="club-account-section-title">선택한 은행</h2>
           <div className="club-account-card">
-            <strong style={{ fontSize: "18px" }}>{selectedBankName}</strong>
+            <strong className="selected-bank-name">{selectedBankName}</strong>
             <span className="secondary-text">
               다른 은행을 선택하려면 이전 화면으로 돌아가주세요.
             </span>
