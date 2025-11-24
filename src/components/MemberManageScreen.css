@@ -1,0 +1,391 @@
+/* 멤버 관리 화면 전체 컨테이너 */
+.member-manage-screen {
+  background-color: #fffcfa;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  padding-bottom: 100px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+/* 헤더 (뒤로가기 버튼) */
+.member-manage-header-back {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fffcfa;
+  z-index: 100;
+  padding: clamp(12px, 3vw, 16px);
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  pointer-events: none;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.member-manage-back-btn {
+  background: transparent;
+  border: none;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  cursor: pointer;
+  padding: 8px 0;
+  pointer-events: auto;
+  transition: color 0.2s ease;
+}
+
+.member-manage-back-btn:hover {
+  color: #c34e00;
+}
+
+/* Main Content */
+.member-manage-main-content {
+  flex: 1;
+  width: 100%;
+  padding: clamp(16px, 4vw, 24px);
+  padding-bottom: calc(100px + clamp(16px, 4vw, 24px));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 24px);
+}
+
+.members-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 24px);
+  box-sizing: border-box;
+}
+
+/* 멤버 헤더 */
+.members-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.members-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(20px, 5vw, 24px);
+  color: #28201b;
+  margin: 0;
+}
+
+.invite-btn {
+  padding: clamp(8px, 2vw, 10px) clamp(16px, 4vw, 20px);
+  background: #c34e00;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(12px, 3vw, 14px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.invite-btn:hover {
+  background: #a03f00;
+}
+
+.invite-btn:active {
+  transform: scale(0.98);
+}
+
+/* 검색 필드 */
+.members-search-container {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.search-icon {
+  position: absolute;
+  left: clamp(12px, 3vw, 16px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(16px, 4vw, 20px);
+  height: clamp(16px, 4vw, 20px);
+  pointer-events: none;
+}
+
+.members-search-input {
+  width: 100%;
+  padding: clamp(12px, 3vw, 14px) clamp(12px, 3vw, 16px) clamp(12px, 3vw, 14px)
+    clamp(40px, 10vw, 48px);
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: white;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.members-search-input:focus {
+  outline: none;
+  border-color: #c34e00;
+  box-shadow: 0 0 0 3px rgba(195, 78, 0, 0.1);
+}
+
+.members-search-input::placeholder {
+  color: #888888;
+}
+
+/* 멤버 리스트 */
+.members-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.member-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(12px, 3vw, 16px);
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.member-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.member-item.dropdown-open {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.member-info {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
+  flex: 1;
+  min-width: 0;
+}
+
+.member-avatar {
+  width: clamp(40px, 10vw, 48px);
+  height: clamp(40px, 10vw, 48px);
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f5f5f5;
+}
+
+.member-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.member-details {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 6px);
+  flex: 1;
+  min-width: 0;
+}
+
+.member-name {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.member-email {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 역할 버튼 */
+.member-role-btn {
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  background: #f5f5f5;
+  color: #28201b;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(12px, 3vw, 14px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 1vw, 6px);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.member-role-btn:hover:not(:disabled) {
+  background: #e8e8e8;
+}
+
+.member-role-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.member-role-btn.owner-role {
+  background: #fff4e6;
+  color: #c34e00;
+  border-color: #c34e00;
+}
+
+.dropdown-icon {
+  font-size: clamp(10px, 2.5vw, 12px);
+  color: #666666;
+}
+
+/* 역할 드롭다운 */
+.role-dropdown {
+  position: absolute;
+  top: calc(100% + clamp(4px, 1vw, 8px));
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: clamp(80px, 20vw, 100px);
+  overflow: hidden;
+}
+
+.role-option {
+  padding: clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 20px);
+  background: white;
+  border: none;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #28201b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.role-option:hover {
+  background: #f5f5f5;
+}
+
+.role-option:active {
+  background: #e8e8e8;
+}
+
+/* 승인 버튼 */
+.member-approve-btn {
+  padding: clamp(8px, 2vw, 10px) clamp(16px, 4vw, 20px);
+  background: #c34e00;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(12px, 3vw, 14px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.member-approve-btn:hover {
+  background: #a03f00;
+}
+
+.member-approve-btn:active {
+  transform: scale(0.98);
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .member-manage-main-content {
+    padding: clamp(12px, 3vw, 16px);
+    padding-bottom: calc(100px + clamp(12px, 3vw, 16px));
+  }
+
+  .members-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .invite-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .member-manage-main-content {
+    padding: clamp(10px, 2.5vw, 12px);
+    padding-bottom: calc(100px + clamp(10px, 2.5vw, 12px));
+  }
+
+  .members-title {
+    font-size: 18px;
+  }
+
+  .member-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(8px, 2vw, 12px);
+  }
+
+  .member-role-btn,
+  .member-approve-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 320px) {
+  .members-title {
+    font-size: 16px;
+  }
+
+  .member-name {
+    font-size: 13px;
+  }
+
+  .member-email {
+    font-size: 11px;
+  }
+}
+

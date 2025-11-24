@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-import "./MyClubScreen.css";
+import "./MemberManageScreen.css";
 
 interface UserData {
   type: "personal" | "club" | "group" | "admin";
@@ -192,16 +192,19 @@ const MemberManageScreen: React.FC = () => {
   );
 
   return (
-    <div className="my-club-screen">
+    <div className="member-manage-screen">
       {/* 헤더: 뒤로가기 버튼만 */}
-      <div className="coming-soon-header-back">
-        <button className="back-btn" onClick={() => navigate(-1)}>
+      <div className="member-manage-header-back">
+        <button
+          className="member-manage-back-btn"
+          onClick={() => navigate(-1)}
+        >
           ← 뒤로가기
         </button>
       </div>
 
       {/* Main Content */}
-      <div className="main-content">
+      <div className="member-manage-main-content">
         <div className="members-content">
           {/* 멤버 헤더 */}
           <div className="members-header">
@@ -362,4 +365,3 @@ const MemberManageScreen: React.FC = () => {
 };
 
 export default MemberManageScreen;
-
