@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomTabBar from "./BottomTabBar";
+import { supabase } from "../lib/supabase";
 import "./PayoutScreens.css";
 
 const STORAGE_KEY = "payoutSelectedMembers";
@@ -11,12 +12,22 @@ interface SelectedMember {
   amount: number;
 }
 
+interface StoredClub {
+  id: number;
+  name: string;
+  club_user_id?: number;
+  club_personal_id?: number;
+  role?: string;
+}
+
 const PayoutRegisterScreen: React.FC = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [members, setMembers] = useState<SelectedMember[]>([]);
   const [bulkAmount, setBulkAmount] = useState<string>("");
+  const [selectedClub, setSelectedClub] = useState<StoredClub | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const stored = sessionStorage.getItem(STORAGE_KEY);
@@ -28,6 +39,13 @@ const PayoutRegisterScreen: React.FC = () => {
       }));
       setMembers(normalized);
       sessionStorage.removeItem(STORAGE_KEY);
+    }
+  }, []);
+
+  useEffect(() => {
+    const storedClub = sessionStorage.getItem("selectedClub");
+    if (storedClub) {
+      setSelectedClub(JSON.parse(storedClub));
     }
   }, []);
 
@@ -62,7 +80,7 @@ const PayoutRegisterScreen: React.FC = () => {
     );
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!title.trim()) {
       alert("정산 이름을 입력해 주세요.");
@@ -72,14 +90,64 @@ const PayoutRegisterScreen: React.FC = () => {
       alert("정산 요청할 멤버를 등록해 주세요.");
       return;
     }
-    alert(
-      `정산 "${title}"이 등록되었습니다. (멤버 ${
-        members.length
-      }명, 총 ${members.reduce((sum, member) => sum + member.amount, 0)}원)`
+    if (!selectedClub) {
+      alert("동아리 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.");
+      return;
+    }
+
+    const creatorClubPersonalId = selectedClub.club_personal_id || null;
+    const appliedDate = new Date().toISOString().split("T")[0];
+    const totalAmount = members.reduce(
+      (sum, member) => sum + Number(member.amount || 0),
+      0
     );
-    setTitle("");
-    setDescription("");
-    setMembers([]);
+
+    try {
+      setIsSubmitting(true);
+      const { data: payoutData, error: payoutError } = await supabase
+        .from("club_personal_payout")
+        .insert({
+          title: title.trim(),
+          content: description.trim() || null,
+          applied_date: appliedDate,
+          club_personal_id: creatorClubPersonalId,
+        })
+        .select("id")
+        .single();
+
+      if (payoutError || !payoutData) {
+        throw payoutError || new Error("정산 정보 저장에 실패했습니다.");
+      }
+
+      const participantPayload = members.map((member) => ({
+        payout_id: payoutData.id,
+        club_personal_id: Number(member.id),
+        payout_amount: Number(member.amount || 0),
+      }));
+
+      if (participantPayload.length > 0) {
+        const { error: participantError } = await supabase
+          .from("payout_participant")
+          .insert(participantPayload);
+
+        if (participantError) {
+          throw participantError;
+        }
+      }
+
+      alert(
+        `정산 "${title}"이 등록되었습니다. (멤버 ${members.length}명, 총 ${totalAmount.toLocaleString()}원)`
+      );
+      setTitle("");
+      setDescription("");
+      setMembers([]);
+      setBulkAmount("");
+    } catch (error) {
+      console.error("정산 등록 오류:", error);
+      alert("정산 등록 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -186,8 +254,12 @@ const PayoutRegisterScreen: React.FC = () => {
             </div>
           )}
 
-          <button type="submit" className="payout-submit-btn">
-            정산 등록하기
+          <button
+            type="submit"
+            className="payout-submit-btn"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "등록 중..." : "정산 등록하기"}
           </button>
         </form>
       </div>
