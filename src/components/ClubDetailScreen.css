@@ -438,6 +438,15 @@
   box-shadow: 0 2px 8px rgba(40, 32, 27, 0.08);
 }
 
+.schedule-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 24px);
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .schedule-details-title {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 700;
@@ -446,11 +455,34 @@
   margin: 0 0 clamp(12px, 3vw, 16px) 0;
 }
 
+.schedule-events-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+  margin-bottom: clamp(12px, 3vw, 16px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .schedule-event-card {
   display: flex;
   flex-direction: column;
   gap: clamp(10px, 2.5vw, 14px);
   transition: all 0.2s ease;
+  padding: clamp(16px, 4vw, 20px);
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.schedule-event-card.no-event-card {
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(100px, 25vw, 140px);
 }
 
 .schedule-event-card:hover {

@@ -29,7 +29,6 @@ const ClubDetailScreen: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [club, setClub] = useState<ClubData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showJoinModal, setShowJoinModal] = useState(false);
   const [showJoinSuccess, setShowJoinSuccess] = useState(false);
   const [userData, setUserData] = useState<any>(null);
 
@@ -43,6 +42,7 @@ const ClubDetailScreen: React.FC = () => {
 
   // 일정 데이터 상태
   const [schedules, setSchedules] = useState<any[]>([]);
+  const [selectedSchedules, setSelectedSchedules] = useState<any[]>([]);
   const [selectedSchedule, setSelectedSchedule] = useState<any | null>(null);
   const [scheduleParticipants, setScheduleParticipants] = useState<any[]>([]);
 
@@ -88,7 +88,83 @@ const ClubDetailScreen: React.FC = () => {
     });
   }, [schedules]);
 
-  // 선택된 날짜의 일정 정보 (DB에서 로드된 데이터 기반)
+  // 선택된 날짜의 모든 일정 정보 (DB에서 로드된 데이터 기반)
+  const [eventParticipantsMap, setEventParticipantsMap] = useState<
+    Record<number, number>
+  >({});
+
+  const selectedEvents = useMemo(() => {
+    if (!selectedDate || selectedSchedules.length === 0) return [];
+
+    const formatTime = (timeStr: string) => {
+      if (!timeStr) return "";
+      const [hours, minutes] = timeStr.split(":");
+      const hour = parseInt(hours);
+      const period = hour >= 12 ? "오후" : "오전";
+      const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+      return `${period} ${displayHour}:${minutes}`;
+    };
+
+    return selectedSchedules.map((schedule) => {
+      const startTime = formatTime(schedule.started_at || "");
+      const endTime = formatTime(schedule.ended_at || "");
+      const timeRange = startTime && endTime ? `${startTime} ~ ${endTime}` : "";
+
+      return {
+        id: schedule.id,
+        title: schedule.title || "일정",
+        group: club?.name || "동아리",
+        participants: eventParticipantsMap[schedule.id] || 0,
+        date: selectedDate,
+        time: timeRange,
+        location: schedule.location || "",
+        description: schedule.content || "",
+        agenda: Array.isArray(schedule.agenda)
+          ? schedule.agenda
+          : schedule.agenda
+          ? [schedule.agenda]
+          : [],
+        participantAvatars: [],
+      };
+    });
+  }, [selectedDate, selectedSchedules, club, eventParticipantsMap]);
+
+  // 선택된 날짜의 모든 일정의 참가자 수 로드
+  useEffect(() => {
+    const loadAllEventParticipants = async () => {
+      if (selectedSchedules.length === 0) {
+        setEventParticipantsMap({});
+        return;
+      }
+
+      const participantsMap: Record<number, number> = {};
+      for (const schedule of selectedSchedules) {
+        try {
+          const { count, error } = await supabase
+            .from("schedule_participant")
+            .select("*", { count: "exact", head: true })
+            .eq("schedule_id", schedule.id);
+
+          if (!error && count !== null) {
+            participantsMap[schedule.id] = count;
+          } else {
+            participantsMap[schedule.id] = 0;
+          }
+        } catch (error) {
+          console.error(
+            `일정 ${schedule.id}의 참가자 수 로드 오류:`,
+            error
+          );
+          participantsMap[schedule.id] = 0;
+        }
+      }
+      setEventParticipantsMap(participantsMap);
+    };
+
+    loadAllEventParticipants();
+  }, [selectedSchedules]);
+
+  // 선택된 일정의 상세 정보 (상세 보기용)
   const selectedEvent = useMemo(() => {
     if (!selectedDate || !selectedSchedule) return null;
 
@@ -112,9 +188,13 @@ const ClubDetailScreen: React.FC = () => {
       participants: scheduleParticipants.length,
       date: selectedDate,
       time: timeRange,
-      location: "", // DB에 location 필드가 없으면 빈 문자열
+      location: selectedSchedule.location || "",
       description: selectedSchedule.content || "",
-      agenda: [], // DB에 agenda 필드가 없으면 빈 배열
+      agenda: Array.isArray(selectedSchedule.agenda)
+        ? selectedSchedule.agenda
+        : selectedSchedule.agenda
+        ? [selectedSchedule.agenda]
+        : [],
       participantAvatars: scheduleParticipants.map(
         (p: any) =>
           p.club_personal?.personal_user?.profile_image_url ||
@@ -187,20 +267,15 @@ const ClubDetailScreen: React.FC = () => {
       day
     );
     setSelectedDate(clickedDate);
+    setShowEventDetail(false);
+    setSelectedSchedule(null);
 
-    // 해당 날짜의 일정 찾기
+    // 해당 날짜의 모든 일정 찾기
     const dateStr = `${clickedDate.getFullYear()}-${String(
       clickedDate.getMonth() + 1
     ).padStart(2, "0")}-${String(clickedDate.getDate()).padStart(2, "0")}`;
-    const schedule = schedules.find((s) => s.date === dateStr);
-    setSelectedSchedule(schedule || null);
-
-    // 일정이 있으면 참가자 정보 로드
-    if (schedule) {
-      loadScheduleParticipants(schedule.id);
-    } else {
-      setScheduleParticipants([]);
-    }
+    const schedulesOnDate = schedules.filter((s) => s.date === dateStr);
+    setSelectedSchedules(schedulesOnDate);
   };
 
   const goToPreviousMonth = () => {
@@ -295,7 +370,7 @@ const ClubDetailScreen: React.FC = () => {
 
     try {
       // 이미 가입 신청한 경우 확인
-      const { data: existingMembership, error: checkError } = await supabase
+      const { data: existingMembership } = await supabase
         .from("club_personal")
         .select("id")
         .eq("personal_user_id", userData.id)
@@ -325,7 +400,6 @@ const ClubDetailScreen: React.FC = () => {
 
       // 성공 메시지 표시
       setShowJoinSuccess(true);
-      setShowJoinModal(false);
     } catch (error) {
       console.error("가입 신청 처리 중 오류:", error);
       alert("가입 신청 중 오류가 발생했습니다.");
@@ -641,205 +715,207 @@ const ClubDetailScreen: React.FC = () => {
                 <h3 className="schedule-details-title">
                   {formatDateForEvent(selectedDate)} 일정
                 </h3>
-                {selectedEvent &&
-                hasEvent(
-                  selectedDate.getDate(),
-                  selectedDate.getMonth() === currentDate.getMonth() &&
-                    selectedDate.getFullYear() === currentDate.getFullYear()
-                ) ? (
-                  <>
-                    {!showEventDetail ? (
-                      <div className="schedule-event-card">
-                        <h4 className="schedule-event-title">
-                          {selectedEvent.title}
-                        </h4>
-                        <div className="schedule-event-info">
-                          <span className="schedule-event-group">
-                            {selectedEvent.group} · {selectedEvent.participants}
-                            명
-                          </span>
-                          {selectedEvent.participants > 0 &&
-                            selectedEvent.participantAvatars &&
-                            selectedEvent.participantAvatars.length > 0 && (
-                              <div className="schedule-event-participants">
-                                {selectedEvent.participantAvatars
-                                  .slice(0, 4)
-                                  .map((avatar: string, index: number) => (
-                                    <div
-                                      key={index}
-                                      className="participant-avatar"
-                                    >
-                                      <img
-                                        src={avatar}
-                                        alt={`참가자 ${index + 1}`}
-                                      />
-                                    </div>
-                                  ))}
-                              </div>
-                            )}
-                        </div>
-                        <div className="schedule-event-time">
-                          • {selectedEvent.date.getFullYear()}년{" "}
-                          {selectedEvent.date.getMonth() + 1}월{" "}
-                          {selectedEvent.date.getDate()}일 {selectedEvent.time}
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <div
-                          className="event-detail-overlay"
-                          onClick={() => setShowEventDetail(false)}
-                        ></div>
-                        <div className="schedule-event-detail-card">
-                          <div className="schedule-event-detail-card-inner">
-                            <div className="event-detail-header">
-                              <button
-                                className="event-back-btn"
-                                onClick={() => setShowEventDetail(false)}
-                              >
-                                ← 뒤로가기
-                              </button>
-                              <h4 className="event-detail-title">
-                                {selectedEvent.title}
+                <div className="schedule-content-wrapper">
+                  {selectedEvents.length > 0 &&
+                  hasEvent(
+                    selectedDate.getDate(),
+                    selectedDate.getMonth() === currentDate.getMonth() &&
+                      selectedDate.getFullYear() === currentDate.getFullYear()
+                  ) ? (
+                    <>
+                      {!showEventDetail ? (
+                        <div className="schedule-events-list">
+                          {selectedEvents.map((event, index) => (
+                            <div
+                              key={event.id || index}
+                              className="schedule-event-card"
+                              onClick={async () => {
+                                const schedule = selectedSchedules.find(
+                                  (s) => s.id === event.id
+                                );
+                                if (schedule) {
+                                  setSelectedSchedule(schedule);
+                                  await loadScheduleParticipants(schedule.id);
+                                  setShowEventDetail(true);
+                                }
+                              }}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <h4 className="schedule-event-title">
+                                {event.title}
                               </h4>
+                              <div className="schedule-event-info">
+                                <span className="schedule-event-group">
+                                  {event.group} · {event.participants}명
+                                </span>
+                              </div>
+                              <div className="schedule-event-time">
+                                • {event.date.getFullYear()}년{" "}
+                                {event.date.getMonth() + 1}월{" "}
+                                {event.date.getDate()}일 {event.time}
+                              </div>
                             </div>
-                            <div className="event-detail-info">
-                              <div className="event-detail-row">
-                                <span className="event-detail-label">
-                                  날짜:
-                                </span>
-                                <span className="event-detail-value">
-                                  {selectedEvent.date.getFullYear()}년{" "}
-                                  {selectedEvent.date.getMonth() + 1}월{" "}
-                                  {selectedEvent.date.getDate()}일
-                                </span>
+                          ))}
+                        </div>
+                      ) : selectedEvent ? (
+                        <>
+                          <div
+                            className="event-detail-overlay"
+                            onClick={() => setShowEventDetail(false)}
+                          ></div>
+                          <div className="schedule-event-detail-card">
+                            <div className="schedule-event-detail-card-inner">
+                              <div className="event-detail-header">
+                                <button
+                                  className="event-back-btn"
+                                  onClick={() => setShowEventDetail(false)}
+                                >
+                                  ← 뒤로가기
+                                </button>
+                                <h4 className="event-detail-title">
+                                  {selectedEvent.title}
+                                </h4>
                               </div>
-                              <div className="event-detail-row">
-                                <span className="event-detail-label">
-                                  시간:
-                                </span>
-                                <span className="event-detail-value">
-                                  {selectedEvent.time}
-                                </span>
-                              </div>
-                              {selectedEvent.location && (
+                              <div className="event-detail-info">
                                 <div className="event-detail-row">
                                   <span className="event-detail-label">
-                                    장소:
+                                    날짜:
                                   </span>
                                   <span className="event-detail-value">
-                                    {selectedEvent.location}
+                                    {selectedEvent.date.getFullYear()}년{" "}
+                                    {selectedEvent.date.getMonth() + 1}월{" "}
+                                    {selectedEvent.date.getDate()}일
                                   </span>
                                 </div>
-                              )}
-                              <div className="event-detail-row">
-                                <span className="event-detail-label">
-                                  참가자:
-                                </span>
-                                <span className="event-detail-value">
-                                  {selectedEvent.group} ·{" "}
-                                  {selectedEvent.participants}명
-                                </span>
-                              </div>
-                            </div>
-                            {selectedEvent.description && (
-                              <div className="event-detail-description">
-                                <h5 className="event-detail-section-title">
-                                  상세 내용
-                                </h5>
-                                <p>{selectedEvent.description}</p>
-                              </div>
-                            )}
-                            {selectedEvent.agenda &&
-                              selectedEvent.agenda.length > 0 && (
-                                <div className="event-detail-agenda">
-                                  <h5 className="event-detail-section-title">
-                                    일정표
-                                  </h5>
-                                  <ul className="event-agenda-list">
-                                    {selectedEvent.agenda.map((item, index) => (
-                                      <li key={index}>{item}</li>
-                                    ))}
-                                  </ul>
+                                <div className="event-detail-row">
+                                  <span className="event-detail-label">
+                                    시간:
+                                  </span>
+                                  <span className="event-detail-value">
+                                    {selectedEvent.time}
+                                  </span>
                                 </div>
-                              )}
-
-                            {/* 댓글 섹션 */}
-                            <div className="event-comments-section">
-                              <h5 className="event-detail-section-title">
-                                댓글 ({comments.length})
-                              </h5>
-
-                              {/* 댓글 입력 */}
-                              <div className="comment-input-container">
-                                <div className="comment-input-avatar">
-                                  <img src="/profile-icon.png" alt="프로필" />
-                                </div>
-                                <div className="comment-input-wrapper">
-                                  <input
-                                    type="text"
-                                    className="comment-input"
-                                    placeholder="댓글을 입력하세요..."
-                                    value={newComment}
-                                    onChange={(e) =>
-                                      setNewComment(e.target.value)
-                                    }
-                                    onKeyPress={(e) => {
-                                      if (e.key === "Enter") {
-                                        handleAddComment();
-                                      }
-                                    }}
-                                  />
-                                  <button
-                                    className="comment-submit-btn"
-                                    onClick={handleAddComment}
-                                    disabled={!newComment.trim()}
-                                  >
-                                    등록
-                                  </button>
-                                </div>
-                              </div>
-
-                              {/* 댓글 리스트 */}
-                              <div className="comments-list">
-                                {comments.map((comment) => (
-                                  <div
-                                    key={comment.id}
-                                    className="comment-item"
-                                  >
-                                    <div className="comment-avatar">
-                                      <img
-                                        src={comment.avatar}
-                                        alt={comment.author}
-                                      />
-                                    </div>
-                                    <div className="comment-content-wrapper">
-                                      <div className="comment-header">
-                                        <span className="comment-author">
-                                          {comment.author}
-                                        </span>
-                                        <span className="comment-time">
-                                          {comment.time}
-                                        </span>
-                                      </div>
-                                      <p className="comment-text">
-                                        {comment.content}
-                                      </p>
-                                    </div>
+                                {selectedEvent.location && (
+                                  <div className="event-detail-row">
+                                    <span className="event-detail-label">
+                                      장소:
+                                    </span>
+                                    <span className="event-detail-value">
+                                      {selectedEvent.location}
+                                    </span>
                                   </div>
-                                ))}
+                                )}
+                                <div className="event-detail-row">
+                                  <span className="event-detail-label">
+                                    참가자:
+                                  </span>
+                                  <span className="event-detail-value">
+                                    {selectedEvent.group} ·{" "}
+                                    {selectedEvent.participants}명
+                                  </span>
+                                </div>
+                              </div>
+                              {selectedEvent.description && (
+                                <div className="event-detail-description">
+                                  <h5 className="event-detail-section-title">
+                                    상세 내용
+                                  </h5>
+                                  <p>{selectedEvent.description}</p>
+                                </div>
+                              )}
+                              {selectedEvent.agenda &&
+                                selectedEvent.agenda.length > 0 && (
+                                  <div className="event-detail-agenda">
+                                    <h5 className="event-detail-section-title">
+                                      일정표
+                                    </h5>
+                                    <ul className="event-agenda-list">
+                                      {selectedEvent.agenda.map(
+                                        (item: string, idx: number) => (
+                                          <li key={idx}>{item}</li>
+                                        )
+                                      )}
+                                    </ul>
+                                  </div>
+                                )}
+
+                              {/* 댓글 섹션 */}
+                              <div className="event-comments-section">
+                                <h5 className="event-detail-section-title">
+                                  댓글 ({comments.length})
+                                </h5>
+
+                                {/* 댓글 입력 */}
+                                <div className="comment-input-container">
+                                  <div className="comment-input-avatar">
+                                    <img src="/profile-icon.png" alt="프로필" />
+                                  </div>
+                                  <div className="comment-input-wrapper">
+                                    <input
+                                      type="text"
+                                      className="comment-input"
+                                      placeholder="댓글을 입력하세요..."
+                                      value={newComment}
+                                      onChange={(e) =>
+                                        setNewComment(e.target.value)
+                                      }
+                                      onKeyPress={(e) => {
+                                        if (e.key === "Enter") {
+                                          handleAddComment();
+                                        }
+                                      }}
+                                    />
+                                    <button
+                                      className="comment-submit-btn"
+                                      onClick={handleAddComment}
+                                      disabled={!newComment.trim()}
+                                    >
+                                      등록
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* 댓글 리스트 */}
+                                <div className="comments-list">
+                                  {comments.map((comment) => (
+                                    <div
+                                      key={comment.id}
+                                      className="comment-item"
+                                    >
+                                      <div className="comment-avatar">
+                                        <img
+                                          src={comment.avatar}
+                                          alt={comment.author}
+                                        />
+                                      </div>
+                                      <div className="comment-content-wrapper">
+                                        <div className="comment-header">
+                                          <span className="comment-author">
+                                            {comment.author}
+                                          </span>
+                                          <span className="comment-time">
+                                            {comment.time}
+                                          </span>
+                                        </div>
+                                        <p className="comment-text">
+                                          {comment.content}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <div className="schedule-event-card">
-                    <p className="no-event-message">일정이 없습니다.</p>
-                  </div>
-                )}
+                        </>
+                      ) : null}
+                    </>
+                  ) : (
+                    <div className="schedule-event-card no-event-card">
+                      <p className="no-event-message">일정이 없습니다.</p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
