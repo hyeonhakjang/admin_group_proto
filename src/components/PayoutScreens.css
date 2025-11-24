@@ -14,14 +14,12 @@
 
 .payout-inner {
   flex: 1;
+  width: 100%;
   padding: clamp(16px, 4vw, 24px);
-  padding-bottom: calc(100px + 16px); /* BottomTabBar 높이 + 여유 공간 */
+  padding-bottom: calc(100px + clamp(16px, 4vw, 24px)); /* BottomTabBar 높이 + 여유 공간 */
   display: flex;
   flex-direction: column;
   gap: clamp(16px, 4vw, 24px);
-  width: 100%;
-  max-width: clamp(320px, 90vw, 600px);
-  margin: 0 auto;
   box-sizing: border-box;
 }
 
@@ -574,6 +572,7 @@
 
   .payout-header-block {
     padding: clamp(10px, 2.5vw, 14px);
+    min-height: clamp(56px, 14vw, 64px);
   }
 
   .payout-title {
@@ -584,15 +583,34 @@
 
   .payout-card {
     padding: clamp(12px, 3vw, 16px);
+    gap: clamp(10px, 2.5vw, 14px);
+  }
+
+  .payout-form-field {
+    gap: clamp(5px, 1.25vw, 7px);
+  }
+
+  .payout-form-field label {
+    font-size: clamp(13px, 3.25vw, 15px);
   }
 
   .payout-member-item {
     flex-wrap: wrap;
+    gap: clamp(8px, 2vw, 12px);
   }
 
   .payout-member-amount {
     width: 100%;
     text-align: left;
+  }
+
+  .member-search-tabs {
+    border-radius: clamp(10px, 2.5vw, 12px);
+  }
+
+  .member-search-tab {
+    padding: clamp(8px, 2vw, 10px);
+    font-size: clamp(12px, 3vw, 14px);
   }
 }
 
@@ -603,19 +621,37 @@
     gap: clamp(10px, 2.5vw, 14px);
   }
 
+  .payout-header-block {
+    padding: clamp(8px, 2vw, 12px);
+    min-height: clamp(52px, 13vw, 60px);
+  }
+
   .payout-title {
     font-size: clamp(18px, 4.5vw, 22px);
+    margin-top: clamp(3px, 0.75vw, 5px);
+    margin-bottom: clamp(10px, 2.5vw, 14px);
   }
 
   .payout-card {
     padding: clamp(10px, 2.5vw, 14px);
-    gap: clamp(10px, 2.5vw, 14px);
+    gap: clamp(8px, 2vw, 12px);
+  }
+
+  .payout-form-field label {
+    font-size: clamp(12px, 3vw, 14px);
+  }
+
+  .payout-form-field input,
+  .payout-form-field textarea {
+    padding: clamp(10px, 2.5vw, 14px);
+    font-size: clamp(13px, 3.25vw, 15px);
   }
 
   .payout-select-members {
     flex-direction: column;
     align-items: stretch;
     gap: clamp(8px, 2vw, 10px);
+    padding: clamp(10px, 2.5vw, 12px);
   }
 
   .payout-select-members button {
@@ -624,6 +660,55 @@
 
   .payout-member-item {
     padding: clamp(8px, 2vw, 12px);
+    gap: clamp(6px, 1.5vw, 10px);
+  }
+
+  .payout-member-name {
+    font-size: clamp(13px, 3.25vw, 15px);
+  }
+
+  .payout-submit-btn {
+    padding: clamp(12px, 3vw, 14px);
+    font-size: clamp(14px, 3.5vw, 16px);
+  }
+
+  .member-search-tab {
+    padding: clamp(6px, 1.5vw, 8px);
+    font-size: clamp(11px, 2.75vw, 13px);
+  }
+
+  .member-search-item {
+    padding: clamp(10px, 2.5vw, 12px);
+  }
+
+  .member-name {
+    font-size: clamp(13px, 3.25vw, 15px);
+  }
+
+  .member-role {
+    font-size: clamp(11px, 2.75vw, 12px);
+  }
+
+  .calendar-header {
+    margin-bottom: clamp(12px, 3vw, 16px);
+  }
+
+  .calendar-month-year {
+    font-size: clamp(15px, 3.75vw, 18px);
+  }
+
+  .calendar-nav-btn {
+    font-size: clamp(16px, 4vw, 20px);
+    padding: clamp(6px, 1.5vw, 10px);
+  }
+
+  .calendar-weekday {
+    font-size: clamp(11px, 2.75vw, 13px);
+    padding: clamp(6px, 1.5vw, 10px);
+  }
+
+  .payout-calendar-day {
+    font-size: clamp(12px, 3vw, 14px);
   }
 }
 
@@ -634,35 +719,169 @@
     gap: clamp(8px, 2vw, 12px);
   }
 
+  .payout-header-block {
+    padding: clamp(6px, 1.5vw, 10px);
+    min-height: clamp(48px, 12vw, 56px);
+  }
+
   .payout-title {
     font-size: clamp(16px, 4vw, 20px);
+    margin-top: clamp(2px, 0.5vw, 4px);
+    margin-bottom: clamp(8px, 2vw, 12px);
   }
 
   .payout-card {
     padding: clamp(8px, 2vw, 12px);
-    gap: clamp(8px, 2vw, 12px);
+    gap: clamp(6px, 1.5vw, 10px);
+  }
+
+  .payout-form-field {
+    gap: clamp(4px, 1vw, 6px);
   }
 
   .payout-form-field label {
-    font-size: clamp(13px, 3.25vw, 15px);
+    font-size: clamp(12px, 3vw, 13px);
   }
 
   .payout-form-field input,
   .payout-form-field textarea {
-    font-size: clamp(13px, 3.25vw, 15px);
-    padding: clamp(10px, 2.5vw, 14px);
+    font-size: clamp(12px, 3vw, 13px);
+    padding: clamp(8px, 2vw, 12px);
+  }
+
+  .payout-select-members {
+    padding: clamp(8px, 2vw, 10px);
+    gap: clamp(6px, 1.5vw, 8px);
+  }
+
+  .payout-select-members span {
+    font-size: clamp(12px, 3vw, 13px);
+  }
+
+  .payout-select-members button {
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2.5vw, 14px);
+    font-size: clamp(11px, 2.75vw, 13px);
+  }
+
+  .payout-member-item {
+    padding: clamp(6px, 1.5vw, 10px);
+    gap: clamp(5px, 1.25vw, 8px);
   }
 
   .payout-member-name {
-    font-size: clamp(13px, 3.25vw, 15px);
+    font-size: clamp(12px, 3vw, 13px);
   }
 
   .payout-member-amount {
-    font-size: clamp(12px, 3vw, 14px);
+    font-size: clamp(11px, 2.75vw, 13px);
+    padding: clamp(5px, 1.25vw, 7px) clamp(8px, 2vw, 10px);
+  }
+
+  .payout-remove-btn {
+    width: clamp(28px, 7vw, 36px);
+    height: clamp(28px, 7vw, 36px);
+    font-size: clamp(18px, 4.5vw, 22px);
   }
 
   .payout-submit-btn {
+    font-size: clamp(13px, 3.25vw, 15px);
+    padding: clamp(10px, 2.5vw, 12px);
+  }
+
+  .member-search-tab {
+    padding: clamp(5px, 1.25vw, 7px);
+    font-size: clamp(10px, 2.5vw, 12px);
+  }
+
+  .member-search-item {
+    padding: clamp(8px, 2vw, 10px);
+    gap: clamp(6px, 1.5vw, 10px);
+  }
+
+  .member-name {
+    font-size: clamp(12px, 3vw, 13px);
+  }
+
+  .member-role {
+    font-size: clamp(10px, 2.5vw, 11px);
+  }
+
+  .member-search-select-btn {
+    padding: clamp(5px, 1.25vw, 7px) clamp(10px, 2.5vw, 14px);
+    font-size: clamp(11px, 2.75vw, 13px);
+  }
+
+  .member-check {
+    width: clamp(16px, 4vw, 18px);
+    height: clamp(16px, 4vw, 18px);
+    font-size: clamp(9px, 2.25vw, 11px);
+  }
+
+  .search-input-wrapper {
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2.5vw, 14px);
+    gap: clamp(6px, 1.5vw, 8px);
+  }
+
+  .search-input-wrapper input {
+    font-size: clamp(12px, 3vw, 13px);
+  }
+
+  .member-select-all {
+    padding: clamp(10px, 2.5vw, 12px);
+    gap: clamp(6px, 1.5vw, 8px);
+  }
+
+  .member-select-all strong {
+    font-size: clamp(13px, 3.25vw, 15px);
+  }
+
+  .member-select-all-description {
+    font-size: clamp(11px, 2.75vw, 12px);
+  }
+
+  .member-select-all button {
+    padding: clamp(5px, 1.25vw, 7px) clamp(10px, 2.5vw, 14px);
+    font-size: clamp(11px, 2.75vw, 13px);
+  }
+
+  .member-search-footer button {
+    padding: clamp(10px, 2.5vw, 12px);
+    font-size: clamp(13px, 3.25vw, 15px);
+  }
+
+  .calendar-header {
+    margin-bottom: clamp(10px, 2.5vw, 14px);
+  }
+
+  .calendar-month-year {
     font-size: clamp(14px, 3.5vw, 16px);
-    padding: clamp(12px, 3vw, 14px);
+  }
+
+  .calendar-nav-btn {
+    font-size: clamp(14px, 3.5vw, 18px);
+    padding: clamp(5px, 1.25vw, 8px);
+  }
+
+  .calendar-weekdays {
+    gap: clamp(3px, 0.75vw, 6px);
+    margin-bottom: clamp(6px, 1.5vw, 10px);
+  }
+
+  .calendar-weekday {
+    font-size: clamp(10px, 2.5vw, 12px);
+    padding: clamp(5px, 1.25vw, 8px);
+  }
+
+  .payout-calendar-grid {
+    gap: clamp(3px, 0.75vw, 6px);
+  }
+
+  .payout-calendar-day {
+    font-size: clamp(11px, 2.75vw, 13px);
+    border-radius: clamp(6px, 1.5vw, 10px);
+  }
+
+  .payout-calendar {
+    padding: clamp(12px, 3vw, 16px);
   }
 }
