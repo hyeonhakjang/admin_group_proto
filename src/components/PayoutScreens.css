@@ -309,8 +309,8 @@
 }
 
 .payout-registered-member-bulk-btn {
-  flex: 1;
-  min-width: clamp(120px, 35vw, 150px);
+  flex: initial;
+  min-width: clamp(100px, 28vw, 130px);
   padding: clamp(10px, 2.5vw, 12px);
   background: #c34e00;
   color: white;

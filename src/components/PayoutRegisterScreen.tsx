@@ -55,7 +55,11 @@ const PayoutRegisterScreen: React.FC = () => {
       return;
     }
     setMembers((prev) => prev.map((member) => ({ ...member, amount: parsed })));
-    alert(`등록된 멤버 ${members.length}명의 금액이 ${parsed.toLocaleString()}원으로 통일되었습니다.`);
+    alert(
+      `등록된 멤버 ${
+        members.length
+      }명의 금액이 ${parsed.toLocaleString()}원으로 통일되었습니다.`
+    );
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -146,7 +150,7 @@ const PayoutRegisterScreen: React.FC = () => {
                   className="payout-registered-member-bulk-btn"
                   onClick={handleApplyBulkAmount}
                 >
-                  전체 금액 통일
+                  금액 통일
                 </button>
               </div>
               {members.map((member) => (
