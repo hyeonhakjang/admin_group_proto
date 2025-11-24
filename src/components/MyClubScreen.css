@@ -1776,31 +1776,6 @@
   flex-wrap: wrap;
 }
 
-.payout-register-btn {
-  width: clamp(56px, 14vw, 64px);
-  height: clamp(56px, 14vw, 64px);
-  border-radius: 50%;
-  border: none;
-  background: #c34e00;
-  box-shadow: 0 4px 12px rgba(195, 78, 0, 0.3);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  padding: 0;
-}
-
-.payout-register-btn:hover {
-  background: #a03d00;
-  transform: translateY(-1px) scale(1.05);
-  box-shadow: 0 6px 16px rgba(195, 78, 0, 0.4);
-}
-
-.payout-register-btn:active {
-  transform: scale(0.95);
-}
-
 .payout-description {
   color: #666666;
   font-size: clamp(13px, 3.25vw, 15px);

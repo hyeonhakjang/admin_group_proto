@@ -1803,13 +1803,6 @@ const MyClubScreen: React.FC = () => {
           <div className="statistics-content payout-overview">
             <div className="payout-header">
               <h2>정산</h2>
-              <button
-                className="payout-register-btn"
-                onClick={() => navigate("/myclub/payout/register")}
-                aria-label="정산 등록"
-              >
-                <span className="floating-write-icon">+</span>
-              </button>
             </div>
             <p className="payout-description">
               멤버들에게 요청할 정산을 등록하고 진행 상황을 관리할 수 있습니다.
@@ -2556,6 +2549,17 @@ const MyClubScreen: React.FC = () => {
           className="floating-write-btn"
           onClick={() => navigate("/myclub/post/write")}
           aria-label="글 작성"
+        >
+          <span className="floating-write-icon">+</span>
+        </button>
+      )}
+
+      {/* 정산 등록 플로팅 버튼 */}
+      {activeTab === "payout" && (
+        <button
+          className="floating-write-btn"
+          onClick={() => navigate("/myclub/payout/register")}
+          aria-label="정산 등록"
         >
           <span className="floating-write-icon">+</span>
         </button>
