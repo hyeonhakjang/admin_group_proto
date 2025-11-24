@@ -151,10 +151,7 @@ const ClubDetailScreen: React.FC = () => {
             participantsMap[schedule.id] = 0;
           }
         } catch (error) {
-          console.error(
-            `일정 ${schedule.id}의 참가자 수 로드 오류:`,
-            error
-          );
+          console.error(`일정 ${schedule.id}의 참가자 수 로드 오류:`, error);
           participantsMap[schedule.id] = 0;
         }
       }
@@ -838,73 +835,6 @@ const ClubDetailScreen: React.FC = () => {
                                     </ul>
                                   </div>
                                 )}
-
-                              {/* 댓글 섹션 */}
-                              <div className="event-comments-section">
-                                <h5 className="event-detail-section-title">
-                                  댓글 ({comments.length})
-                                </h5>
-
-                                {/* 댓글 입력 */}
-                                <div className="comment-input-container">
-                                  <div className="comment-input-avatar">
-                                    <img src="/profile-icon.png" alt="프로필" />
-                                  </div>
-                                  <div className="comment-input-wrapper">
-                                    <input
-                                      type="text"
-                                      className="comment-input"
-                                      placeholder="댓글을 입력하세요..."
-                                      value={newComment}
-                                      onChange={(e) =>
-                                        setNewComment(e.target.value)
-                                      }
-                                      onKeyPress={(e) => {
-                                        if (e.key === "Enter") {
-                                          handleAddComment();
-                                        }
-                                      }}
-                                    />
-                                    <button
-                                      className="comment-submit-btn"
-                                      onClick={handleAddComment}
-                                      disabled={!newComment.trim()}
-                                    >
-                                      등록
-                                    </button>
-                                  </div>
-                                </div>
-
-                                {/* 댓글 리스트 */}
-                                <div className="comments-list">
-                                  {comments.map((comment) => (
-                                    <div
-                                      key={comment.id}
-                                      className="comment-item"
-                                    >
-                                      <div className="comment-avatar">
-                                        <img
-                                          src={comment.avatar}
-                                          alt={comment.author}
-                                        />
-                                      </div>
-                                      <div className="comment-content-wrapper">
-                                        <div className="comment-header">
-                                          <span className="comment-author">
-                                            {comment.author}
-                                          </span>
-                                          <span className="comment-time">
-                                            {comment.time}
-                                          </span>
-                                        </div>
-                                        <p className="comment-text">
-                                          {comment.content}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
                             </div>
                           </div>
                         </>
