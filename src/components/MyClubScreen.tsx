@@ -1250,6 +1250,17 @@ const MyClubScreen: React.FC = () => {
               ? [eventOnDate.agenda]
               : [];
 
+            // 현재 사용자의 참가 여부 확인
+            let isCurrentUserParticipant = false;
+            let currentUserClubPersonalId: number | null = null;
+            
+            if (userData?.type === "personal" && selectedClub?.club_personal_id) {
+              currentUserClubPersonalId = selectedClub.club_personal_id;
+              isCurrentUserParticipant = (participants || []).some(
+                (p: any) => p.club_personal_id === currentUserClubPersonalId
+              );
+            }
+
             return {
               id: eventOnDate.id,
               title: eventOnDate.title || "",
@@ -1266,6 +1277,13 @@ const MyClubScreen: React.FC = () => {
               location: eventOnDate.location || "",
               description: eventOnDate.content || "",
               agenda: agendaList,
+              isParticipant: isCurrentUserParticipant,
+              clubPersonalId: currentUserClubPersonalId,
+              // allow_attendance 필드가 있으면 사용, 없으면 기본값 true (모든 일정에 참석 신청 가능)
+              allowAttendance:
+                eventOnDate.allow_attendance !== undefined
+                  ? eventOnDate.allow_attendance
+                  : true,
             };
           })
         );
@@ -2174,6 +2192,182 @@ const MyClubScreen: React.FC = () => {
                                   )}
                                 </ul>
                               </div>
+
+                              {/* 참석/불참 버튼 - 참가 신청 활성화된 일정만 표시 */}
+                              {selectedEvent.allowAttendance !== false &&
+                                userData?.type === "personal" &&
+                                selectedClub?.club_personal_id && (
+                                  <div className="event-attendance-section">
+                                    <h5 className="event-detail-section-title">
+                                      참석 여부
+                                    </h5>
+                                    <div className="event-attendance-buttons">
+                                      <button
+                                        className={`event-attendance-btn attend ${
+                                          selectedEvent.isParticipant
+                                            ? "selected"
+                                            : ""
+                                        }`}
+                                        onClick={async () => {
+                                          if (
+                                            !selectedEvent.clubPersonalId ||
+                                            !selectedEvent.id
+                                          )
+                                            return;
+
+                                          try {
+                                            // 이미 참가자인 경우 무시
+                                            if (selectedEvent.isParticipant) {
+                                              return;
+                                            }
+
+                                            // schedule_participant에 추가
+                                            const { error } = await supabase
+                                              .from("schedule_participant")
+                                              .insert({
+                                                schedule_id: selectedEvent.id,
+                                                club_personal_id:
+                                                  selectedEvent.clubPersonalId,
+                                              });
+
+                                            if (error) {
+                                              console.error(
+                                                "참석 등록 오류:",
+                                                error
+                                              );
+                                              alert(
+                                                "참석 등록 중 오류가 발생했습니다."
+                                              );
+                                              return;
+                                            }
+
+                                            // 참가자 수 업데이트
+                                            const updatedEvent = {
+                                              ...selectedEvent,
+                                              isParticipant: true,
+                                              participants:
+                                                selectedEvent.participants + 1,
+                                            };
+                                            setSelectedEvent(updatedEvent);
+
+                                            // selectedEvents도 업데이트
+                                            setSelectedEvents(
+                                              selectedEvents.map((e) =>
+                                                e.id === selectedEvent.id
+                                                  ? updatedEvent
+                                                  : e
+                                              )
+                                            );
+
+                                            // 일정 목록 새로고침
+                                            if (selectedDate) {
+                                              handleDateClick(
+                                                selectedDate.getDate(),
+                                                selectedDate.getMonth() ===
+                                                  currentDate.getMonth() &&
+                                                  selectedDate.getFullYear() ===
+                                                    currentDate.getFullYear()
+                                              );
+                                            }
+                                          } catch (error) {
+                                            console.error(
+                                              "참석 등록 중 오류:",
+                                              error
+                                            );
+                                            alert(
+                                              "참석 등록 중 오류가 발생했습니다."
+                                            );
+                                          }
+                                        }}
+                                      >
+                                        참석
+                                      </button>
+                                      <button
+                                        className={`event-attendance-btn absent ${
+                                          !selectedEvent.isParticipant
+                                            ? "selected"
+                                            : ""
+                                        }`}
+                                        onClick={async () => {
+                                          if (
+                                            !selectedEvent.clubPersonalId ||
+                                            !selectedEvent.id
+                                          )
+                                            return;
+
+                                          try {
+                                            // 참가자가 아닌 경우 무시
+                                            if (!selectedEvent.isParticipant) {
+                                              return;
+                                            }
+
+                                            // schedule_participant에서 삭제
+                                            const { error } = await supabase
+                                              .from("schedule_participant")
+                                              .delete()
+                                              .eq("schedule_id", selectedEvent.id)
+                                              .eq(
+                                                "club_personal_id",
+                                                selectedEvent.clubPersonalId
+                                              );
+
+                                            if (error) {
+                                              console.error(
+                                                "불참 등록 오류:",
+                                                error
+                                              );
+                                              alert(
+                                                "불참 등록 중 오류가 발생했습니다."
+                                              );
+                                              return;
+                                            }
+
+                                            // 참가자 수 업데이트
+                                            const updatedEvent = {
+                                              ...selectedEvent,
+                                              isParticipant: false,
+                                              participants: Math.max(
+                                                0,
+                                                selectedEvent.participants - 1
+                                              ),
+                                            };
+                                            setSelectedEvent(updatedEvent);
+
+                                            // selectedEvents도 업데이트
+                                            setSelectedEvents(
+                                              selectedEvents.map((e) =>
+                                                e.id === selectedEvent.id
+                                                  ? updatedEvent
+                                                  : e
+                                              )
+                                            );
+
+                                            // 일정 목록 새로고침
+                                            if (selectedDate) {
+                                              handleDateClick(
+                                                selectedDate.getDate(),
+                                                selectedDate.getMonth() ===
+                                                  currentDate.getMonth() &&
+                                                  selectedDate.getFullYear() ===
+                                                    currentDate.getFullYear()
+                                              );
+                                            }
+                                          } catch (error) {
+                                            console.error(
+                                              "불참 등록 중 오류:",
+                                              error
+                                            );
+                                            alert(
+                                              "불참 등록 중 오류가 발생했습니다."
+                                            );
+                                          }
+                                        }}
+                                      >
+                                        불참
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
 
                               {/* 댓글 섹션 */}
                               <div className="event-comments-section">
