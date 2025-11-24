@@ -137,7 +137,13 @@ const MyClubScreen: React.FC = () => {
         };
       });
 
-      setPayouts(mapped);
+      // 동일한 payout이 중복으로 들어오는 경우(이전 데이터 등) 대비
+      const uniqueMap = new Map<number, PayoutItem>();
+      mapped.forEach((item) => {
+        uniqueMap.set(item.id, item);
+      });
+
+      setPayouts(Array.from(uniqueMap.values()));
     } catch (error) {
       console.error("정산 데이터 로드 중 오류:", error);
       setPayouts([]);
