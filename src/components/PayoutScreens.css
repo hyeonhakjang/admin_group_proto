@@ -1,40 +1,56 @@
 .payout-screen {
-  min-height: 100vh;
-  background: #fffcfa;
-  padding-bottom: 120px;
+  background-color: #fffcfa;
+  padding-bottom: 100px; /* BottomTabBar 공간 확보 */
   font-family: "Inter", "Noto Sans KR", sans-serif;
-  color: #28201b;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden; /* 가로 스크롤 방지 */
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  color: #28201b;
 }
 
 .payout-inner {
   flex: 1;
   padding: clamp(16px, 4vw, 24px);
+  padding-bottom: calc(100px + 16px); /* BottomTabBar 높이 + 여유 공간 */
   display: flex;
   flex-direction: column;
   gap: clamp(16px, 4vw, 24px);
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .payout-header-block {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   background-color: #fffcfa;
+  z-index: 100;
   padding: clamp(12px, 3vw, 16px) 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: clamp(6px, 1.5vw, 8px);
+  min-height: 64px;
+  pointer-events: none; /* 컨테이너는 클릭 이벤트 차단 */
   box-sizing: border-box;
-  flex-shrink: 0;
+  flex-shrink: 0; /* 축소 방지 */
 }
 
 .payout-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
   font-size: clamp(22px, 5.5vw, 28px);
   font-weight: 700;
+  color: #28201b;
   margin: 0;
+  pointer-events: auto;
 }
 
 .payout-back-btn {
@@ -48,11 +64,19 @@
   color: #28201b;
   cursor: pointer;
   transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+  pointer-events: auto; /* 버튼은 클릭 가능 */
+  z-index: 101;
   align-self: flex-start;
+  box-sizing: border-box;
 }
 
 .payout-back-btn:hover {
   background: white;
+}
+
+.payout-back-btn:active {
+  transform: scale(0.98);
 }
 
 .payout-card {
@@ -72,24 +96,43 @@
 }
 
 .payout-form-field label {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 600;
   font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
 }
 
 .payout-form-field input,
 .payout-form-field textarea {
+  width: 100%;
+  padding: clamp(12px, 3vw, 16px);
   border: 1px solid #e0e0e0;
   border-radius: 12px;
-  padding: clamp(12px, 3vw, 14px);
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-size: clamp(14px, 3.5vw, 16px);
-  width: 100%;
+  color: #28201b;
+  background: white;
+  outline: none;
   box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.payout-form-field input:focus,
+.payout-form-field textarea:focus {
+  border-color: #c34e00;
+  box-shadow: 0 0 0 3px rgba(195, 78, 0, 0.1);
+}
+
+.payout-form-field input::placeholder,
+.payout-form-field textarea::placeholder {
+  color: #888888;
 }
 
 .payout-form-field textarea {
   resize: none;
-  min-height: 100px;
+  min-height: clamp(80px, 20vw, 100px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  line-height: 1.5;
 }
 
 .payout-select-members {
@@ -101,6 +144,20 @@
   border: 1px dashed #c34e00;
   border-radius: 12px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.payout-select-members:hover {
+  background: #fff5f0;
+  border-color: #c34e00;
+}
+
+.payout-select-members span {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #666666;
+  flex: 1;
 }
 
 .payout-select-members button {
@@ -109,9 +166,22 @@
   color: white;
   border-radius: 999px;
   padding: clamp(8px, 2vw, 10px) clamp(14px, 3.5vw, 18px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
   font-size: clamp(13px, 3vw, 15px);
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.payout-select-members button:hover {
+  background: #a03d00;
+  transform: scale(1.05);
+}
+
+.payout-select-members button:active {
+  transform: scale(0.98);
 }
 
 .payout-member-list {
@@ -128,46 +198,98 @@
   border-radius: 12px;
   border: 1px solid #e0e0e0;
   background: #fffcfa;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.payout-member-item:hover {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .payout-member-name {
   flex: 1;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 600;
   font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  min-width: 0;
 }
 
 .payout-member-amount {
   width: clamp(90px, 22vw, 140px);
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 6px 10px;
+  padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2.5vw, 12px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
   font-size: clamp(13px, 3.25vw, 15px);
+  color: #28201b;
   text-align: right;
+  background: white;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.payout-member-amount:focus {
+  border-color: #c34e00;
+  box-shadow: 0 0 0 3px rgba(195, 78, 0, 0.1);
 }
 
 .payout-remove-btn {
   border: none;
   background: transparent;
   color: #c34e00;
-  font-size: clamp(16px, 4vw, 20px);
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 300;
   cursor: pointer;
+  width: clamp(32px, 8vw, 40px);
+  height: clamp(32px, 8vw, 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.payout-remove-btn:hover {
+  background: #fff5f0;
+  transform: scale(1.1);
+}
+
+.payout-remove-btn:active {
+  transform: scale(0.95);
 }
 
 .payout-submit-btn {
   width: 100%;
+  padding: clamp(14px, 3.5vw, 16px);
   background: #c34e00;
   color: white;
   border: none;
   border-radius: 12px;
-  padding: clamp(14px, 3.5vw, 18px);
-  font-size: clamp(15px, 3.75vw, 18px);
-  font-weight: 700;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(15px, 3.75vw, 17px);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .payout-submit-btn:hover {
-  background: #a03d00;
+  background: #a03e00;
+}
+
+.payout-submit-btn:active {
+  transform: scale(0.98);
+}
+
+.payout-submit-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .member-search-tabs {
@@ -332,3 +454,123 @@
   border-color: transparent;
 }
 
+/* 반응형 breakpoints */
+@media (max-width: 480px) {
+  .payout-inner {
+    padding: clamp(12px, 3vw, 16px);
+    gap: clamp(12px, 3vw, 16px);
+  }
+
+  .payout-header-block {
+    padding: clamp(10px, 2.5vw, 14px) 0;
+  }
+
+  .payout-card {
+    padding: clamp(12px, 3vw, 16px);
+  }
+
+  .payout-member-item {
+    flex-wrap: wrap;
+  }
+
+  .payout-member-amount {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+@media (max-width: 360px) {
+  .payout-inner {
+    padding: clamp(10px, 2.5vw, 14px);
+    gap: clamp(10px, 2.5vw, 14px);
+  }
+
+  .payout-title {
+    font-size: clamp(20px, 5vw, 24px);
+  }
+
+  .payout-card {
+    padding: clamp(10px, 2.5vw, 14px);
+    gap: clamp(10px, 2.5vw, 14px);
+  }
+
+  .payout-select-members {
+    flex-direction: column;
+    align-items: stretch;
+    gap: clamp(8px, 2vw, 10px);
+  }
+
+  .payout-select-members button {
+    width: 100%;
+  }
+
+  .payout-member-item {
+    padding: clamp(8px, 2vw, 12px);
+  }
+}
+
+@media (max-width: 320px) {
+  .payout-inner {
+    padding: clamp(8px, 2vw, 12px);
+    gap: clamp(8px, 2vw, 12px);
+  }
+
+  .payout-title {
+    font-size: clamp(18px, 4.5vw, 22px);
+  }
+
+  .payout-card {
+    padding: clamp(8px, 2vw, 12px);
+    gap: clamp(8px, 2vw, 12px);
+  }
+
+  .payout-form-field label {
+    font-size: clamp(13px, 3.25vw, 15px);
+  }
+
+  .payout-form-field input,
+  .payout-form-field textarea {
+    font-size: clamp(13px, 3.25vw, 15px);
+    padding: clamp(10px, 2.5vw, 14px);
+  }
+
+  .payout-member-name {
+    font-size: clamp(13px, 3.25vw, 15px);
+  }
+
+  .payout-member-amount {
+    font-size: clamp(12px, 3vw, 14px);
+  }
+
+  .payout-submit-btn {
+    font-size: clamp(14px, 3.5vw, 16px);
+    padding: clamp(12px, 3vw, 14px);
+  }
+}
+
+@media (max-width: 240px) {
+  .payout-inner {
+    padding: clamp(6px, 1.5vw, 10px);
+    gap: clamp(6px, 1.5vw, 10px);
+  }
+
+  .payout-title {
+    font-size: clamp(16px, 4vw, 20px);
+  }
+
+  .payout-card {
+    padding: clamp(6px, 1.5vw, 10px);
+    gap: clamp(6px, 1.5vw, 10px);
+  }
+
+  .payout-form-field input,
+  .payout-form-field textarea {
+    font-size: clamp(12px, 3vw, 14px);
+    padding: clamp(8px, 2vw, 12px);
+  }
+
+  .payout-submit-btn {
+    font-size: clamp(13px, 3.25vw, 15px);
+    padding: clamp(10px, 2.5vw, 12px);
+  }
+}
