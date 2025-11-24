@@ -141,7 +141,7 @@ const PayoutMemberSearchScreen: React.FC = () => {
               ? member.personal_user[0]
               : member.personal_user;
             return {
-              id: String(personalUser?.id || member.id),
+              id: String(member.id), // club_personal_id 사용
               name: personalUser?.personal_name || "이름 없음",
               role: member.role || "동아리원",
             };
@@ -427,7 +427,7 @@ const PayoutMemberSearchScreen: React.FC = () => {
           : clubPersonal?.personal_user;
 
         return {
-          id: String(personalUser?.id || participant.club_personal_id),
+          id: String(participant.club_personal_id), // club_personal_id 보존
           name: personalUser?.personal_name || "이름 없음",
           role: clubPersonal?.role || "동아리원",
           amount: 0,
@@ -566,8 +566,8 @@ const PayoutMemberSearchScreen: React.FC = () => {
                 {["일", "월", "화", "수", "목", "금", "토"].map(
                   (label, index) => (
                     <div key={index} className="calendar-weekday">
-                    {label}
-                  </div>
+                      {label}
+                    </div>
                   )
                 )}
               </div>
