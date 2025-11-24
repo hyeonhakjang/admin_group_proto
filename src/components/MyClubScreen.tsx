@@ -58,6 +58,69 @@ const MyClubScreen: React.FC = () => {
   // 가입된 동아리 목록
   const [clubs, setClubs] = useState<Club[]>([]);
 
+  // 정산 데이터 상태
+  interface PayoutItem {
+    id: string;
+    title: string;
+    totalMembers: number;
+    requestDate: string;
+    userStatus: "pending" | "paid" | "unpaid";
+    userAmount?: number;
+  }
+
+  const [payouts, setPayouts] = useState<PayoutItem[]>([]);
+
+  // 정산 데이터 로드 함수
+  const loadPayouts = React.useCallback(async () => {
+    if (!selectedClub || !selectedClub.club_user_id) {
+      setPayouts([]);
+      return;
+    }
+
+    try {
+      // TODO: 실제 데이터베이스에서 정산 데이터 로드
+      // 현재는 mock 데이터 사용
+      const mockPayouts: PayoutItem[] = [
+        {
+          id: "p1",
+          title: "11월 회비 정산",
+          totalMembers: 15,
+          requestDate: "2025-11-15",
+          userStatus: "paid",
+          userAmount: 50000,
+        },
+        {
+          id: "p2",
+          title: "10월 회비 정산",
+          totalMembers: 15,
+          requestDate: "2025-10-15",
+          userStatus: "pending",
+          userAmount: 50000,
+        },
+        {
+          id: "p3",
+          title: "9월 회비 정산",
+          totalMembers: 14,
+          requestDate: "2025-09-15",
+          userStatus: "paid",
+          userAmount: 50000,
+        },
+        {
+          id: "p4",
+          title: "8월 회비 정산",
+          totalMembers: 14,
+          requestDate: "2025-08-15",
+          userStatus: "unpaid",
+          userAmount: 50000,
+        },
+      ];
+      setPayouts(mockPayouts);
+    } catch (error) {
+      console.error("정산 데이터 로드 중 오류:", error);
+      setPayouts([]);
+    }
+  }, [selectedClub]);
+
   // 사용자 정보 로드
   useEffect(() => {
     const loadUserData = () => {
@@ -486,6 +549,9 @@ const MyClubScreen: React.FC = () => {
         } else if (activeTab === "schedule") {
           // 일정 로드
           await loadSchedules();
+        } else if (activeTab === "payout") {
+          // 정산 로드
+          await loadPayouts();
         } else if (activeTab === "members") {
           // 멤버 로드
           await loadMembers();
@@ -1800,13 +1866,97 @@ const MyClubScreen: React.FC = () => {
           </div>
         )}
         {activeTab === "payout" && (
-          <div className="statistics-content payout-overview">
-            <div className="payout-header">
-              <h2>정산</h2>
-            </div>
-            <p className="payout-description">
-              멤버들에게 요청할 정산을 등록하고 진행 상황을 관리할 수 있습니다.
-            </p>
+          <div className="payout-content">
+            {payouts.length === 0 ? (
+              <div className="payout-empty-state">
+                <p className="payout-description">
+                  멤버들에게 요청할 정산을 등록하고 진행 상황을 관리할 수 있습니다.
+                </p>
+              </div>
+            ) : (
+              <div className="payout-list-container">
+                {Object.entries(
+                  payouts.reduce((acc, payout) => {
+                    const date = new Date(payout.requestDate);
+                    const year = date.getFullYear();
+                    const month = date.getMonth() + 1;
+                    const key = `${year}-${month}`;
+                    if (!acc[key]) {
+                      acc[key] = [];
+                    }
+                    acc[key].push(payout);
+                    return acc;
+                  }, {} as Record<string, PayoutItem[]>)
+                )
+                  .sort(([a], [b]) => b.localeCompare(a))
+                  .map(([key, items]) => {
+                    const [year, month] = key.split("-").map(Number);
+                    return (
+                      <div key={key} className="payout-month-section">
+                        {/* 섹션 A: 연, 월 표시 */}
+                        <h2 className="payout-month-title">
+                          {year}년 {month}월
+                        </h2>
+                        {/* 섹션 B: 정산 리스트 */}
+                        <div className="payout-items-list">
+                          {items
+                            .sort(
+                              (a, b) =>
+                                new Date(b.requestDate).getTime() -
+                                new Date(a.requestDate).getTime()
+                            )
+                            .map((payout) => (
+                              <div
+                                key={payout.id}
+                                className="payout-item-card"
+                                onClick={() =>
+                                  navigate(`/myclub/payout/${payout.id}`)
+                                }
+                              >
+                                {/* 섹션 B-A: 총 인원 */}
+                                <div className="payout-item-members">
+                                  총 {payout.totalMembers}명
+                                </div>
+                                {/* 섹션 B-B: 정산 이름 */}
+                                <div className="payout-item-title">
+                                  {payout.title}
+                                </div>
+                                {/* 섹션 B-C: 정산 요청 날짜, 섹션 B-D: 자신의 정산 현황 (같은 줄) */}
+                                <div className="payout-item-footer">
+                                  <span className="payout-item-date">
+                                    {new Date(payout.requestDate).toLocaleDateString(
+                                      "ko-KR",
+                                      {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                      }
+                                    )}
+                                  </span>
+                                  <span
+                                    className={`payout-item-status ${
+                                      payout.userStatus === "paid"
+                                        ? "status-paid"
+                                        : payout.userStatus === "pending"
+                                        ? "status-pending"
+                                        : "status-unpaid"
+                                    }`}
+                                  >
+                                    {payout.userStatus === "paid"
+                                      ? "완료"
+                                      : payout.userStatus === "pending"
+                                      ? "대기"
+                                      : "미납"}
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
           </div>
         )}
         {activeTab === "schedule" && (
