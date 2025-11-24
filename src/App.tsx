@@ -24,6 +24,7 @@ import ClubAccountRegisterScreen from "./components/ClubAccountRegisterScreen";
 import ClubAccountBankInputScreen from "./components/ClubAccountBankInputScreen";
 import PayoutRegisterScreen from "./components/PayoutRegisterScreen";
 import PayoutMemberSearchScreen from "./components/PayoutMemberSearchScreen";
+import PayoutDetailScreen from "./components/PayoutDetailScreen";
 import "./App.css";
 
 function App() {
@@ -95,6 +96,10 @@ function App() {
           <Route
             path="/myclub/payout/register/members"
             element={<PayoutMemberSearchScreen />}
+          />
+          <Route
+            path="/myclub/payout/:id"
+            element={<PayoutDetailScreen />}
           />
         </Routes>
       </div>

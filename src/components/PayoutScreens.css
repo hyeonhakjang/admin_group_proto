@@ -16,7 +16,9 @@
   flex: 1;
   width: 100%;
   padding: clamp(16px, 4vw, 24px);
-  padding-bottom: calc(100px + clamp(16px, 4vw, 24px)); /* BottomTabBar 높이 + 여유 공간 */
+  padding-bottom: calc(
+    100px + clamp(16px, 4vw, 24px)
+  ); /* BottomTabBar 높이 + 여유 공간 */
   display: flex;
   flex-direction: column;
   gap: clamp(16px, 4vw, 24px);
@@ -883,5 +885,233 @@
 
   .payout-calendar {
     padding: clamp(12px, 3vw, 16px);
+  }
+}
+
+/* 정산 상세 페이지 스타일 */
+.payout-loading {
+  text-align: center;
+  padding: clamp(40px, 10vw, 60px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #666666;
+}
+
+.payout-detail-section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 섹션 A: 총 인원 */
+.payout-detail-members {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #666666;
+  margin-top: clamp(6px, 1.5vw, 8px);
+  margin-bottom: clamp(8px, 2vw, 12px);
+}
+
+/* 섹션 B: 정산 이름 */
+.payout-detail-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(22px, 5.5vw, 28px);
+  color: #28201b;
+  margin-bottom: clamp(12px, 3vw, 16px);
+  line-height: 1.4;
+}
+
+/* 섹션 C: 정산 요청 날짜와 시간 */
+.payout-detail-datetime {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #888888;
+  margin-bottom: clamp(16px, 4vw, 24px);
+}
+
+/* 섹션 D: 정산 요청 내용 */
+.payout-detail-description {
+  background: white;
+  border-radius: 12px;
+  padding: clamp(16px, 4vw, 20px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: clamp(16px, 4vw, 24px);
+  border: 1px solid #e0e0e0;
+}
+
+.payout-detail-section-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  margin: 0 0 clamp(8px, 2vw, 12px) 0;
+}
+
+.payout-detail-description-text {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #666666;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* 섹션 E: 정산 요청 금액 */
+.payout-detail-amount {
+  background: white;
+  border-radius: 12px;
+  padding: clamp(16px, 4vw, 20px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: clamp(16px, 4vw, 24px);
+  border: 1px solid #e0e0e0;
+}
+
+.payout-detail-amount-value {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(24px, 6vw, 32px);
+  color: #c34e00;
+  margin-top: clamp(8px, 2vw, 12px);
+}
+
+/* 섹션 F: 토스로 바로 송금 버튼 */
+.payout-detail-toss {
+  margin-bottom: clamp(16px, 4vw, 24px);
+}
+
+.payout-toss-transfer-btn {
+  width: 100%;
+  padding: clamp(16px, 4vw, 20px);
+  background: #c34e00;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 18px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.payout-toss-transfer-btn:hover {
+  background: #a03e00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(195, 78, 0, 0.3);
+}
+
+.payout-toss-transfer-btn:active {
+  transform: translateY(0);
+}
+
+.payout-toss-transfer-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
+.payout-toss-transfer-btn:disabled:hover {
+  background: #cccccc;
+  transform: none;
+  box-shadow: none;
+}
+
+.payout-toss-warning {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #c62828;
+  margin: clamp(8px, 2vw, 12px) 0 0 0;
+  text-align: center;
+}
+
+/* 섹션 G: 송금 완료 체크 버튼 */
+.payout-detail-payment-status {
+  margin-bottom: clamp(16px, 4vw, 24px);
+}
+
+.payout-payment-status-btn {
+  width: 100%;
+  padding: clamp(14px, 3.5vw, 18px);
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(15px, 3.75vw, 17px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  background: white;
+  color: #28201b;
+}
+
+.payout-payment-status-btn.status-paid {
+  background: #e8f5e9;
+  border-color: #2e7d32;
+  color: #2e7d32;
+}
+
+.payout-payment-status-btn.status-unpaid {
+  background: white;
+  border-color: #e0e0e0;
+  color: #28201b;
+}
+
+.payout-payment-status-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.payout-payment-status-btn:active {
+  transform: translateY(0);
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .payout-detail-title {
+    font-size: clamp(20px, 5vw, 24px);
+  }
+
+  .payout-detail-amount-value {
+    font-size: clamp(22px, 5.5vw, 28px);
+  }
+
+  .payout-toss-transfer-btn {
+    padding: clamp(14px, 3.5vw, 18px);
+    font-size: clamp(15px, 3.75vw, 17px);
+  }
+}
+
+@media (max-width: 360px) {
+  .payout-detail-title {
+    font-size: clamp(18px, 4.5vw, 22px);
+  }
+
+  .payout-detail-amount-value {
+    font-size: clamp(20px, 5vw, 24px);
+  }
+
+  .payout-detail-description,
+  .payout-detail-amount {
+    padding: clamp(12px, 3vw, 16px);
+  }
+}
+
+@media (max-width: 320px) {
+  .payout-detail-title {
+    font-size: clamp(16px, 4vw, 20px);
+  }
+
+  .payout-detail-amount-value {
+    font-size: clamp(18px, 4.5vw, 22px);
+  }
+
+  .payout-toss-transfer-btn,
+  .payout-payment-status-btn {
+    padding: clamp(12px, 3vw, 16px);
+    font-size: clamp(14px, 3.5vw, 16px);
   }
 }
