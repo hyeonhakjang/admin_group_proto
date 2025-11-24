@@ -69,35 +69,40 @@
   box-sizing: border-box;
 }
 
-/* 멤버 제목 */
+/* 멤버 헤더 */
+.members-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  gap: clamp(12px, 3vw, 16px);
+  margin-bottom: clamp(16px, 4vw, 20px);
+}
+
 .members-title {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 700;
   font-size: clamp(20px, 5vw, 24px);
   color: #28201b;
-  margin: 0 0 clamp(16px, 4vw, 20px) 0;
-  width: 100%;
-  box-sizing: border-box;
+  margin: 0;
+  flex: 1;
 }
 
 .invite-btn {
-  padding: clamp(10px, 2.5vw, 12px) clamp(20px, 5vw, 24px);
+  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 16px);
   background: #c34e00;
   color: white;
   border: none;
   border-radius: 12px;
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 600;
-  font-size: clamp(13px, 3.25vw, 15px);
+  font-size: clamp(12px, 3vw, 14px);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
   box-sizing: border-box;
-  width: 100%;
-  margin-bottom: clamp(16px, 4vw, 20px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-shrink: 0;
 }
 
 .invite-btn:hover {

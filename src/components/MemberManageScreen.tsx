@@ -203,13 +203,12 @@ const MemberManageScreen: React.FC = () => {
       {/* Main Content */}
       <div className="member-manage-main-content">
         <div className="members-content">
-          {/* 멤버 제목 */}
-          <h2 className="members-title">멤버</h2>
-
-          {/* Invite 버튼 */}
-          <button
-            className="invite-btn"
-            onClick={async () => {
+          {/* 멤버 헤더 */}
+          <div className="members-header">
+            <h2 className="members-title">멤버</h2>
+            <button
+              className="invite-btn"
+              onClick={async () => {
               if (!selectedClub?.club_user_id) {
                 alert("동아리 정보를 불러올 수 없습니다.");
                 return;
@@ -240,9 +239,10 @@ const MemberManageScreen: React.FC = () => {
                 document.body.removeChild(textArea);
               }
             }}
-          >
-            + Invite
-          </button>
+            >
+              + Invite
+            </button>
+          </div>
 
           {/* 검색 필드 */}
           <div className="members-search-container">
