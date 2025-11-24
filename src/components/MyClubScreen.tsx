@@ -60,7 +60,7 @@ const MyClubScreen: React.FC = () => {
 
   // 정산 데이터 상태
   interface PayoutItem {
-    id: string;
+    id: number;
     title: string;
     totalMembers: number;
     requestDate: string;
@@ -78,43 +78,65 @@ const MyClubScreen: React.FC = () => {
     }
 
     try {
-      // TODO: 실제 데이터베이스에서 정산 데이터 로드
-      // 현재는 mock 데이터 사용
-      const mockPayouts: PayoutItem[] = [
-        {
-          id: "p1",
-          title: "11월 회비 정산",
-          totalMembers: 15,
-          requestDate: "2025-11-15",
-          userStatus: "paid",
-          userAmount: 50000,
-        },
-        {
-          id: "p2",
-          title: "10월 회비 정산",
-          totalMembers: 15,
-          requestDate: "2025-10-15",
-          userStatus: "pending",
-          userAmount: 50000,
-        },
-        {
-          id: "p3",
-          title: "9월 회비 정산",
-          totalMembers: 14,
-          requestDate: "2025-09-15",
-          userStatus: "paid",
-          userAmount: 50000,
-        },
-        {
-          id: "p4",
-          title: "8월 회비 정산",
-          totalMembers: 14,
-          requestDate: "2025-08-15",
-          userStatus: "unpaid",
-          userAmount: 50000,
-        },
-      ];
-      setPayouts(mockPayouts);
+      const { data, error } = await supabase
+        .from("club_personal_payout")
+        .select(
+          `
+          id,
+          title,
+          content,
+          applied_date,
+          created_at,
+          club_personal:club_personal_id (
+            id,
+            club_user_id
+          ),
+          payout_participant (
+            id,
+            payout_amount,
+            club_personal_id,
+            status
+          )
+        `
+        )
+        .eq("club_personal.club_user_id", selectedClub.club_user_id)
+        .order("applied_date", { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      const mapped: PayoutItem[] = (data || []).map((payout: any) => {
+        const requestDate =
+          payout.applied_date ||
+          payout.created_at ||
+          new Date().toISOString().split("T")[0];
+        const participants = payout.payout_participant || [];
+        const totalMembers = participants.length;
+        const currentMemberId = selectedClub.club_personal_id;
+        const currentParticipant = participants.find(
+          (participant: any) =>
+            String(participant.club_personal_id) ===
+            String(currentMemberId || "")
+        );
+        const status = currentParticipant?.status || "pending";
+
+        return {
+          id: payout.id,
+          title: payout.title,
+          totalMembers,
+          requestDate,
+          userStatus:
+            status === "paid"
+              ? "paid"
+              : status === "unpaid"
+              ? "unpaid"
+              : "pending",
+          userAmount: currentParticipant?.payout_amount,
+        };
+      });
+
+      setPayouts(mapped);
     } catch (error) {
       console.error("정산 데이터 로드 중 오류:", error);
       setPayouts([]);
@@ -2120,341 +2142,344 @@ const MyClubScreen: React.FC = () => {
                         </div>
                       ) : (
                         selectedEvent && (
-                        <>
-                          <div
-                            className="event-detail-overlay"
-                            onClick={() => setShowEventDetail(false)}
-                          ></div>
-                          <div className="schedule-event-detail-card">
-                            <div className="schedule-event-detail-card-inner">
-                              <button
-                                className="event-back-btn"
-                                onClick={() => setShowEventDetail(false)}
-                              >
-                                ← 뒤로가기
-                              </button>
-                              <h4 className="event-detail-title">
-                                {selectedEvent.title}
-                              </h4>
-                              <div className="event-detail-info">
-                                <div className="event-detail-row">
-                                  <span className="event-detail-label">
-                                    날짜:
-                                  </span>
-                                  <span className="event-detail-value">
-                                    {selectedEvent.date.getFullYear()}년{" "}
-                                    {selectedEvent.date.getMonth() + 1}월{" "}
-                                    {selectedEvent.date.getDate()}일
-                                  </span>
+                          <>
+                            <div
+                              className="event-detail-overlay"
+                              onClick={() => setShowEventDetail(false)}
+                            ></div>
+                            <div className="schedule-event-detail-card">
+                              <div className="schedule-event-detail-card-inner">
+                                <button
+                                  className="event-back-btn"
+                                  onClick={() => setShowEventDetail(false)}
+                                >
+                                  ← 뒤로가기
+                                </button>
+                                <h4 className="event-detail-title">
+                                  {selectedEvent.title}
+                                </h4>
+                                <div className="event-detail-info">
+                                  <div className="event-detail-row">
+                                    <span className="event-detail-label">
+                                      날짜:
+                                    </span>
+                                    <span className="event-detail-value">
+                                      {selectedEvent.date.getFullYear()}년{" "}
+                                      {selectedEvent.date.getMonth() + 1}월{" "}
+                                      {selectedEvent.date.getDate()}일
+                                    </span>
+                                  </div>
+                                  <div className="event-detail-row">
+                                    <span className="event-detail-label">
+                                      시간:
+                                    </span>
+                                    <span className="event-detail-value">
+                                      {selectedEvent.time}
+                                    </span>
+                                  </div>
+                                  <div className="event-detail-row">
+                                    <span className="event-detail-label">
+                                      장소:
+                                    </span>
+                                    <span className="event-detail-value">
+                                      {selectedEvent.location}
+                                    </span>
+                                  </div>
+                                  <div className="event-detail-row">
+                                    <span className="event-detail-label">
+                                      참가자:
+                                    </span>
+                                    <span className="event-detail-value">
+                                      {selectedEvent.group} ·{" "}
+                                      {selectedEvent.participants}명
+                                    </span>
+                                  </div>
                                 </div>
-                                <div className="event-detail-row">
-                                  <span className="event-detail-label">
-                                    시간:
-                                  </span>
-                                  <span className="event-detail-value">
-                                    {selectedEvent.time}
-                                  </span>
+                                <div className="event-detail-description">
+                                  <h5 className="event-detail-section-title">
+                                    상세 내용
+                                  </h5>
+                                  <p>{selectedEvent.description}</p>
                                 </div>
-                                <div className="event-detail-row">
-                                  <span className="event-detail-label">
-                                    장소:
-                                  </span>
-                                  <span className="event-detail-value">
-                                    {selectedEvent.location}
-                                  </span>
-                                </div>
-                                <div className="event-detail-row">
-                                  <span className="event-detail-label">
-                                    참가자:
-                                  </span>
-                                  <span className="event-detail-value">
-                                    {selectedEvent.group} ·{" "}
-                                    {selectedEvent.participants}명
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="event-detail-description">
-                                <h5 className="event-detail-section-title">
-                                  상세 내용
-                                </h5>
-                                <p>{selectedEvent.description}</p>
-                              </div>
-                              <div className="event-detail-agenda">
-                                <h5 className="event-detail-section-title">
-                                  일정표
-                                </h5>
-                                <ul className="event-agenda-list">
-                                  {selectedEvent.agenda &&
-                                  selectedEvent.agenda.length > 0 ? (
-                                    selectedEvent.agenda.map(
-                                      (item: string, index: number) => (
-                                        <li key={index}>{item}</li>
+                                <div className="event-detail-agenda">
+                                  <h5 className="event-detail-section-title">
+                                    일정표
+                                  </h5>
+                                  <ul className="event-agenda-list">
+                                    {selectedEvent.agenda &&
+                                    selectedEvent.agenda.length > 0 ? (
+                                      selectedEvent.agenda.map(
+                                        (item: string, index: number) => (
+                                          <li key={index}>{item}</li>
+                                        )
                                       )
-                                    )
-                                  ) : (
-                                    <li>일정표 정보가 없습니다.</li>
-                                  )}
-                                </ul>
-                              </div>
+                                    ) : (
+                                      <li>일정표 정보가 없습니다.</li>
+                                    )}
+                                  </ul>
+                                </div>
 
-                              {/* 참석/불참 버튼 - 참가 신청 활성화된 일정만 표시 */}
-                              {selectedEvent &&
-                                selectedEvent.participationEnabled === true &&
-                                userData?.type === "personal" &&
-                                selectedClub?.club_personal_id && (
-                                  <div className="event-attendance-section">
-                                    <h5 className="event-detail-section-title">
-                                      참석 여부
-                                    </h5>
-                                    <div className="event-attendance-buttons">
-                                      <button
-                                        className={`event-attendance-btn attend ${
-                                          selectedEvent.isParticipant
-                                            ? "selected"
-                                            : ""
-                                        }`}
-                                        onClick={async () => {
-                                          if (
-                                            !selectedEvent.clubPersonalId ||
-                                            !selectedEvent.id
-                                          )
-                                            return;
-
-                                          try {
-                                            // 이미 참가자인 경우 무시
-                                            if (selectedEvent.isParticipant) {
+                                {/* 참석/불참 버튼 - 참가 신청 활성화된 일정만 표시 */}
+                                {selectedEvent &&
+                                  selectedEvent.participationEnabled === true &&
+                                  userData?.type === "personal" &&
+                                  selectedClub?.club_personal_id && (
+                                    <div className="event-attendance-section">
+                                      <h5 className="event-detail-section-title">
+                                        참석 여부
+                                      </h5>
+                                      <div className="event-attendance-buttons">
+                                        <button
+                                          className={`event-attendance-btn attend ${
+                                            selectedEvent.isParticipant
+                                              ? "selected"
+                                              : ""
+                                          }`}
+                                          onClick={async () => {
+                                            if (
+                                              !selectedEvent.clubPersonalId ||
+                                              !selectedEvent.id
+                                            )
                                               return;
-                                            }
 
-                                            // schedule_participant에 추가
-                                            const { error } = await supabase
-                                              .from("schedule_participant")
-                                              .insert({
-                                                schedule_id: selectedEvent.id,
-                                                club_personal_id:
-                                                  selectedEvent.clubPersonalId,
-                                              });
+                                            try {
+                                              // 이미 참가자인 경우 무시
+                                              if (selectedEvent.isParticipant) {
+                                                return;
+                                              }
 
-                                            if (error) {
+                                              // schedule_participant에 추가
+                                              const { error } = await supabase
+                                                .from("schedule_participant")
+                                                .insert({
+                                                  schedule_id: selectedEvent.id,
+                                                  club_personal_id:
+                                                    selectedEvent.clubPersonalId,
+                                                });
+
+                                              if (error) {
+                                                console.error(
+                                                  "참석 등록 오류:",
+                                                  error
+                                                );
+                                                alert(
+                                                  "참석 등록 중 오류가 발생했습니다."
+                                                );
+                                                return;
+                                              }
+
+                                              // 참가자 수 업데이트
+                                              const updatedEvent = {
+                                                ...selectedEvent,
+                                                isParticipant: true,
+                                                participants:
+                                                  selectedEvent.participants +
+                                                  1,
+                                              };
+                                              setSelectedEvent(updatedEvent);
+
+                                              // selectedEvents도 업데이트
+                                              setSelectedEvents(
+                                                selectedEvents.map((e) =>
+                                                  e.id === selectedEvent.id
+                                                    ? updatedEvent
+                                                    : e
+                                                )
+                                              );
+
+                                              // 일정 목록 새로고침
+                                              if (selectedDate) {
+                                                handleDateClick(
+                                                  selectedDate.getDate(),
+                                                  selectedDate.getMonth() ===
+                                                    currentDate.getMonth() &&
+                                                    selectedDate.getFullYear() ===
+                                                      currentDate.getFullYear()
+                                                );
+                                              }
+                                            } catch (error) {
                                               console.error(
-                                                "참석 등록 오류:",
+                                                "참석 등록 중 오류:",
                                                 error
                                               );
                                               alert(
                                                 "참석 등록 중 오류가 발생했습니다."
                                               );
+                                            }
+                                          }}
+                                        >
+                                          참석
+                                        </button>
+                                        <button
+                                          className={`event-attendance-btn absent ${
+                                            !selectedEvent.isParticipant
+                                              ? "selected"
+                                              : ""
+                                          }`}
+                                          onClick={async () => {
+                                            if (
+                                              !selectedEvent.clubPersonalId ||
+                                              !selectedEvent.id
+                                            )
                                               return;
-                                            }
 
-                                            // 참가자 수 업데이트
-                                            const updatedEvent = {
-                                              ...selectedEvent,
-                                              isParticipant: true,
-                                              participants:
-                                                selectedEvent.participants + 1,
-                                            };
-                                            setSelectedEvent(updatedEvent);
+                                            try {
+                                              // 참가자가 아닌 경우 무시
+                                              if (
+                                                !selectedEvent.isParticipant
+                                              ) {
+                                                return;
+                                              }
 
-                                            // selectedEvents도 업데이트
-                                            setSelectedEvents(
-                                              selectedEvents.map((e) =>
-                                                e.id === selectedEvent.id
-                                                  ? updatedEvent
-                                                  : e
-                                              )
-                                            );
+                                              // schedule_participant에서 삭제
+                                              const { error } = await supabase
+                                                .from("schedule_participant")
+                                                .delete()
+                                                .eq(
+                                                  "schedule_id",
+                                                  selectedEvent.id
+                                                )
+                                                .eq(
+                                                  "club_personal_id",
+                                                  selectedEvent.clubPersonalId
+                                                );
 
-                                            // 일정 목록 새로고침
-                                            if (selectedDate) {
-                                              handleDateClick(
-                                                selectedDate.getDate(),
-                                                selectedDate.getMonth() ===
-                                                  currentDate.getMonth() &&
-                                                  selectedDate.getFullYear() ===
-                                                    currentDate.getFullYear()
-                                              );
-                                            }
-                                          } catch (error) {
-                                            console.error(
-                                              "참석 등록 중 오류:",
-                                              error
-                                            );
-                                            alert(
-                                              "참석 등록 중 오류가 발생했습니다."
-                                            );
-                                          }
-                                        }}
-                                      >
-                                        참석
-                                      </button>
-                                      <button
-                                        className={`event-attendance-btn absent ${
-                                          !selectedEvent.isParticipant
-                                            ? "selected"
-                                            : ""
-                                        }`}
-                                        onClick={async () => {
-                                          if (
-                                            !selectedEvent.clubPersonalId ||
-                                            !selectedEvent.id
-                                          )
-                                            return;
+                                              if (error) {
+                                                console.error(
+                                                  "불참 등록 오류:",
+                                                  error
+                                                );
+                                                alert(
+                                                  "불참 등록 중 오류가 발생했습니다."
+                                                );
+                                                return;
+                                              }
 
-                                          try {
-                                            // 참가자가 아닌 경우 무시
-                                            if (!selectedEvent.isParticipant) {
-                                              return;
-                                            }
+                                              // 참가자 수 업데이트
+                                              const updatedEvent = {
+                                                ...selectedEvent,
+                                                isParticipant: false,
+                                                participants: Math.max(
+                                                  0,
+                                                  selectedEvent.participants - 1
+                                                ),
+                                              };
+                                              setSelectedEvent(updatedEvent);
 
-                                            // schedule_participant에서 삭제
-                                            const { error } = await supabase
-                                              .from("schedule_participant")
-                                              .delete()
-                                              .eq(
-                                                "schedule_id",
-                                                selectedEvent.id
-                                              )
-                                              .eq(
-                                                "club_personal_id",
-                                                selectedEvent.clubPersonalId
+                                              // selectedEvents도 업데이트
+                                              setSelectedEvents(
+                                                selectedEvents.map((e) =>
+                                                  e.id === selectedEvent.id
+                                                    ? updatedEvent
+                                                    : e
+                                                )
                                               );
 
-                                            if (error) {
+                                              // 일정 목록 새로고침
+                                              if (selectedDate) {
+                                                handleDateClick(
+                                                  selectedDate.getDate(),
+                                                  selectedDate.getMonth() ===
+                                                    currentDate.getMonth() &&
+                                                    selectedDate.getFullYear() ===
+                                                      currentDate.getFullYear()
+                                                );
+                                              }
+                                            } catch (error) {
                                               console.error(
-                                                "불참 등록 오류:",
+                                                "불참 등록 중 오류:",
                                                 error
                                               );
                                               alert(
                                                 "불참 등록 중 오류가 발생했습니다."
                                               );
-                                              return;
                                             }
+                                          }}
+                                        >
+                                          불참
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
 
-                                            // 참가자 수 업데이트
-                                            const updatedEvent = {
-                                              ...selectedEvent,
-                                              isParticipant: false,
-                                              participants: Math.max(
-                                                0,
-                                                selectedEvent.participants - 1
-                                              ),
-                                            };
-                                            setSelectedEvent(updatedEvent);
+                                {/* 댓글 섹션 */}
+                                <div className="event-comments-section">
+                                  <h5 className="event-detail-section-title">
+                                    댓글 ({comments.length})
+                                  </h5>
 
-                                            // selectedEvents도 업데이트
-                                            setSelectedEvents(
-                                              selectedEvents.map((e) =>
-                                                e.id === selectedEvent.id
-                                                  ? updatedEvent
-                                                  : e
-                                              )
-                                            );
-
-                                            // 일정 목록 새로고침
-                                            if (selectedDate) {
-                                              handleDateClick(
-                                                selectedDate.getDate(),
-                                                selectedDate.getMonth() ===
-                                                  currentDate.getMonth() &&
-                                                  selectedDate.getFullYear() ===
-                                                    currentDate.getFullYear()
-                                              );
-                                            }
-                                          } catch (error) {
-                                            console.error(
-                                              "불참 등록 중 오류:",
-                                              error
-                                            );
-                                            alert(
-                                              "불참 등록 중 오류가 발생했습니다."
-                                            );
+                                  {/* 댓글 입력 - club_user 계정은 숨김 */}
+                                  {userData?.type !== "club" && (
+                                    <div className="comment-input-container">
+                                      <div className="comment-input-avatar">
+                                        <img
+                                          src="/profile-icon.png"
+                                          alt="프로필"
+                                        />
+                                      </div>
+                                      <div className="comment-input-wrapper">
+                                        <input
+                                          type="text"
+                                          className="comment-input"
+                                          placeholder="댓글을 입력하세요..."
+                                          value={newComment}
+                                          onChange={(e) =>
+                                            setNewComment(e.target.value)
                                           }
-                                        }}
-                                      >
-                                        불참
-                                      </button>
-                                    </div>
-                                  </div>
-                                )}
-
-                              {/* 댓글 섹션 */}
-                              <div className="event-comments-section">
-                                <h5 className="event-detail-section-title">
-                                  댓글 ({comments.length})
-                                </h5>
-
-                                {/* 댓글 입력 - club_user 계정은 숨김 */}
-                                {userData?.type !== "club" && (
-                                  <div className="comment-input-container">
-                                    <div className="comment-input-avatar">
-                                      <img
-                                        src="/profile-icon.png"
-                                        alt="프로필"
-                                      />
-                                    </div>
-                                    <div className="comment-input-wrapper">
-                                      <input
-                                        type="text"
-                                        className="comment-input"
-                                        placeholder="댓글을 입력하세요..."
-                                        value={newComment}
-                                        onChange={(e) =>
-                                          setNewComment(e.target.value)
-                                        }
-                                        onKeyPress={(e) => {
-                                          if (e.key === "Enter") {
-                                            handleAddComment();
-                                          }
-                                        }}
-                                      />
-                                      <button
-                                        className="comment-submit-btn"
-                                        onClick={handleAddComment}
-                                        disabled={!newComment.trim()}
-                                      >
-                                        등록
-                                      </button>
-                                    </div>
-                                  </div>
-                                )}
-
-                                {/* 댓글 리스트 */}
-                                <div className="comments-list">
-                                  {comments.map((comment) => (
-                                    <div
-                                      key={comment.id}
-                                      className="comment-item"
-                                    >
-                                      <div className="comment-header">
-                                        <div className="comment-author-info">
-                                          <img
-                                            src={
-                                              comment.authorAvatar ||
-                                              "/profile-icon.png"
+                                          onKeyPress={(e) => {
+                                            if (e.key === "Enter") {
+                                              handleAddComment();
                                             }
-                                            alt={comment.author}
-                                            className="comment-author-avatar"
-                                          />
-                                          <span className="comment-author">
-                                            {comment.author}
+                                          }}
+                                        />
+                                        <button
+                                          className="comment-submit-btn"
+                                          onClick={handleAddComment}
+                                          disabled={!newComment.trim()}
+                                        >
+                                          등록
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* 댓글 리스트 */}
+                                  <div className="comments-list">
+                                    {comments.map((comment) => (
+                                      <div
+                                        key={comment.id}
+                                        className="comment-item"
+                                      >
+                                        <div className="comment-header">
+                                          <div className="comment-author-info">
+                                            <img
+                                              src={
+                                                comment.authorAvatar ||
+                                                "/profile-icon.png"
+                                              }
+                                              alt={comment.author}
+                                              className="comment-author-avatar"
+                                            />
+                                            <span className="comment-author">
+                                              {comment.author}
+                                            </span>
+                                          </div>
+                                        </div>
+                                        <div className="comment-body">
+                                          <p className="comment-content">
+                                            {comment.content}
+                                          </p>
+                                          <span className="comment-date">
+                                            {comment.createdAt}
                                           </span>
                                         </div>
                                       </div>
-                                      <div className="comment-body">
-                                        <p className="comment-content">
-                                          {comment.content}
-                                        </p>
-                                        <span className="comment-date">
-                                          {comment.createdAt}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  ))}
+                                    ))}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </>
+                          </>
                         )
                       )}
                     </>
