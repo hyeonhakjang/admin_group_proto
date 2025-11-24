@@ -195,10 +195,7 @@ const MemberManageScreen: React.FC = () => {
     <div className="member-manage-screen">
       {/* 헤더: 뒤로가기 버튼만 */}
       <div className="member-manage-header-back">
-        <button
-          className="member-manage-back-btn"
-          onClick={() => navigate(-1)}
-        >
+        <button className="member-manage-back-btn" onClick={() => navigate(-1)}>
           ← 뒤로가기
         </button>
       </div>
@@ -245,7 +242,6 @@ const MemberManageScreen: React.FC = () => {
             >
               + Invite
             </button>
-          </div>
 
           {/* 검색 필드 */}
           <div className="members-search-container">
