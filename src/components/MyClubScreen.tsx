@@ -2119,6 +2119,7 @@ const MyClubScreen: React.FC = () => {
                           ))}
                         </div>
                       ) : (
+                        selectedEvent && (
                         <>
                           <div
                             className="event-detail-overlay"
@@ -2454,6 +2455,7 @@ const MyClubScreen: React.FC = () => {
                             </div>
                           </div>
                         </>
+                        )
                       )}
                     </>
                   ) : (
