@@ -321,6 +321,7 @@
   font-size: clamp(13px, 3.25vw, 15px);
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-left: auto;
 }
 
 .payout-registered-member-bulk-btn:hover {
