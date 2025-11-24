@@ -566,8 +566,8 @@ const PayoutMemberSearchScreen: React.FC = () => {
                 {["일", "월", "화", "수", "목", "금", "토"].map(
                   (label, index) => (
                     <div key={index} className="calendar-weekday">
-                      {label}
-                    </div>
+                    {label}
+                  </div>
                   )
                 )}
               </div>
@@ -625,8 +625,8 @@ const PayoutMemberSearchScreen: React.FC = () => {
                               key={event.id || index}
                               className="schedule-event-card"
                               onClick={() => {
-                                setSelectedEvent(event);
-                                setShowEventDetail(true);
+                                // 일정 카드 클릭 시 바로 참가자들을 정산에 추가
+                                handleEventSelect(event.id);
                               }}
                               style={{ cursor: "pointer" }}
                             >
