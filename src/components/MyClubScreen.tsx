@@ -1253,8 +1253,11 @@ const MyClubScreen: React.FC = () => {
             // 현재 사용자의 참가 여부 확인
             let isCurrentUserParticipant = false;
             let currentUserClubPersonalId: number | null = null;
-            
-            if (userData?.type === "personal" && selectedClub?.club_personal_id) {
+
+            if (
+              userData?.type === "personal" &&
+              selectedClub?.club_personal_id
+            ) {
               currentUserClubPersonalId = selectedClub.club_personal_id;
               isCurrentUserParticipant = (participants || []).some(
                 (p: any) => p.club_personal_id === currentUserClubPersonalId
@@ -1279,11 +1282,11 @@ const MyClubScreen: React.FC = () => {
               agenda: agendaList,
               isParticipant: isCurrentUserParticipant,
               clubPersonalId: currentUserClubPersonalId,
-              // allow_attendance 필드가 있으면 사용, 없으면 기본값 true (모든 일정에 참석 신청 가능)
-              allowAttendance:
-                eventOnDate.allow_attendance !== undefined
-                  ? eventOnDate.allow_attendance
-                  : true,
+              // participation_enabled 필드 확인 (ScheduleAddScreen에서 사용하는 필드명)
+              participationEnabled:
+                eventOnDate.participation_enabled !== undefined
+                  ? eventOnDate.participation_enabled
+                  : false, // 기본값은 false (참가 신청 비활성화)
             };
           })
         );
@@ -1892,7 +1895,7 @@ const MyClubScreen: React.FC = () => {
           <div className="payout-content">
             {payouts.length === 0 ? (
               <div className="payout-empty-state">
-            <p className="payout-description">
+                <p className="payout-description">
                   멤버들에게 요청할 정산을 등록하고 진행 상황을 관리할 수
                   있습니다.
                 </p>
@@ -2194,7 +2197,7 @@ const MyClubScreen: React.FC = () => {
                               </div>
 
                               {/* 참석/불참 버튼 - 참가 신청 활성화된 일정만 표시 */}
-                              {selectedEvent.allowAttendance !== false &&
+                              {selectedEvent.participationEnabled === true &&
                                 userData?.type === "personal" &&
                                 selectedClub?.club_personal_id && (
                                   <div className="event-attendance-section">
@@ -2305,7 +2308,10 @@ const MyClubScreen: React.FC = () => {
                                             const { error } = await supabase
                                               .from("schedule_participant")
                                               .delete()
-                                              .eq("schedule_id", selectedEvent.id)
+                                              .eq(
+                                                "schedule_id",
+                                                selectedEvent.id
+                                              )
                                               .eq(
                                                 "club_personal_id",
                                                 selectedEvent.clubPersonalId
