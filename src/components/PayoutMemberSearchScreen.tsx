@@ -189,7 +189,7 @@ const PayoutMemberSearchScreen: React.FC = () => {
             <div className="member-select-all">
               <div>
                 <strong>전체 선택</strong>
-                <p style={{ margin: 0, color: "#666", fontSize: "13px" }}>
+                <p className="member-select-all-description">
                   현재 동아리의 모든 멤버를 선택합니다.
                 </p>
               </div>
@@ -213,11 +213,9 @@ const PayoutMemberSearchScreen: React.FC = () => {
             <div className="member-search-list">
               {filteredMembers.map((member) => (
                 <div key={member.id} className="member-search-item">
-                  <div>
-                    <div style={{ fontWeight: 600 }}>{member.name}</div>
-                    <div style={{ color: "#666666", fontSize: "13px" }}>
-                      {member.role}
-                    </div>
+                  <div className="member-info">
+                    <div className="member-name">{member.name}</div>
+                    <div className="member-role">{member.role}</div>
                   </div>
                   <div className="member-search-actions">
                     {selectedIds.includes(member.id) && (
@@ -314,4 +312,3 @@ const PayoutMemberSearchScreen: React.FC = () => {
 };
 
 export default PayoutMemberSearchScreen;
-
