@@ -1,0 +1,380 @@
+# 📱 반응형 레이아웃 구조 규칙
+
+## 🎯 전체 페이지 구조
+
+### 기본 레이아웃 패턴
+모든 페이지는 다음 구조를 따라야 합니다:
+
+```
+┌─────────────────────────┐
+│      Header             │ (선택적, 일부 페이지에서만 사용)
+├─────────────────────────┤
+│                         │
+│    Main Content         │ (flex: 1, 스크롤 가능)
+│                         │
+│                         │
+├─────────────────────────┤
+│   BottomTabBar         │ (고정, z-index: 1000)
+└─────────────────────────┘
+```
+
+### 필수 CSS 구조
+
+```css
+/* 페이지 컨테이너 */
+.page-screen {
+  background-color: #fffcfa;
+  padding-bottom: 100px; /* BottomTabBar 공간 확보 */
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 메인 콘텐츠 영역 */
+.main-content {
+  flex: 1;
+  width: 100%;
+  padding: clamp(16px, 4vw, 24px);
+  padding-bottom: calc(100px + 16px); /* BottomTabBar 높이 + 여유 공간 */
+  box-sizing: border-box;
+}
+```
+
+## 📐 반응형 크기 규칙
+
+### clamp() 함수 사용
+모든 크기 값은 `clamp(최소값, 선호값, 최대값)` 형식을 사용합니다.
+
+```css
+/* 폰트 크기 */
+font-size: clamp(14px, 4vw, 17px);
+
+/* 패딩 */
+padding: clamp(12px, 3vw, 16px);
+
+/* 마진 */
+margin: clamp(8px, 2vw, 12px);
+
+/* 아이콘 크기 */
+width: clamp(28px, 7vw, 32px);
+height: clamp(28px, 7vw, 32px);
+```
+
+### 반응형 breakpoints
+다음 breakpoint를 기준으로 추가 조정을 합니다:
+
+```css
+/* 480px 이하 */
+@media (max-width: 480px) {
+  /* 패딩, 간격 축소 */
+  padding: clamp(12px, 3vw, 16px);
+}
+
+/* 360px 이하 */
+@media (max-width: 360px) {
+  /* 폰트 크기, 아이콘 크기 추가 축소 */
+  font-size: clamp(13px, 3.25vw, 15px);
+}
+
+/* 320px 이하 */
+@media (max-width: 320px) {
+  /* 최소 크기 유지 */
+  font-size: clamp(12px, 3vw, 14px);
+  padding: clamp(8px, 2vw, 12px);
+}
+
+/* 240px 이하 (매우 작은 화면) */
+@media (max-width: 240px) {
+  /* 극단적인 축소 */
+  font-size: clamp(10px, 2.5vw, 12px);
+  padding: clamp(6px, 1.5vw, 10px);
+}
+```
+
+## 🎨 Header 구조
+
+### Header가 있는 페이지
+```css
+.header-nav-bar {
+  background-color: #fffcfa;
+  display: flex;
+  flex-direction: column;
+  min-height: 64px;
+  align-items: flex-start;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  z-index: 3;
+  padding: 12px 0;
+}
+
+.nav-bar {
+  flex: 1;
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+```
+
+### Header가 없는 페이지 (뒤로가기 버튼만)
+```css
+.page-header-back {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fffcfa;
+  z-index: 100;
+  padding: clamp(12px, 3vw, 16px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(6px, 1.5vw, 8px);
+  min-height: 64px;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 8px;
+  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 16px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #28201b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+```
+
+## 📊 BottomTabBar 구조
+
+### 고정 위치
+```css
+.bottom-tab-bar {
+  background-color: #fffcfa;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: clamp(6px, 1.5vw, 10px) 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  min-height: 80px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+```
+
+### 탭 아이템
+```css
+.tab {
+  flex: 1;
+  min-height: clamp(50px, 10vw, 60px);
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  min-width: 60px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+```
+
+## 📦 카드/컨테이너 구조
+
+### 기본 카드 스타일
+```css
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: clamp(16px, 4vw, 20px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+}
+```
+
+### 섹션 제목
+```css
+.section-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(18px, 4.5vw, 22px);
+  color: #28201b;
+  margin: 0 0 clamp(12px, 3vw, 16px) 0;
+}
+```
+
+## 🎯 입력 필드 구조
+
+### 텍스트 입력
+```css
+.input-field {
+  width: 100%;
+  padding: clamp(12px, 3vw, 16px);
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  background: white;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input-field:focus {
+  border-color: #c34e00;
+}
+```
+
+### 버튼
+```css
+.primary-btn {
+  width: 100%;
+  padding: clamp(14px, 3.5vw, 16px);
+  background: #c34e00;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(15px, 3.75vw, 17px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.primary-btn:hover {
+  background: #a03e00;
+}
+
+.primary-btn:active {
+  transform: scale(0.98);
+}
+```
+
+## 🔄 모달 구조
+
+### 하단 모달 (Bottom Sheet)
+```css
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  animation: fadeIn 0.3s ease;
+}
+
+.bottom-modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 70vh;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  z-index: 2001;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+```
+
+## 📋 리스트 구조
+
+### 기본 리스트
+```css
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.5vw, 12px);
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.5vw, 14px);
+  padding: clamp(10px, 2.5vw, 14px);
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  background: #fffcfa;
+}
+```
+
+## 🎨 그리드 레이아웃
+
+### 반응형 그리드
+```css
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(100px, 25vw, 150px), 1fr));
+  gap: clamp(8px, 2vw, 12px);
+}
+
+/* 3열 그리드 (피드 등) */
+.feed-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(4px, 1vw, 6px);
+}
+```
+
+## ⚠️ 주의사항
+
+1. **overflow-x: hidden**: 모든 페이지 컨테이너에 필수
+2. **box-sizing: border-box**: 모든 요소에 적용
+3. **padding-bottom**: BottomTabBar 공간 확보 필수
+4. **z-index 계층**: Header(3), BottomTabBar(1000), Modal(2000+)
+5. **터치 타겟**: 최소 44px × 44px 유지
+6. **flex-shrink: 0**: Header, BottomTabBar에 필수 적용
+
+## 📱 모바일 우선 원칙
+
+- 기본 스타일은 모바일(320px) 기준
+- `clamp()`로 자동 반응형 처리
+- `@media`는 추가 조정이 필요한 경우에만 사용
+- 터치 친화적인 인터페이스 우선
