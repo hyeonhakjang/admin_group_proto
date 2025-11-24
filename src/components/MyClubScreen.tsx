@@ -33,7 +33,7 @@ const MyClubScreen: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<
-    "posts" | "payout" | "schedule" | "members" | "archive"
+    "posts" | "payout" | "schedule" | "archive"
   >("posts");
 
   // 사용자 정보 상태
@@ -255,10 +255,10 @@ const MyClubScreen: React.FC = () => {
     // 탭 파라미터가 있으면 해당 탭으로 설정
     if (
       tabParam &&
-      ["posts", "payout", "schedule", "members", "archive"].includes(tabParam)
+      ["posts", "payout", "schedule", "archive"].includes(tabParam)
     ) {
       setActiveTab(
-        tabParam as "posts" | "payout" | "schedule" | "members" | "archive"
+        tabParam as "posts" | "payout" | "schedule" | "archive"
       );
     }
 
@@ -459,115 +459,6 @@ const MyClubScreen: React.FC = () => {
     }
   }, [selectedClub?.club_user_id]);
 
-  const loadMembers = React.useCallback(async () => {
-    if (!selectedClub?.club_user_id) return;
-
-    try {
-      const { data: members, error } = await supabase
-        .from("club_personal")
-        .select(
-          `
-          id,
-          role,
-          approved,
-          personal_user:personal_user_id (
-            id,
-            personal_name,
-            email,
-            profile_image_url
-          )
-        `
-        )
-        .eq("club_user_id", selectedClub.club_user_id)
-        .order("approved", { ascending: false })
-        .order("created_at", { ascending: true });
-
-      if (error) {
-        console.error("멤버 로드 오류:", error);
-      } else if (members) {
-        const transformedMembers = members.map((member: any) => ({
-          id: member.personal_user?.id || member.id,
-          clubPersonalId: member.id, // club_personal 테이블의 id 저장
-          name: member.personal_user?.personal_name || "이름 없음",
-          email: member.personal_user?.email || "",
-          role: member.role || "동아리원",
-          approved: member.approved || false,
-          isOwner: member.role === "회장" || member.role === "관리자",
-          avatar:
-            member.personal_user?.profile_image_url || "/profile-icon.png",
-        }));
-
-        // 역할 순서로 정렬: 회장 - 스태프 - 회원
-        const roleOrder: { [key: string]: number } = {
-          관리자: 0,
-          회장: 1,
-          스태프: 2,
-          회원: 3,
-        };
-
-        const sortedMembers = transformedMembers.sort((a, b) => {
-          const aOrder = roleOrder[a.role] ?? 999;
-          const bOrder = roleOrder[b.role] ?? 999;
-          return aOrder - bOrder;
-        });
-
-        setMembers(sortedMembers);
-      }
-    } catch (error) {
-      console.error("멤버 로드 중 오류:", error);
-    }
-  }, [selectedClub]);
-
-  // 멤버 승인 처리 함수
-  const handleApproveMember = React.useCallback(
-    async (clubPersonalId: number) => {
-      try {
-        const { error } = await supabase
-          .from("club_personal")
-          .update({ approved: true })
-          .eq("id", clubPersonalId);
-
-        if (error) {
-          console.error("멤버 승인 오류:", error);
-          alert("멤버 승인 중 오류가 발생했습니다.");
-          return;
-        }
-
-        // 멤버 목록 다시 로드
-        await loadMembers();
-      } catch (error) {
-        console.error("멤버 승인 처리 중 오류:", error);
-        alert("멤버 승인 중 오류가 발생했습니다.");
-      }
-    },
-    [loadMembers]
-  );
-
-  // 멤버 역할 변경 함수
-  const handleChangeMemberRole = React.useCallback(
-    async (clubPersonalId: number, newRole: string) => {
-      try {
-        const { error } = await supabase
-          .from("club_personal")
-          .update({ role: newRole })
-          .eq("id", clubPersonalId);
-
-        if (error) {
-          console.error("멤버 역할 변경 오류:", error);
-          alert("멤버 역할 변경 중 오류가 발생했습니다.");
-          return;
-        }
-
-        // 멤버 목록 다시 로드
-        await loadMembers();
-        setSelectedMemberForRole(null);
-      } catch (error) {
-        console.error("멤버 역할 변경 처리 중 오류:", error);
-        alert("멤버 역할 변경 중 오류가 발생했습니다.");
-      }
-    },
-    [loadMembers]
-  );
 
   // 선택된 동아리 변경 시 데이터 로드
   useEffect(() => {
@@ -584,9 +475,6 @@ const MyClubScreen: React.FC = () => {
         } else if (activeTab === "payout") {
           // 정산 로드
           await loadPayouts();
-        } else if (activeTab === "members") {
-          // 멤버 로드
-          await loadMembers();
         }
       } catch (error) {
         console.error("데이터 로드 오류:", error);
@@ -844,23 +732,6 @@ const MyClubScreen: React.FC = () => {
     };
   }, [filteredAndSortedPosts]);
 
-  // 멤버 검색 상태
-  const [memberSearchQuery, setMemberSearchQuery] = useState("");
-  const [members, setMembers] = useState<any[]>([]);
-  const [selectedMemberForRole, setSelectedMemberForRole] = useState<
-    number | null
-  >(null);
-
-  // 검색 필터링된 멤버
-  const filteredMembers = members.filter(
-    (member) =>
-      (member.name || "")
-        .toLowerCase()
-        .includes(memberSearchQuery.toLowerCase()) ||
-      (member.email || "")
-        .toLowerCase()
-        .includes(memberSearchQuery.toLowerCase())
-  );
 
   // 달력 관련 상태
   const [currentDate, setCurrentDate] = useState(() => {
@@ -1145,7 +1016,7 @@ const MyClubScreen: React.FC = () => {
   }, [schedules]);
 
   const handleTabClick = (
-    tab: "posts" | "payout" | "schedule" | "members" | "archive"
+    tab: "posts" | "payout" | "schedule" | "archive"
   ) => {
     setActiveTab(tab);
     // 일정 탭이 아닌 다른 탭으로 이동할 때 일정 관련 상태 초기화
@@ -1644,31 +1515,6 @@ const MyClubScreen: React.FC = () => {
                   data-node-id="12:3334"
                 >
                   일정
-                </p>
-              </div>
-            </div>
-
-            {/* Members Tab */}
-            <div
-              className={`tab ${activeTab === "members" ? "active" : ""}`}
-              data-name="Tab"
-              data-node-id="12:3335"
-              onClick={() => handleTabClick("members")}
-            >
-              <div
-                className={`tab-underline ${
-                  activeTab === "members" ? "active" : ""
-                }`}
-                data-name="Underline"
-                data-node-id="12:3336"
-              >
-                <p
-                  className={`tab-text ${
-                    activeTab === "members" ? "active" : ""
-                  }`}
-                  data-node-id="12:3337"
-                >
-                  멤버
                 </p>
               </div>
             </div>
@@ -2527,162 +2373,6 @@ const MyClubScreen: React.FC = () => {
                 </div>
               </div>
             )}
-          </div>
-        )}
-        {activeTab === "members" && (
-          <div className="members-content">
-            {/* 멤버 헤더 */}
-            <div className="members-header">
-              <h2 className="members-title">멤버</h2>
-              <button
-                className="invite-btn"
-                onClick={async () => {
-                  if (!selectedClub?.club_user_id) {
-                    alert("동아리 정보를 불러올 수 없습니다.");
-                    return;
-                  }
-
-                  // 동아리 상세 페이지 URL 생성
-                  const inviteUrl = `${window.location.origin}/community/club/${selectedClub.club_user_id}`;
-
-                  try {
-                    // 클립보드에 복사
-                    await navigator.clipboard.writeText(inviteUrl);
-                    alert("초대 링크가 클립보드에 복사되었습니다!");
-                  } catch (err) {
-                    console.error("클립보드 복사 실패:", err);
-                    // 클립보드 API가 실패한 경우, 텍스트 영역을 사용한 대체 방법
-                    const textArea = document.createElement("textarea");
-                    textArea.value = inviteUrl;
-                    textArea.style.position = "fixed";
-                    textArea.style.left = "-999999px";
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try {
-                      document.execCommand("copy");
-                      alert("초대 링크가 클립보드에 복사되었습니다!");
-                    } catch (e) {
-                      alert(`초대 링크: ${inviteUrl}`);
-                    }
-                    document.body.removeChild(textArea);
-                  }
-                }}
-              >
-                + Invite
-              </button>
-            </div>
-
-            {/* 검색 필드 */}
-            <div className="members-search-container">
-              <img src="/search-icon.png" alt="검색" className="search-icon" />
-              <input
-                type="text"
-                className="members-search-input"
-                placeholder="Search"
-                value={memberSearchQuery}
-                onChange={(e) => setMemberSearchQuery(e.target.value)}
-              />
-            </div>
-
-            {/* 멤버 리스트 */}
-            <div className="members-list">
-              {filteredMembers.map((member) => (
-                <div
-                  key={member.id}
-                  className={`member-item ${
-                    selectedMemberForRole === member.clubPersonalId
-                      ? "dropdown-open"
-                      : ""
-                  }`}
-                >
-                  <div className="member-info">
-                    <div className="member-avatar">
-                      <img src={member.avatar} alt={member.name} />
-                    </div>
-                    <div className="member-details">
-                      <div className="member-name">{member.name}</div>
-                      <div className="member-email">{member.email}</div>
-                    </div>
-                  </div>
-                  {member.approved ? (
-                    <div style={{ position: "relative" }}>
-                      <button
-                        className={`member-role-btn ${
-                          member.role === "관리자" ? "owner-role" : ""
-                        }`}
-                        onClick={() => {
-                          // club_user 계정 또는 personal_user 계정 중 회장인 경우에만 역할 변경 가능
-                          // 단, 회장 자기 자신은 역할 변경 불가
-                          const canChangeRole =
-                            (userData?.type === "club" ||
-                              (userData?.type === "personal" &&
-                                selectedClub?.role === "회장")) &&
-                            member.role !== "관리자" &&
-                            member.role !== "회장";
-                          if (canChangeRole) {
-                            setSelectedMemberForRole(
-                              selectedMemberForRole === member.clubPersonalId
-                                ? null
-                                : member.clubPersonalId
-                            );
-                          }
-                        }}
-                        disabled={
-                          member.role === "관리자" || member.role === "회장"
-                        }
-                      >
-                        {member.role}
-                        {member.role !== "관리자" &&
-                          member.role !== "회장" &&
-                          (userData?.type === "club" ||
-                            (userData?.type === "personal" &&
-                              selectedClub?.role === "회장")) && (
-                            <span className="dropdown-icon">▼</span>
-                          )}
-                      </button>
-                      {selectedMemberForRole === member.clubPersonalId &&
-                        (userData?.type === "club" ||
-                          (userData?.type === "personal" &&
-                            selectedClub?.role === "회장")) &&
-                        member.role !== "관리자" &&
-                        member.role !== "회장" && (
-                          <div className="role-dropdown">
-                            <button
-                              className="role-option"
-                              onClick={() =>
-                                handleChangeMemberRole(
-                                  member.clubPersonalId,
-                                  "스태프"
-                                )
-                              }
-                            >
-                              스태프
-                            </button>
-                            <button
-                              className="role-option"
-                              onClick={() =>
-                                handleChangeMemberRole(
-                                  member.clubPersonalId,
-                                  "회원"
-                                )
-                              }
-                            >
-                              회원
-                            </button>
-                          </div>
-                        )}
-                    </div>
-                  ) : (
-                    <button
-                      className="member-approve-btn"
-                      onClick={() => handleApproveMember(member.clubPersonalId)}
-                    >
-                      승인
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
           </div>
         )}
         {activeTab === "archive" && (
