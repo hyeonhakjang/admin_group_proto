@@ -87,6 +87,7 @@ const MyClubScreen: React.FC = () => {
           content,
           applied_date,
           created_at,
+          club_user_id,
           club_personal:club_personal_id (
             id,
             club_user_id
@@ -99,7 +100,7 @@ const MyClubScreen: React.FC = () => {
           )
         `
         )
-        .eq("club_personal.club_user_id", selectedClub.club_user_id)
+        .eq("club_user_id", selectedClub.club_user_id)
         .order("applied_date", { ascending: false });
 
       if (error) {

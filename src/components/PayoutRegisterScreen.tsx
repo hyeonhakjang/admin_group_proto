@@ -96,6 +96,7 @@ const PayoutRegisterScreen: React.FC = () => {
     }
 
     const creatorClubPersonalId = selectedClub.club_personal_id || null;
+    const clubUserId = selectedClub.club_user_id;
     const appliedDate = new Date().toISOString().split("T")[0];
     const totalAmount = members.reduce(
       (sum, member) => sum + Number(member.amount || 0),
@@ -111,6 +112,7 @@ const PayoutRegisterScreen: React.FC = () => {
           content: description.trim() || null,
           applied_date: appliedDate,
           club_personal_id: creatorClubPersonalId,
+          club_user_id: clubUserId,
         })
         .select("id")
         .single();
@@ -136,7 +138,9 @@ const PayoutRegisterScreen: React.FC = () => {
       }
 
       alert(
-        `정산 "${title}"이 등록되었습니다. (멤버 ${members.length}명, 총 ${totalAmount.toLocaleString()}원)`
+        `정산 "${title}"이 등록되었습니다. (멤버 ${
+          members.length
+        }명, 총 ${totalAmount.toLocaleString()}원)`
       );
       setTitle("");
       setDescription("");
