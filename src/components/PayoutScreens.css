@@ -33,7 +33,7 @@
   width: 100%;
   background-color: #fffcfa;
   z-index: 100;
-  padding: clamp(12px, 3vw, 16px) 0;
+  padding: clamp(12px, 3vw, 16px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -42,6 +42,10 @@
   pointer-events: none; /* 컨테이너는 클릭 이벤트 차단 */
   box-sizing: border-box;
   flex-shrink: 0; /* 축소 방지 */
+}
+
+.payout-header-block .payout-back-btn {
+  margin-bottom: 0;
 }
 
 .payout-title {
@@ -54,29 +58,23 @@
 }
 
 .payout-back-btn {
-  background: rgba(255, 255, 255, 0.9);
+  background: transparent;
   border: none;
-  border-radius: 8px;
-  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 16px);
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-weight: 600;
-  font-size: clamp(13px, 3vw, 14px);
+  font-size: clamp(14px, 3.5vw, 16px);
   color: #28201b;
   cursor: pointer;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(4px);
+  padding: 8px 0;
   pointer-events: auto; /* 버튼은 클릭 가능 */
   z-index: 101;
   align-self: flex-start;
   box-sizing: border-box;
+  transition: color 0.2s ease;
 }
 
 .payout-back-btn:hover {
-  background: white;
-}
-
-.payout-back-btn:active {
-  transform: scale(0.98);
+  color: #c34e00;
 }
 
 .payout-card {
