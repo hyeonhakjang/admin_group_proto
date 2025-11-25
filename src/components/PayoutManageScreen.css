@@ -103,7 +103,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   box-sizing: border-box;
   position: relative;
   width: 100%;
@@ -121,7 +121,7 @@
   flex-direction: column;
   gap: clamp(6px, 1.5vw, 8px);
   min-width: 0;
-  flex-grow: 1;
+  width: 100%;
 }
 
 .payout-item-members {
@@ -136,6 +136,14 @@
   font-weight: 600;
   font-size: clamp(16px, 4vw, 18px);
   color: #28201b;
+}
+
+.payout-item-footer {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
+  margin-top: clamp(4px, 1vw, 6px);
+  width: 100%;
 }
 
 .payout-item-date {
@@ -154,7 +162,6 @@
   white-space: nowrap;
   box-sizing: border-box;
   margin-left: auto;
-  align-self: flex-start;
 }
 
 .status-paid {

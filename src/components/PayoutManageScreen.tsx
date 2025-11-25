@@ -243,31 +243,32 @@ const PayoutManageScreen: React.FC = () => {
                       <div className="payout-item-title">
                         {payout.title}
                       </div>
-                      {/* 섹션 B-C: 정산 요청 날짜 */}
-                      <div className="payout-item-date">
-                        {new Date(payout.requestDate).toLocaleDateString("ko-KR", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
+                      {/* 섹션 B-C: 정산 요청 날짜, 섹션 B-D: 자신의 정산 현황 (같은 줄) */}
+                      <div className="payout-item-footer">
+                        <span className="payout-item-date">
+                          {new Date(payout.requestDate).toLocaleDateString("ko-KR", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </span>
+                        <span
+                          className={`payout-item-status ${
+                            payout.userStatus === "paid"
+                              ? "status-paid"
+                              : payout.userStatus === "pending"
+                              ? "status-pending"
+                              : "status-unpaid"
+                          }`}
+                        >
+                          {payout.userStatus === "paid"
+                            ? "완료"
+                            : payout.userStatus === "pending"
+                            ? "대기"
+                            : "미납"}
+                        </span>
                       </div>
                     </div>
-                    {/* 섹션 B-D: 자신의 정산 현황 (우측) */}
-                    <span
-                      className={`payout-item-status ${
-                        payout.userStatus === "paid"
-                          ? "status-paid"
-                          : payout.userStatus === "pending"
-                          ? "status-pending"
-                          : "status-unpaid"
-                      }`}
-                    >
-                      {payout.userStatus === "paid"
-                        ? "완료"
-                        : payout.userStatus === "pending"
-                        ? "대기"
-                        : "미납"}
-                    </span>
                   </div>
                 ))}
               </div>
