@@ -123,6 +123,22 @@ function App() {
             path="/myclub/manage/payout/:id"
             element={<PayoutManageDetailScreen />}
           />
+          <Route
+            path="/myclub/manage/accounting"
+            element={<ComingSoonScreen title="회계 내역" />}
+          />
+          <Route
+            path="/myclub/manage/events"
+            element={<ComingSoonScreen title="행사 관리" />}
+          />
+          <Route
+            path="/myclub/manage/archive"
+            element={<ComingSoonScreen title="임원진 자료" />}
+          />
+          <Route
+            path="/myclub/manage/approvals"
+            element={<ComingSoonScreen title="신청폼 관리" />}
+          />
         </Routes>
       </div>
     </BrowserRouter>
