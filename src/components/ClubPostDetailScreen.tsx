@@ -128,7 +128,8 @@ const ClubPostDetailScreen: React.FC = () => {
                 started_at,
                 ended_at,
                 location,
-                agenda
+                agenda,
+                participation_enabled
               )
             )
           `
@@ -263,11 +264,13 @@ const ClubPostDetailScreen: React.FC = () => {
           let scheduleIsParticipant = false;
 
           try {
-            const { data: scheduleParticipants, error: scheduleParticipantError } =
-              await supabase
-                .from("schedule_participant")
-                .select(
-                  `
+            const {
+              data: scheduleParticipants,
+              error: scheduleParticipantError,
+            } = await supabase
+              .from("schedule_participant")
+              .select(
+                `
                   id,
                   club_personal_id,
                   club_personal:club_personal_id (
@@ -276,8 +279,8 @@ const ClubPostDetailScreen: React.FC = () => {
                     )
                   )
                 `
-                )
-                .eq("schedule_id", normalizedSchedule.id);
+              )
+              .eq("schedule_id", normalizedSchedule.id);
 
             if (scheduleParticipantError) {
               console.error(
@@ -291,7 +294,9 @@ const ClubPostDetailScreen: React.FC = () => {
                   const clubPersonal = Array.isArray(participant.club_personal)
                     ? participant.club_personal[0]
                     : participant.club_personal;
-                  const personalUser = Array.isArray(clubPersonal?.personal_user)
+                  const personalUser = Array.isArray(
+                    clubPersonal?.personal_user
+                  )
                     ? clubPersonal.personal_user[0]
                     : clubPersonal?.personal_user;
                   return personalUser?.profile_image_url || "/profile-icon.png";
