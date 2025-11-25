@@ -164,6 +164,112 @@
   color: #888888;
 }
 
+/* 달력 UI (MyClubScreen과 동일) */
+.calendar-container {
+  background: #fffcfa;
+  border-radius: 20px;
+  padding: clamp(16px, 4vw, 24px);
+  box-shadow: 0 2px 8px rgba(40, 32, 27, 0.08);
+  margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: clamp(16px, 4vw, 20px);
+}
+
+.calendar-nav-btn {
+  background: none;
+  border: none;
+  font-size: clamp(18px, 4.5vw, 22px);
+  color: #28201b;
+  cursor: pointer;
+  padding: clamp(8px, 2vw, 12px);
+  transition: color 0.2s ease;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  box-sizing: border-box;
+}
+
+.calendar-nav-btn:hover {
+  color: #c34e00;
+}
+
+.calendar-month-year {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 20px);
+  color: #28201b;
+  margin: 0;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1vw, 8px);
+  margin-bottom: clamp(8px, 2vw, 12px);
+}
+
+.calendar-weekday {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #888888;
+  text-align: center;
+  padding: clamp(8px, 2vw, 12px);
+  box-sizing: border-box;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1vw, 8px);
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+  position: relative;
+  padding: clamp(4px, 1vw, 8px);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.calendar-day:hover {
+  background: rgba(195, 78, 0, 0.1);
+}
+
+.calendar-day.selected {
+  background: #c34e00 !important;
+  color: white !important;
+}
+
+.calendar-day.other-month {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.calendar-day.other-month:hover {
+  background: transparent;
+}
+
+.calendar-day-number {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(13px, 3vw, 15px);
+  color: inherit;
+}
+
+.calendar-day.selected .calendar-day-number {
+  color: white;
+}
+
 /* 날짜 표시 */
 .schedule-add-date-display {
   padding: clamp(12px, 3vw, 14px) clamp(16px, 4vw, 20px);
@@ -173,9 +279,9 @@
   font-size: clamp(14px, 3.5vw, 16px);
   color: #28201b;
   background-color: #f5f5f5;
-  cursor: not-allowed;
   width: 100%;
   box-sizing: border-box;
+  margin-top: clamp(8px, 2vw, 12px);
 }
 
 /* 시간 선택 */
