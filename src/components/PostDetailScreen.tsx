@@ -321,10 +321,7 @@ const PostDetailScreen: React.FC = () => {
           return;
         }
 
-        const { count: likeCountValue } = await supabase
-          .from("club_personal_like")
-          .select("*", { count: "exact", head: true })
-          .eq("club_personal_article_id", data.id);
+        const likeCountValue = 0;
 
         const clubPersonalData = Array.isArray(data.club_personal)
           ? data.club_personal[0]
@@ -334,8 +331,8 @@ const PostDetailScreen: React.FC = () => {
           : clubPersonalData?.club_user;
 
         const attachedPayoutId =
-          data.club_personal_article_payout?.[0]
-            ?.club_personal_payout_id || undefined;
+          data.club_personal_article_payout?.[0]?.club_personal_payout_id ||
+          undefined;
 
         const articlePost: Post = {
           id: data.id,
@@ -433,9 +430,7 @@ const PostDetailScreen: React.FC = () => {
           totalMembers: participants.length,
           isUserParticipant: isParticipant,
         });
-        setPayoutAccessMessage(
-          isParticipant ? null : "정산 대상이 아닙니다."
-        );
+        setPayoutAccessMessage(isParticipant ? null : "정산 대상이 아닙니다.");
       } catch (error) {
         console.error("정산 첨부 로드 오류:", error);
         setAttachedPayoutSummary(null);
