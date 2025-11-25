@@ -285,13 +285,11 @@ const ScheduleAddScreen: React.FC = () => {
 
             {/* 요일 행 */}
             <div className="calendar-weekdays">
-              {["일", "월", "화", "수", "목", "금", "토"].map(
-                (day, index) => (
-                  <div key={index} className="calendar-weekday">
-                    {day}
-                  </div>
-                )
-              )}
+              {["일", "월", "화", "수", "목", "금", "토"].map((day, index) => (
+                <div key={index} className="calendar-weekday">
+                  {day}
+                </div>
+              ))}
             </div>
 
             {/* 날짜 그리드 */}

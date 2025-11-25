@@ -418,9 +418,7 @@
   background-color: #c34e00;
 }
 
-.schedule-add-toggle-switch
-  input:checked
-  + .schedule-add-toggle-slider:before {
+.schedule-add-toggle-switch input:checked + .schedule-add-toggle-slider:before {
   transform: translateX(clamp(20px, 5vw, 24px));
 }
 
@@ -458,4 +456,3 @@
     padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
   }
 }
-

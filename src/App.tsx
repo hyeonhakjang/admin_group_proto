@@ -29,6 +29,7 @@ import MemberManageScreen from "./components/MemberManageScreen";
 import PostWriteScreen from "./components/PostWriteScreen";
 import ScheduleSelectScreen from "./components/ScheduleSelectScreen";
 import PayoutSelectScreen from "./components/PayoutSelectScreen";
+import ClubPostDetailScreen from "./components/ClubPostDetailScreen";
 import "./App.css";
 
 function App() {
@@ -74,10 +75,7 @@ function App() {
             element={<ComingSoonScreen title="예약/구매" />}
           />
           <Route path="/chat" element={<ComingSoonScreen title="채팅" />} />
-          <Route
-            path="/myclub/post/write"
-            element={<PostWriteScreen />}
-          />
+          <Route path="/myclub/post/write" element={<PostWriteScreen />} />
           <Route
             path="/myclub/post/write/schedule"
             element={<ScheduleSelectScreen />}
@@ -113,6 +111,10 @@ function App() {
           <Route
             path="/myclub/manage/members"
             element={<MemberManageScreen />}
+          />
+          <Route
+            path="/myclub/post/:id"
+            element={<ClubPostDetailScreen />}
           />
         </Routes>
       </div>
