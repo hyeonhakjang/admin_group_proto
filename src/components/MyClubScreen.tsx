@@ -373,6 +373,7 @@ const MyClubScreen: React.FC = () => {
           id,
           title,
           content,
+          notification,
           written_date,
           created_at,
           club_personal:club_personal_id (
@@ -440,7 +441,7 @@ const MyClubScreen: React.FC = () => {
               createdAt: formatDate(article.created_at || article.written_date),
               title: article.title || "",
               content: article.content || "",
-              isNotice: false, // TODO: 공지글 여부는 별도 필드 필요
+              isNotice: Boolean(article.notification),
               category: primaryCategory, // 첫 번째 카테고리
               categories: categoryNames, // 모든 카테고리 배열
               likes: likeCount || 0,
@@ -1362,27 +1363,35 @@ const MyClubScreen: React.FC = () => {
                 src={imgTrailingIcon1}
               />
             </div>
-          {canAccessSideNav ? (
-            <div
-              className="profile-icon"
-              data-name="profileIcon"
-              data-node-id="9:641"
-              onClick={() => setShowSideNav(true)}
-              style={{ cursor: "pointer" }}
-            >
-              <img alt="Menu Icon" className="icon" src="/hamburger-menu.png" />
-            </div>
-          ) : (
-            <div
-              className="profile-icon"
-              data-name="profileIcon"
-              data-node-id="9:641"
-              onClick={() => navigate("/myclub/profile/edit")}
-              style={{ cursor: "pointer" }}
-            >
-              <img alt="Profile Icon" className="icon" src="/profile-icon.png" />
-            </div>
-          )}
+            {canAccessSideNav ? (
+              <div
+                className="profile-icon"
+                data-name="profileIcon"
+                data-node-id="9:641"
+                onClick={() => setShowSideNav(true)}
+                style={{ cursor: "pointer" }}
+              >
+                <img
+                  alt="Menu Icon"
+                  className="icon"
+                  src="/hamburger-menu.png"
+                />
+              </div>
+            ) : (
+              <div
+                className="profile-icon"
+                data-name="profileIcon"
+                data-node-id="9:641"
+                onClick={() => navigate("/myclub/profile/edit")}
+                style={{ cursor: "pointer" }}
+              >
+                <img
+                  alt="Profile Icon"
+                  className="icon"
+                  src="/profile-icon.png"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
