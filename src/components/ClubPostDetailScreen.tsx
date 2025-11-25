@@ -713,49 +713,50 @@ const ClubPostDetailScreen: React.FC = () => {
             <h3 className="post-attached-schedule-title">
               {attachedSchedule.title}
             </h3>
-            <div className="post-attached-schedule-row">
-              <span className="post-attached-schedule-row-label">일시</span>
-              <strong className="post-attached-schedule-row-value">
-                {formatScheduleDate(attachedSchedule.date)}{" "}
-                {formatScheduleTimeRange(
-                  attachedSchedule.startedAt,
-                  attachedSchedule.endedAt
-                )}
-              </strong>
-            </div>
-            {attachedSchedule.location && (
-              <div className="post-attached-schedule-row">
-                <span className="post-attached-schedule-row-label">장소</span>
-                <span className="post-attached-schedule-row-value">
-                  {attachedSchedule.location}
+            <p className="post-attached-schedule-description">
+              {attachedSchedule.description || "첨부된 일정입니다."}
+            </p>
+
+            <div className="post-attached-schedule-info-grid">
+              <div className="post-attached-schedule-info-item">
+                <span className="post-attached-schedule-info-label">일시</span>
+                <span className="post-attached-schedule-info-value">
+                  {formatScheduleDate(attachedSchedule.date)}{" "}
+                  {formatScheduleTimeRange(
+                    attachedSchedule.startedAt,
+                    attachedSchedule.endedAt
+                  )}
                 </span>
               </div>
-            )}
-            <div className="post-attached-schedule-participants">
-              <div>
-                <span className="post-attached-schedule-row-label">참가자</span>
-                <strong className="post-attached-schedule-row-value">
+              {attachedSchedule.location && (
+                <div className="post-attached-schedule-info-item">
+                  <span className="post-attached-schedule-info-label">장소</span>
+                  <span className="post-attached-schedule-info-value">
+                    {attachedSchedule.location}
+                  </span>
+                </div>
+              )}
+              <div className="post-attached-schedule-info-item">
+                <span className="post-attached-schedule-info-label">참가자</span>
+                <span className="post-attached-schedule-info-value">
                   {attachedSchedule.participantsCount}명
-                </strong>
-              </div>
-              <div className="post-attached-schedule-avatar-group">
-                {attachedSchedule.participantAvatars.map(
-                  (avatar: string, index: number) => (
-                    <div
-                      key={`${avatar}-${index}`}
-                      className="post-attached-schedule-avatar"
-                    >
-                      <img src={avatar} alt="참가자" />
-                    </div>
-                  )
-                )}
+                </span>
               </div>
             </div>
-            {attachedSchedule.description && (
-              <div className="post-attached-schedule-description">
-                {attachedSchedule.description}
-              </div>
-            )}
+
+            <div className="post-attached-schedule-participants">
+              {attachedSchedule.participantAvatars.map(
+                (avatar: string, index: number) => (
+                  <div
+                    key={`${avatar}-${index}`}
+                    className="post-attached-schedule-avatar"
+                  >
+                    <img src={avatar} alt="참가자" />
+                  </div>
+                )
+              )}
+            </div>
+
             {attachedSchedule.agenda &&
               Array.isArray(attachedSchedule.agenda) &&
               attachedSchedule.agenda.length > 0 && (

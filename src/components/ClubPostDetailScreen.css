@@ -178,6 +178,34 @@
   line-height: 1.5;
 }
 
+.post-attached-schedule-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.5vw, 14px);
+  padding: clamp(12px, 3vw, 16px);
+  background: #fff8f0;
+  border-radius: 12px;
+  border: 1px dashed #f4c9a1;
+}
+
+.post-attached-schedule-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 6px);
+}
+
+.post-attached-schedule-info-label {
+  font-weight: 600;
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #a3581d;
+}
+
+.post-attached-schedule-info-value {
+  font-weight: 500;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+}
+
 .post-attached-schedule-agenda {
   margin-top: clamp(8px, 2vw, 12px);
 }
