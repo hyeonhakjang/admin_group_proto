@@ -719,9 +719,14 @@ const ClubPostDetailScreen: React.FC = () => {
 
             <div className="post-attached-schedule-info-grid">
               <div className="post-attached-schedule-info-item">
-                <span className="post-attached-schedule-info-label">일시</span>
+                <span className="post-attached-schedule-info-label">날짜</span>
                 <span className="post-attached-schedule-info-value">
-                  {formatScheduleDate(attachedSchedule.date)}{" "}
+                  {formatScheduleDate(attachedSchedule.date)}
+                </span>
+              </div>
+              <div className="post-attached-schedule-info-item">
+                <span className="post-attached-schedule-info-label">시간</span>
+                <span className="post-attached-schedule-info-value">
                   {formatScheduleTimeRange(
                     attachedSchedule.startedAt,
                     attachedSchedule.endedAt
@@ -730,14 +735,18 @@ const ClubPostDetailScreen: React.FC = () => {
               </div>
               {attachedSchedule.location && (
                 <div className="post-attached-schedule-info-item">
-                  <span className="post-attached-schedule-info-label">장소</span>
+                  <span className="post-attached-schedule-info-label">
+                    장소
+                  </span>
                   <span className="post-attached-schedule-info-value">
                     {attachedSchedule.location}
                   </span>
                 </div>
               )}
               <div className="post-attached-schedule-info-item">
-                <span className="post-attached-schedule-info-label">참가자</span>
+                <span className="post-attached-schedule-info-label">
+                  참가자
+                </span>
                 <span className="post-attached-schedule-info-value">
                   {attachedSchedule.participantsCount}명
                 </span>
