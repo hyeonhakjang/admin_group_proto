@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BottomTabBar from "./BottomTabBar";
 import { supabase } from "../lib/supabase";
@@ -43,6 +43,14 @@ interface AttachedSchedule {
   isParticipant: boolean;
 }
 
+interface AttachedPayoutSummary {
+  id: number;
+  title: string;
+  appliedDate: string;
+  totalMembers: number;
+  isUserParticipant: boolean;
+}
+
 interface Comment {
   id: number;
   author: string;
@@ -64,6 +72,12 @@ const ClubPostDetailScreen: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [attachedSchedule, setAttachedSchedule] =
     useState<AttachedSchedule | null>(null);
+  const [attachedPayoutSummary, setAttachedPayoutSummary] =
+    useState<AttachedPayoutSummary | null>(null);
+  const [payoutAccessMessage, setPayoutAccessMessage] = useState<string | null>(
+    null
+  );
+  const [isCheckingPayout, setIsCheckingPayout] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isScrapped, setIsScrapped] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -73,6 +87,76 @@ const ClubPostDetailScreen: React.FC = () => {
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const loadAttachedPayoutSummary = useCallback(
+    async (payoutId: number) => {
+    setIsCheckingPayout(true);
+    try {
+      const { data, error } = await supabase
+        .from("club_personal_payout")
+        .select(
+          `
+          id,
+          title,
+          applied_date,
+          club_user_id,
+          payout_participant (
+            club_personal_id
+          )
+        `
+        )
+        .eq("id", payoutId)
+        .single();
+
+      if (error || !data) {
+        throw error || new Error("정산 정보를 찾을 수 없습니다.");
+      }
+
+      const participants = data.payout_participant || [];
+      const isParticipant =
+        !!selectedClub?.club_personal_id &&
+        participants.some(
+          (participant: any) =>
+            Number(participant.club_personal_id) ===
+            Number(selectedClub.club_personal_id)
+        );
+
+      setAttachedPayoutSummary({
+        id: data.id,
+        title: data.title,
+        appliedDate: data.applied_date,
+        totalMembers: participants.length,
+        isUserParticipant: isParticipant,
+      });
+      setPayoutAccessMessage(isParticipant ? null : "정산 대상이 아닙니다.");
+    } catch (error) {
+      console.error("정산 첨부 로드 오류:", error);
+      setAttachedPayoutSummary(null);
+      setPayoutAccessMessage(null);
+    } finally {
+      setIsCheckingPayout(false);
+    }
+    },
+    [selectedClub?.club_personal_id]
+  );
+
+  const formatPayoutDate = (dateString: string) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}년 ${month}월 ${day}일`;
+  };
+
+  const handlePayoutCardClick = () => {
+    if (!attachedPayoutSummary) return;
+    if (!attachedPayoutSummary.isUserParticipant) {
+      setPayoutAccessMessage("정산 대상이 아닙니다.");
+      return;
+    }
+    navigate(`/myclub/payout/${attachedPayoutSummary.id}`);
+  };
 
   useEffect(() => {
     const storedUser =
@@ -131,6 +215,9 @@ const ClubPostDetailScreen: React.FC = () => {
                 agenda,
                 participation_enabled
               )
+            ),
+            club_personal_article_payout:club_personal_article_payout (
+              club_personal_payout_id
             )
           `
           )
@@ -151,28 +238,35 @@ const ClubPostDetailScreen: React.FC = () => {
         }
 
         // 좋아요 수 로드
-        const { count: likeCount } = await supabase
-          .from("club_personal_like")
-          .select("*", { count: "exact", head: true })
-          .eq("club_personal_article_id", article.id);
+        let likeCount = 0;
+        try {
+          const { count, error: likeCountError } = await supabase
+            .from("club_personal_like")
+            .select("*", { count: "exact", head: true })
+            .eq("club_personal_article_id", article.id);
+          if (!likeCountError && typeof count === "number") {
+            likeCount = count;
+          }
+        } catch (error) {
+          console.warn("좋아요 수 로드 실패:", error);
+        }
 
         // 댓글 수 로드
-        const { count: commentCount } = await supabase
-          .from("club_personal_comment")
-          .select("*", { count: "exact", head: true })
-          .eq("club_personal_article_id", article.id);
-
-        // 현재 사용자의 좋아요 여부 확인
-        let currentUserLiked = false;
-        if (userData.type === "personal" && selectedClub?.club_personal_id) {
-          const { data: likeData } = await supabase
-            .from("club_personal_like")
-            .select("id")
-            .eq("club_personal_article_id", article.id)
-            .eq("club_personal_id", selectedClub.club_personal_id)
-            .single();
-          currentUserLiked = !!likeData;
+        let commentCount = 0;
+        try {
+          const { count, error: commentCountError } = await supabase
+            .from("club_personal_comment")
+            .select("*", { count: "exact", head: true })
+            .eq("club_personal_article_id", article.id);
+          if (!commentCountError && typeof count === "number") {
+            commentCount = count;
+          }
+        } catch (error) {
+          console.warn("댓글 수 로드 실패:", error);
         }
+
+        // 현재 사용자의 좋아요 여부 확인 (권한 문제로 기본값 false)
+        const currentUserLiked = false;
 
         // club_personal이 배열일 수 있으므로 처리
         const clubPersonal = Array.isArray(article.club_personal)
@@ -334,6 +428,21 @@ const ClubPostDetailScreen: React.FC = () => {
           setAttachedSchedule(null);
         }
 
+        const payoutRelation = Array.isArray(
+          article.club_personal_article_payout
+        )
+          ? article.club_personal_article_payout[0]
+          : article.club_personal_article_payout;
+
+        if (payoutRelation?.club_personal_payout_id) {
+          await loadAttachedPayoutSummary(
+            payoutRelation.club_personal_payout_id
+          );
+        } else {
+          setAttachedPayoutSummary(null);
+          setPayoutAccessMessage(null);
+        }
+
         setIsLiked(currentUserLiked);
         setLikeCount(likeCount || 0);
 
@@ -349,7 +458,7 @@ const ClubPostDetailScreen: React.FC = () => {
     };
 
     loadPost();
-  }, [postId, selectedClub, userData, navigate]);
+  }, [postId, selectedClub, userData, navigate, loadAttachedPayoutSummary]);
 
   const loadComments = async (articleId: number) => {
     try {
@@ -805,6 +914,44 @@ const ClubPostDetailScreen: React.FC = () => {
                 </div>
               )}
           </div>
+        )}
+
+        {isCheckingPayout && !attachedPayoutSummary && (
+          <div className="post-payout-summary-loading">
+            정산 정보를 확인하는 중입니다...
+          </div>
+        )}
+
+        {attachedPayoutSummary && (
+          <div
+            className={`post-payout-summary-card ${
+              attachedPayoutSummary.isUserParticipant ? "clickable" : "disabled"
+            }`}
+            onClick={handlePayoutCardClick}
+          >
+            <div className="post-payout-summary-row">
+              <span className="post-payout-summary-label">총 인원</span>
+              <span className="post-payout-summary-value">
+                {attachedPayoutSummary.totalMembers}명
+              </span>
+            </div>
+            <div className="post-payout-summary-row">
+              <span className="post-payout-summary-label">정산 제목</span>
+              <span className="post-payout-summary-value">
+                {attachedPayoutSummary.title}
+              </span>
+            </div>
+            <div className="post-payout-summary-row">
+              <span className="post-payout-summary-label">정산 등록일</span>
+              <span className="post-payout-summary-value">
+                {formatPayoutDate(attachedPayoutSummary.appliedDate)}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {payoutAccessMessage && (
+          <p className="post-payout-summary-error">{payoutAccessMessage}</p>
         )}
 
         {/* 좋아요, 스크랩 버튼 */}
