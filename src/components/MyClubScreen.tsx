@@ -55,6 +55,9 @@ const MyClubScreen: React.FC = () => {
     profileImage: string;
   } | null>(null);
 
+  const canAccessSideNav =
+    selectedClub?.role === "회장" || selectedClub?.role === "스태프";
+
   // 가입된 동아리 목록
   const [clubs, setClubs] = useState<Club[]>([]);
 
@@ -1359,6 +1362,7 @@ const MyClubScreen: React.FC = () => {
                 src={imgTrailingIcon1}
               />
             </div>
+          {canAccessSideNav ? (
             <div
               className="profile-icon"
               data-name="profileIcon"
@@ -1368,6 +1372,17 @@ const MyClubScreen: React.FC = () => {
             >
               <img alt="Menu Icon" className="icon" src="/hamburger-menu.png" />
             </div>
+          ) : (
+            <div
+              className="profile-icon"
+              data-name="profileIcon"
+              data-node-id="9:641"
+              onClick={() => navigate("/myclub/profile/edit")}
+              style={{ cursor: "pointer" }}
+            >
+              <img alt="Profile Icon" className="icon" src="/profile-icon.png" />
+            </div>
+          )}
           </div>
         </div>
       </div>
@@ -1709,10 +1724,7 @@ const MyClubScreen: React.FC = () => {
           <div className="payout-content">
             {payouts.length === 0 ? (
               <div className="payout-empty-state">
-                <p className="payout-description">
-                  멤버들에게 요청할 정산을 등록하고 진행 상황을 관리할 수
-                  있습니다.
-                </p>
+                <p className="payout-description">요청된 정산이 없습니다.</p>
               </div>
             ) : (
               <div className="payout-list-container">
@@ -2337,14 +2349,14 @@ const MyClubScreen: React.FC = () => {
       {activeTab === "payout" &&
         selectedClub?.role &&
         (selectedClub.role === "회장" || selectedClub.role === "스태프") && (
-        <button
-          className="floating-write-btn"
-          onClick={() => navigate("/myclub/payout/register")}
-          aria-label="정산 등록"
-        >
-          <span className="floating-write-icon">+</span>
-        </button>
-      )}
+          <button
+            className="floating-write-btn"
+            onClick={() => navigate("/myclub/payout/register")}
+            aria-label="정산 등록"
+          >
+            <span className="floating-write-icon">+</span>
+          </button>
+        )}
 
       {/* Bottom Tab Bar */}
       <div
