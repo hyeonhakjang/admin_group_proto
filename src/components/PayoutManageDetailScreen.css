@@ -41,39 +41,45 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
-.payout-manage-detail-label {
+.payout-manage-detail-summary {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.payout-manage-detail-summary .payout-manage-detail-label {
   font-size: clamp(13px, 3.25vw, 15px);
   color: #888888;
 }
 
-.payout-manage-detail-title {
-  font-size: clamp(20px, 5vw, 24px);
+.payout-manage-detail-summary .payout-manage-detail-title {
+  font-size: clamp(22px, 5.5vw, 26px);
   font-weight: 700;
   color: #28201b;
 }
 
-.payout-manage-detail-description {
+.payout-manage-detail-summary .payout-manage-detail-description {
   font-size: clamp(14px, 3.5vw, 16px);
   color: #555555;
   line-height: 1.5;
 }
 
-.payout-manage-detail-amount {
+.payout-manage-detail-amount-row {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
   font-size: clamp(14px, 3.5vw, 16px);
   color: #666666;
 }
 
-.payout-manage-detail-amount strong {
+.payout-manage-detail-amount-row strong {
   font-size: clamp(24px, 6vw, 28px);
   font-weight: 700;
   color: #28201b;
 }
 
 .payout-manage-detail-date {
-  font-size: clamp(14px, 3.5vw, 16px);
+  font-size: clamp(13px, 3.25vw, 15px);
   color: #666666;
 }
 
@@ -200,4 +206,3 @@
     align-self: flex-end;
   }
 }
-

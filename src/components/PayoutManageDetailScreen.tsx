@@ -103,37 +103,36 @@ const PayoutManageDetailScreen: React.FC = () => {
             })
           : "";
 
-        const participants: ParticipantItem[] = (data.payout_participant || []).map(
-          (participant: any) => {
-            const personalUser = Array.isArray(
-              participant.club_personal?.personal_user
-            )
-              ? participant.club_personal.personal_user[0]
-              : participant.club_personal?.personal_user;
-            const name =
-              personalUser?.personal_name || "이름 없는 회원";
-            const avatar = personalUser?.profile_image_url || "/profile-icon.png";
-            const timestamp =
-              participant.updated_at ||
-              participant.created_at ||
-              data.created_at ||
-              "";
+        const participants: ParticipantItem[] = (
+          data.payout_participant || []
+        ).map((participant: any) => {
+          const personalUser = Array.isArray(
+            participant.club_personal?.personal_user
+          )
+            ? participant.club_personal.personal_user[0]
+            : participant.club_personal?.personal_user;
+          const name = personalUser?.personal_name || "이름 없는 회원";
+          const avatar = personalUser?.profile_image_url || "/profile-icon.png";
+          const timestamp =
+            participant.updated_at ||
+            participant.created_at ||
+            data.created_at ||
+            "";
 
-            return {
-              id: participant.id,
-              name,
-              avatar,
-              amount: participant.payout_amount || 0,
-              status:
-                participant.status === "paid"
-                  ? "paid"
-                  : participant.status === "unpaid"
-                  ? "unpaid"
-                  : "pending",
-              timestamp,
-            };
-          }
-        );
+          return {
+            id: participant.id,
+            name,
+            avatar,
+            amount: participant.payout_amount || 0,
+            status:
+              participant.status === "paid"
+                ? "paid"
+                : participant.status === "unpaid"
+                ? "unpaid"
+                : "pending",
+            timestamp,
+          };
+        });
 
         const totalAmount = participants.reduce(
           (sum, participant) => sum + (participant.amount || 0),
@@ -171,8 +170,9 @@ const PayoutManageDetailScreen: React.FC = () => {
 
   const completedParticipants = useMemo(
     () =>
-      payout?.participants.filter((participant) => participant.status === "paid") ||
-      [],
+      payout?.participants.filter(
+        (participant) => participant.status === "paid"
+      ) || [],
     [payout]
   );
 
@@ -181,20 +181,17 @@ const PayoutManageDetailScreen: React.FC = () => {
     const date = new Date(timestamp);
     return `${date.getFullYear().toString().slice(2)}.${String(
       date.getMonth() + 1
-    ).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}(${[
-      "일",
-      "월",
-      "화",
-      "수",
-      "목",
-      "금",
-      "토",
-    ][date.getDay()]}) ${String(date.getHours()).padStart(2, "0")}:${String(
+    ).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}(${
+      ["일", "월", "화", "수", "목", "금", "토"][date.getDay()]
+    }) ${String(date.getHours()).padStart(2, "0")}:${String(
       date.getMinutes()
     ).padStart(2, "0")}`;
   };
 
-  const renderParticipantList = (list: ParticipantItem[], emptyMessage: string) => {
+  const renderParticipantList = (
+    list: ParticipantItem[],
+    emptyMessage: string
+  ) => {
     if (list.length === 0) {
       return (
         <div className="payout-manage-detail-empty">
@@ -260,35 +257,24 @@ const PayoutManageDetailScreen: React.FC = () => {
           </button>
         </header>
 
-        {/* 섹션 A: 제목 */}
-        <section className="payout-manage-detail-section payout-manage-detail-label">
-          정산 관리
-        </section>
-
-        {/* 섹션 B: 정산 이름 */}
-        <section className="payout-manage-detail-section payout-manage-detail-title">
-          {payout.title}
-        </section>
-
-        {/* 섹션 C: 정산 내용 */}
-        <section className="payout-manage-detail-section payout-manage-detail-description">
-          {payout.description}
-        </section>
-
-        {/* 섹션 D: 총 정산 금액 */}
-        <section className="payout-manage-detail-section payout-manage-detail-amount">
-          <span>총 정산 금액</span>
-          <strong>{payout.totalAmount.toLocaleString()}원</strong>
-        </section>
-
-        {/* 섹션 E: 정산 요청 날짜 */}
-        <section className="payout-manage-detail-section payout-manage-detail-date">
-          정산 요청 {new Date(payout.requestDate).toLocaleDateString("ko-KR", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}{" "}
-          {payout.requestTime}
+        {/* 요약 블록 */}
+        <section className="payout-manage-detail-section payout-manage-detail-summary">
+          <div className="payout-manage-detail-label">정산 관리</div>
+          <h1 className="payout-manage-detail-title">{payout.title}</h1>
+          <p className="payout-manage-detail-description">{payout.description}</p>
+          <div className="payout-manage-detail-amount-row">
+            <span>총 정산 금액</span>
+            <strong>{payout.totalAmount.toLocaleString()}원</strong>
+          </div>
+          <div className="payout-manage-detail-date">
+            정산 요청{" "}
+            {new Date(payout.requestDate).toLocaleDateString("ko-KR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}{" "}
+            {payout.requestTime}
+          </div>
         </section>
 
         {/* 섹션 F: 네비게이션 */}
@@ -333,5 +319,3 @@ const PayoutManageDetailScreen: React.FC = () => {
 };
 
 export default PayoutManageDetailScreen;
-
-
