@@ -43,12 +43,15 @@ interface AttachedSchedule {
   isParticipant: boolean;
 }
 
+type PayoutStatus = "pending" | "paid" | "unpaid";
+
 interface AttachedPayoutSummary {
   id: number;
   title: string;
   appliedDate: string;
   totalMembers: number;
   isUserParticipant: boolean;
+  userStatus: PayoutStatus | null;
 }
 
 interface Comment {
@@ -90,8 +93,8 @@ const ClubPostDetailScreen: React.FC = () => {
 
   const loadAttachedPayoutSummary = useCallback(
     async (payoutId: number) => {
-    setIsCheckingPayout(true);
-    try {
+      setIsCheckingPayout(true);
+      try {
       const { data, error } = await supabase
         .from("club_personal_payout")
         .select(
@@ -101,53 +104,51 @@ const ClubPostDetailScreen: React.FC = () => {
           applied_date,
           club_user_id,
           payout_participant (
-            club_personal_id
+            club_personal_id,
+            status
           )
         `
         )
-        .eq("id", payoutId)
-        .single();
+          .eq("id", payoutId)
+          .single();
 
-      if (error || !data) {
-        throw error || new Error("정산 정보를 찾을 수 없습니다.");
-      }
+        if (error || !data) {
+          throw error || new Error("정산 정보를 찾을 수 없습니다.");
+        }
 
       const participants = data.payout_participant || [];
-      const isParticipant =
-        !!selectedClub?.club_personal_id &&
-        participants.some(
-          (participant: any) =>
-            Number(participant.club_personal_id) ===
-            Number(selectedClub.club_personal_id)
-        );
+      const currentParticipant =
+        !!selectedClub?.club_personal_id
+          ? participants.find(
+              (participant: any) =>
+                Number(participant.club_personal_id) ===
+                Number(selectedClub.club_personal_id)
+            )
+          : null;
+      const isParticipant = Boolean(currentParticipant);
+      const userStatus = currentParticipant?.status || null;
 
-      setAttachedPayoutSummary({
-        id: data.id,
-        title: data.title,
-        appliedDate: data.applied_date,
-        totalMembers: participants.length,
-        isUserParticipant: isParticipant,
-      });
-      setPayoutAccessMessage(isParticipant ? null : "정산 대상이 아닙니다.");
-    } catch (error) {
-      console.error("정산 첨부 로드 오류:", error);
-      setAttachedPayoutSummary(null);
-      setPayoutAccessMessage(null);
-    } finally {
-      setIsCheckingPayout(false);
-    }
+        setAttachedPayoutSummary({
+          id: data.id,
+          title: data.title,
+          appliedDate: data.applied_date,
+          totalMembers: participants.length,
+          isUserParticipant: isParticipant,
+        userStatus: isParticipant
+          ? ((userStatus as PayoutStatus) || "pending")
+          : null,
+        });
+        setPayoutAccessMessage(isParticipant ? null : "정산 대상이 아닙니다.");
+      } catch (error) {
+        console.error("정산 첨부 로드 오류:", error);
+        setAttachedPayoutSummary(null);
+        setPayoutAccessMessage(null);
+      } finally {
+        setIsCheckingPayout(false);
+      }
     },
     [selectedClub?.club_personal_id]
   );
-
-  const formatPayoutDate = (dateString: string) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${year}년 ${month}월 ${day}일`;
-  };
 
   const handlePayoutCardClick = () => {
     if (!attachedPayoutSummary) return;
@@ -782,6 +783,45 @@ const ClubPostDetailScreen: React.FC = () => {
     return "시간 정보 없음";
   };
 
+  const formatPayoutDate = (dateString: string) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}년 ${month}월 ${day}일`;
+  };
+
+  const getPayoutStatusLabel = (summary: AttachedPayoutSummary) => {
+    if (!summary.isUserParticipant) {
+      return "정산 대상 아님";
+    }
+    switch (summary.userStatus) {
+      case "paid":
+        return "완료";
+      case "unpaid":
+        return "미납";
+      case "pending":
+      default:
+        return "대기";
+    }
+  };
+
+  const getPayoutStatusClass = (summary: AttachedPayoutSummary) => {
+    if (!summary.isUserParticipant) {
+      return "status-disabled";
+    }
+    switch (summary.userStatus) {
+      case "paid":
+        return "status-paid";
+      case "unpaid":
+        return "status-unpaid";
+      case "pending":
+      default:
+        return "status-pending";
+    }
+  };
+
   return (
     <div className="club-post-detail-screen">
       {/* 헤더: 뒤로가기 버튼 */}
@@ -917,41 +957,43 @@ const ClubPostDetailScreen: React.FC = () => {
         )}
 
         {isCheckingPayout && !attachedPayoutSummary && (
-          <div className="post-payout-summary-loading">
+          <div className="post-payout-card-loading">
             정산 정보를 확인하는 중입니다...
           </div>
         )}
 
         {attachedPayoutSummary && (
-          <div
-            className={`post-payout-summary-card ${
-              attachedPayoutSummary.isUserParticipant ? "clickable" : "disabled"
-            }`}
-            onClick={handlePayoutCardClick}
-          >
-            <div className="post-payout-summary-row">
-              <span className="post-payout-summary-label">총 인원</span>
-              <span className="post-payout-summary-value">
-                {attachedPayoutSummary.totalMembers}명
-              </span>
-            </div>
-            <div className="post-payout-summary-row">
-              <span className="post-payout-summary-label">정산 제목</span>
-              <span className="post-payout-summary-value">
+          <div className="post-payout-card-wrapper">
+            <div
+              className={`payout-item-card ${
+                attachedPayoutSummary.isUserParticipant ? "" : "disabled"
+              }`}
+              onClick={handlePayoutCardClick}
+            >
+              <div className="payout-item-members">
+                총 {attachedPayoutSummary.totalMembers}명
+              </div>
+              <div className="payout-item-title">
                 {attachedPayoutSummary.title}
-              </span>
-            </div>
-            <div className="post-payout-summary-row">
-              <span className="post-payout-summary-label">정산 등록일</span>
-              <span className="post-payout-summary-value">
-                {formatPayoutDate(attachedPayoutSummary.appliedDate)}
-              </span>
+              </div>
+              <div className="payout-item-footer">
+                <span className="payout-item-date">
+                  {formatPayoutDate(attachedPayoutSummary.appliedDate)}
+                </span>
+                <span
+                  className={`payout-item-status ${getPayoutStatusClass(
+                    attachedPayoutSummary
+                  )}`}
+                >
+                  {getPayoutStatusLabel(attachedPayoutSummary)}
+                </span>
+              </div>
             </div>
           </div>
         )}
 
         {payoutAccessMessage && (
-          <p className="post-payout-summary-error">{payoutAccessMessage}</p>
+          <p className="post-payout-card-message">{payoutAccessMessage}</p>
         )}
 
         {/* 좋아요, 스크랩 버튼 */}

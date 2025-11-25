@@ -302,58 +302,34 @@
   color: #555555;
 }
 
-.post-payout-summary-loading {
+.post-payout-card-loading {
   margin-top: clamp(16px, 4vw, 20px);
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-size: clamp(13px, 3.25vw, 15px);
   color: #888888;
 }
 
-.post-payout-summary-card {
+.post-payout-card-wrapper {
   margin-top: clamp(12px, 3vw, 16px);
-  border: 1px solid #f0d9cd;
-  border-radius: 16px;
-  padding: clamp(16px, 4vw, 20px);
-  background: #fff5f0;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(10px, 2.5vw, 12px);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
 }
 
-.post-payout-summary-card.clickable:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(195, 78, 0, 0.12);
-}
-
-.post-payout-summary-card.disabled {
+.post-payout-card-wrapper .payout-item-card.disabled {
   cursor: not-allowed;
-  opacity: 0.8;
+  opacity: 0.65;
 }
 
-.post-payout-summary-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: clamp(12px, 3vw, 16px);
+.post-payout-card-wrapper .payout-item-card.disabled:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-color: #e0e0e0;
 }
 
-.post-payout-summary-label {
-  font-family: "Inter", "Noto Sans KR", sans-serif;
-  font-weight: 600;
-  font-size: clamp(14px, 3.5vw, 15px);
-  color: #c34e00;
+.payout-item-status.status-disabled {
+  background: #f1f1f1;
+  color: #777777;
 }
 
-.post-payout-summary-value {
-  font-family: "Inter", "Noto Sans KR", sans-serif;
-  font-weight: 600;
-  font-size: clamp(14px, 3.5vw, 16px);
-  color: #28201b;
-}
-
-.post-payout-summary-error {
+.post-payout-card-message {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-size: clamp(13px, 3.25vw, 15px);
   color: #c34e00;
