@@ -25,6 +25,8 @@ interface Member {
   id: string;
   name: string;
   role: string;
+  email: string;
+  avatar: string;
 }
 
 const PayoutMemberSearchScreen: React.FC = () => {
@@ -124,7 +126,9 @@ const PayoutMemberSearchScreen: React.FC = () => {
           role,
           personal_user:personal_user_id (
             id,
-            personal_name
+            personal_name,
+            email,
+            profile_image_url
           )
         `
         )
@@ -144,6 +148,8 @@ const PayoutMemberSearchScreen: React.FC = () => {
               id: String(member.id), // club_personal_id 사용
               name: personalUser?.personal_name || "이름 없음",
               role: member.role || "동아리원",
+              email: personalUser?.email || "",
+              avatar: personalUser?.profile_image_url || "/profile-icon.png",
             };
           }
         );
@@ -487,51 +493,64 @@ const PayoutMemberSearchScreen: React.FC = () => {
 
         {activeTab === "members" ? (
           <>
-            <div className="member-select-all">
-              <div>
-                <strong>전체 선택</strong>
-                <p className="member-select-all-description">
-                  현재 동아리의 모든 멤버를 선택합니다.
-                </p>
-              </div>
-              <button type="button" onClick={handleSelectAll}>
+            <div className="members-header">
+              <h2 className="members-title">정산 멤버 선택</h2>
+              <button
+                type="button"
+                className="member-select-toggle-btn"
+                onClick={handleSelectAll}
+              >
                 {selectedIds.length === members.length
-                  ? "선택 해제"
+                  ? "전체 해제"
                   : "전체 선택"}
               </button>
             </div>
 
-            <div className="search-input-wrapper">
-              <span>🔍</span>
+            <div className="members-search-container">
+              <img src="/search-icon.png" alt="검색" className="search-icon" />
               <input
                 type="text"
+                className="members-search-input"
                 placeholder="멤버 이름 검색"
                 value={searchText}
                 onChange={(event) => setSearchText(event.target.value)}
               />
             </div>
 
-            <div className="member-search-list">
-              {filteredMembers.map((member) => (
-                <div key={member.id} className="member-search-item">
-                  <div className="member-info">
-                    <div className="member-name">{member.name}</div>
-                    <div className="member-role">{member.role}</div>
+            <div className="members-list">
+              {filteredMembers.map((member) => {
+                const isSelected = selectedIds.includes(member.id);
+                return (
+                  <div
+                    key={member.id}
+                    className={`member-item ${
+                      isSelected ? "selected" : ""
+                    }`}
+                    onClick={() => toggleMember(member.id)}
+                  >
+                    <div className="member-info">
+                      <div className="member-avatar">
+                        <img src={member.avatar} alt={member.name} />
+                      </div>
+                      <div className="member-details">
+                        <div className="member-name">{member.name}</div>
+                        <div className="member-email">
+                          {member.email || "이메일 없음"}
+                        </div>
+                    </div>
                   </div>
-                  <div className="member-search-actions">
-                    <button
-                      type="button"
-                      className="member-search-select-btn"
-                      onClick={() => toggleMember(member.id)}
-                    >
-                      {selectedIds.includes(member.id) ? "해제" : "선택"}
-                    </button>
-                    {selectedIds.includes(member.id) && (
-                      <span className="member-check">✓</span>
-                    )}
+                    <div className="member-select-actions">
+                      <span
+                        className={`member-check ${
+                          isSelected ? "active" : ""
+                        }`}
+                      >
+                        {isSelected ? "✓" : ""}
+                      </span>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="member-search-footer">
@@ -566,8 +585,8 @@ const PayoutMemberSearchScreen: React.FC = () => {
                 {["일", "월", "화", "수", "목", "금", "토"].map(
                   (label, index) => (
                     <div key={index} className="calendar-weekday">
-                      {label}
-                    </div>
+                    {label}
+                  </div>
                   )
                 )}
               </div>
