@@ -37,6 +37,10 @@ interface AttachedSchedule {
   location?: string | null;
   description?: string | null;
   agenda?: string[] | null;
+  participationEnabled?: boolean;
+  participantsCount: number;
+  participantAvatars: string[];
+  isParticipant: boolean;
 }
 
 interface Comment {
@@ -58,7 +62,8 @@ const ClubPostDetailScreen: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [selectedClub, setSelectedClub] = useState<any>(null);
   const [post, setPost] = useState<Post | null>(null);
-  const [attachedSchedule, setAttachedSchedule] = useState<AttachedSchedule | null>(null);
+  const [attachedSchedule, setAttachedSchedule] =
+    useState<AttachedSchedule | null>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [isScrapped, setIsScrapped] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -234,11 +239,11 @@ const ClubPostDetailScreen: React.FC = () => {
         });
 
         // 첨부 일정 정보
-        const articleScheduleRelation = article
-          .club_personal_article_schedule as
-          | any[]
-          | Record<string, any>
-          | null;
+        const articleScheduleRelation =
+          article.club_personal_article_schedule as
+            | any[]
+            | Record<string, any>
+            | null;
         let scheduleDataRaw: any = null;
 
         if (Array.isArray(articleScheduleRelation)) {
@@ -253,6 +258,59 @@ const ClubPostDetailScreen: React.FC = () => {
           : scheduleDataRaw;
 
         if (normalizedSchedule) {
+          let participantsCount = 0;
+          let participantAvatars: string[] = [];
+          let scheduleIsParticipant = false;
+
+          try {
+            const { data: scheduleParticipants, error: scheduleParticipantError } =
+              await supabase
+                .from("schedule_participant")
+                .select(
+                  `
+                  id,
+                  club_personal_id,
+                  club_personal:club_personal_id (
+                    personal_user:personal_user_id (
+                      profile_image_url
+                    )
+                  )
+                `
+                )
+                .eq("schedule_id", normalizedSchedule.id);
+
+            if (scheduleParticipantError) {
+              console.error(
+                "첨부 일정 참가자 로드 오류:",
+                scheduleParticipantError
+              );
+            } else if (scheduleParticipants) {
+              participantsCount = scheduleParticipants.length;
+              participantAvatars = scheduleParticipants
+                .map((participant: any) => {
+                  const clubPersonal = Array.isArray(participant.club_personal)
+                    ? participant.club_personal[0]
+                    : participant.club_personal;
+                  const personalUser = Array.isArray(clubPersonal?.personal_user)
+                    ? clubPersonal.personal_user[0]
+                    : clubPersonal?.personal_user;
+                  return personalUser?.profile_image_url || "/profile-icon.png";
+                })
+                .slice(0, 5);
+
+              scheduleIsParticipant = scheduleParticipants.some(
+                (participant: any) =>
+                  String(participant.club_personal_id) ===
+                  String(selectedClub?.club_personal_id || "")
+              );
+            }
+          } catch (participantError) {
+            console.error(
+              "첨부 일정 참가자 정보를 불러오는 중 오류:",
+              participantError
+            );
+          }
+
           setAttachedSchedule({
             id: normalizedSchedule.id,
             title: normalizedSchedule.title || "첨부된 일정",
@@ -262,6 +320,10 @@ const ClubPostDetailScreen: React.FC = () => {
             location: normalizedSchedule.location,
             description: normalizedSchedule.content,
             agenda: normalizedSchedule.agenda || [],
+            participationEnabled: normalizedSchedule.participation_enabled,
+            participantsCount,
+            participantAvatars,
+            isParticipant: scheduleIsParticipant,
           });
         } else {
           setAttachedSchedule(null);
@@ -482,6 +544,75 @@ const ClubPostDetailScreen: React.FC = () => {
     setShowCommentModal(true);
   };
 
+  const handleAttendAttachedSchedule = async () => {
+    if (
+      !attachedSchedule ||
+      !selectedClub?.club_personal_id ||
+      attachedSchedule.isParticipant
+    ) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from("schedule_participant").insert({
+        schedule_id: attachedSchedule.id,
+        club_personal_id: selectedClub.club_personal_id,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      setAttachedSchedule((prev) =>
+        prev
+          ? {
+              ...prev,
+              isParticipant: true,
+              participantsCount: prev.participantsCount + 1,
+            }
+          : prev
+      );
+    } catch (error) {
+      console.error("첨부 일정 참석 처리 오류:", error);
+      alert("참석 처리 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleAbsentAttachedSchedule = async () => {
+    if (
+      !attachedSchedule ||
+      !selectedClub?.club_personal_id ||
+      !attachedSchedule.isParticipant
+    ) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("schedule_participant")
+        .delete()
+        .eq("schedule_id", attachedSchedule.id)
+        .eq("club_personal_id", selectedClub.club_personal_id);
+
+      if (error) {
+        throw error;
+      }
+
+      setAttachedSchedule((prev) =>
+        prev
+          ? {
+              ...prev,
+              isParticipant: false,
+              participantsCount: Math.max(prev.participantsCount - 1, 0),
+            }
+          : prev
+      );
+    } catch (error) {
+      console.error("첨부 일정 불참 처리 오류:", error);
+      alert("불참 처리 중 오류가 발생했습니다.");
+    }
+  };
+
   if (loading) {
     return (
       <div className="club-post-detail-screen">
@@ -595,6 +726,26 @@ const ClubPostDetailScreen: React.FC = () => {
                 </span>
               </div>
             )}
+            <div className="post-attached-schedule-participants">
+              <div>
+                <span className="post-attached-schedule-row-label">참가자</span>
+                <strong className="post-attached-schedule-row-value">
+                  {attachedSchedule.participantsCount}명
+                </strong>
+              </div>
+              <div className="post-attached-schedule-avatar-group">
+                {attachedSchedule.participantAvatars.map(
+                  (avatar: string, index: number) => (
+                    <div
+                      key={`${avatar}-${index}`}
+                      className="post-attached-schedule-avatar"
+                    >
+                      <img src={avatar} alt="참가자" />
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
             {attachedSchedule.description && (
               <div className="post-attached-schedule-description">
                 {attachedSchedule.description}
@@ -610,6 +761,32 @@ const ClubPostDetailScreen: React.FC = () => {
                       <li key={`${item}-${index}`}>{item}</li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+            {attachedSchedule.participationEnabled &&
+              userData?.type === "personal" &&
+              selectedClub?.club_personal_id && (
+                <div className="post-attached-schedule-attendance">
+                  <h4>참석 여부</h4>
+                  <div className="event-attendance-buttons">
+                    <button
+                      className={`event-attendance-btn attend ${
+                        attachedSchedule.isParticipant ? "selected" : ""
+                      }`}
+                      onClick={handleAttendAttachedSchedule}
+                    >
+                      참석
+                    </button>
+                    <button
+                      className={`event-attendance-btn absent ${
+                        !attachedSchedule.isParticipant ? "selected" : ""
+                      }`}
+                      onClick={handleAbsentAttachedSchedule}
+                    >
+                      불참
+                    </button>
+                  </div>
                 </div>
               )}
           </div>
