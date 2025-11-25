@@ -104,8 +104,9 @@
   transition: all 0.2s ease;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   box-sizing: border-box;
+  gap: clamp(12px, 3vw, 16px);
 }
 
 .payout-item-card:hover {
@@ -118,7 +119,15 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: clamp(8px, 2vw, 12px);
+  gap: clamp(6px, 1.5vw, 8px);
+  min-width: 0;
+}
+
+.payout-item-members {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
 }
 
 .payout-item-title {
@@ -128,27 +137,36 @@
   color: #28201b;
 }
 
-.payout-item-meta {
-  display: flex;
-  gap: clamp(12px, 3vw, 16px);
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.payout-item-date,
-.payout-item-members {
+.payout-item-date {
   font-family: "Inter", "Noto Sans KR", sans-serif;
   font-size: clamp(13px, 3.25vw, 15px);
   color: #888888;
 }
 
-.payout-item-arrow {
+.payout-item-status {
   font-family: "Inter", "Noto Sans KR", sans-serif;
-  font-size: clamp(18px, 4.5vw, 20px);
-  color: #c34e00;
+  font-size: clamp(12px, 3vw, 14px);
   font-weight: 600;
+  padding: clamp(4px, 1vw, 6px) clamp(10px, 2.5vw, 12px);
+  border-radius: 12px;
   flex-shrink: 0;
-  margin-left: clamp(12px, 3vw, 16px);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.status-paid {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-pending {
+  background: #fff5f0;
+  color: #c34e00;
+}
+
+.status-unpaid {
+  background: #ffebee;
+  color: #c62828;
 }
 
 /* 반응형 */
