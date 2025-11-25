@@ -5,66 +5,69 @@
 ### 사용자 계정 테이블
 
 #### 1. admin_user (관리자 계정)
+
 ```typescript
 interface AdminUser {
-  id?: number;                    // PK, 자동 증가
-  admin_user_name: string;        // 관리자 아이디 (UNIQUE)
-  password: string;               // 비밀번호 (해시 권장)
-  admin_name: string;             // 관리자 이름
-  email: string;                  // 이메일
-  created_at?: string;            // 생성일시
-  updated_at?: string;            // 수정일시
+  id?: number; // PK, 자동 증가
+  admin_user_name: string; // 관리자 아이디 (UNIQUE)
+  password: string; // 비밀번호 (해시 권장)
+  admin_name: string; // 관리자 이름
+  email: string; // 이메일
+  created_at?: string; // 생성일시
+  updated_at?: string; // 수정일시
 }
 ```
 
 #### 2. personal_user (개인 사용자)
+
 ```typescript
 interface PersonalUser {
-  id?: number;                    // PK, 자동 증가
-  personal_user_name: string;     // 개인 아이디 (UNIQUE)
-  password: string;                // 비밀번호 (해시 권장)
-  email: string;                  // 이메일
-  personal_name: string;           // 이름
-  university?: string;             // 대학교명
-  profile_image_url?: string;      // 프로필 이미지 URL
-  birthdate?: string;             // 생년월일 (YYYY-MM-DD)
-  student_num?: string;            // 학번
-  department?: string;             // 학과
-  phone_num?: string;              // 전화번호
-  refresh_token?: string;          // 리프레시 토큰
-  univ_id?: number;               // FK → university.id
+  id?: number; // PK, 자동 증가
+  personal_user_name: string; // 개인 아이디 (UNIQUE)
+  password: string; // 비밀번호 (해시 권장)
+  email: string; // 이메일
+  personal_name: string; // 이름
+  university?: string; // 대학교명
+  profile_image_url?: string; // 프로필 이미지 URL
+  birthdate?: string; // 생년월일 (YYYY-MM-DD)
+  student_num?: string; // 학번
+  department?: string; // 학과
+  phone_num?: string; // 전화번호
+  refresh_token?: string; // 리프레시 토큰
+  univ_id?: number; // FK → university.id
 }
 ```
 
 #### 3. club_user (동아리 계정)
+
 ```typescript
 interface ClubUser {
-  id?: number;                    // PK, 자동 증가
-  club_user_name: string;          // 동아리 아이디 (UNIQUE)
-  password: string;                // 비밀번호 (해시 권장)
-  club_name: string;               // 동아리명
-  club_email: string;              // 동아리 이메일
-  manager_name: string;            // 관리자 이름
-  manager_phone_num?: string;      // 관리자 전화번호
-  manager_student_num?: string;     // 관리자 학번
-  manager_department?: string;     // 관리자 학과
-  approved: boolean;               // 승인 여부 (기본값: false)
-  bank?: string;                   // 은행명 (enum)
-  account_number?: string;          // 계좌번호
-  refresh_token?: string;          // 리프레시 토큰
-  group_user_id?: number;          // FK → group_user.id
-  category?: ClubCategory;         // 카테고리
-  recruiting?: boolean;            // 모집 중 여부
-  score?: number;                  // 활동 점수
-  club_explanation?: string;       // 상세 설명
+  id?: number; // PK, 자동 증가
+  club_user_name: string; // 동아리 아이디 (UNIQUE)
+  password: string; // 비밀번호 (해시 권장)
+  club_name: string; // 동아리명
+  club_email: string; // 동아리 이메일
+  manager_name: string; // 관리자 이름
+  manager_phone_num?: string; // 관리자 전화번호
+  manager_student_num?: string; // 관리자 학번
+  manager_department?: string; // 관리자 학과
+  approved: boolean; // 승인 여부 (기본값: false)
+  bank?: string; // 은행명 (enum)
+  account_number?: string; // 계좌번호
+  refresh_token?: string; // 리프레시 토큰
+  group_user_id?: number; // FK → group_user.id
+  category?: ClubCategory; // 카테고리
+  recruiting?: boolean; // 모집 중 여부
+  score?: number; // 활동 점수
+  club_explanation?: string; // 상세 설명
   club_simple_explanation?: string; // 간단 설명
-  instagram_url?: string;          // 인스타그램 URL
-  youtube_url?: string;            // 유튜브 URL
-  banner_image_url?: string;       // 배너 이미지 URL
-  profile_image_url?: string;      // 프로필 이미지 URL
+  instagram_url?: string; // 인스타그램 URL
+  youtube_url?: string; // 유튜브 URL
+  banner_image_url?: string; // 배너 이미지 URL
+  profile_image_url?: string; // 프로필 이미지 URL
 }
 
-type ClubCategory = 
+type ClubCategory =
   | "학술"
   | "공연"
   | "체육"
@@ -75,141 +78,151 @@ type ClubCategory =
 ```
 
 #### 4. group_user (캠퍼스 공식 계정)
+
 ```typescript
 interface GroupUser {
-  id?: number;                    // PK, 자동 증가
-  group_user_name: string;        // 그룹 아이디 (UNIQUE)
-  password: string;               // 비밀번호 (해시 권장)
-  group_name: string;              // 그룹명 (예: "홍익대학교")
-  group_email: string;             // 그룹 이메일
-  manager_name: string;            // 관리자 이름
-  manager_phone_num?: string;      // 관리자 전화번호
-  manager_student_num?: string;    // 관리자 학번
-  manager_department?: string;     // 관리자 학과
-  approved: boolean;               // 승인 여부 (기본값: false)
-  refresh_token?: string;          // 리프레시 토큰
-  univ_id?: number;               // FK → university.id
+  id?: number; // PK, 자동 증가
+  group_user_name: string; // 그룹 아이디 (UNIQUE)
+  password: string; // 비밀번호 (해시 권장)
+  group_name: string; // 그룹명 (예: "홍익대학교")
+  group_email: string; // 그룹 이메일
+  manager_name: string; // 관리자 이름
+  manager_phone_num?: string; // 관리자 전화번호
+  manager_student_num?: string; // 관리자 학번
+  manager_department?: string; // 관리자 학과
+  approved: boolean; // 승인 여부 (기본값: false)
+  refresh_token?: string; // 리프레시 토큰
+  univ_id?: number; // FK → university.id
 }
 ```
 
 ### 참조 테이블
 
 #### 5. university (대학교)
+
 ```typescript
 interface University {
-  id: number;                     // PK, 자동 증가
-  univ_name: string;              // 대학교명 (UNIQUE)
+  id: number; // PK, 자동 증가
+  univ_name: string; // 대학교명 (UNIQUE)
 }
 ```
 
 ### 관계 테이블
 
 #### 6. club_personal (동아리-개인 관계)
+
 ```typescript
 interface ClubPersonal {
-  id: number;                     // PK, 자동 증가
-  personal_user_id: number;       // FK → personal_user.id
-  club_user_id: number;           // FK → club_user.id
-  role: string;                   // 역할 (예: "member", "admin", "manager")
-  approved: boolean;               // 승인 여부 (기본값: false)
-  created_at?: string;            // 생성일시
-  updated_at?: string;            // 수정일시
+  id: number; // PK, 자동 증가
+  personal_user_id: number; // FK → personal_user.id
+  club_user_id: number; // FK → club_user.id
+  role: string; // 역할 (예: "member", "admin", "manager")
+  approved: boolean; // 승인 여부 (기본값: false)
+  created_at?: string; // 생성일시
+  updated_at?: string; // 수정일시
 }
 ```
 
 ### 콘텐츠 테이블
 
 #### 7. club_personal_article (동아리 게시물)
+
 ```typescript
 interface ClubPersonalArticle {
-  id: number;                     // PK, 자동 증가
-  club_personal_id: number;       // FK → club_personal.id
-  title: string;                  // 제목
-  content: string;                 // 내용
-  image_urls?: string[];          // 이미지 URL 배열 (JSON)
-  created_at?: string;            // 생성일시
-  updated_at?: string;            // 수정일시
+  id: number; // PK, 자동 증가
+  club_personal_id: number; // FK → club_personal.id
+  title: string; // 제목
+  content: string; // 내용
+  image_urls?: string[]; // 이미지 URL 배열 (JSON)
+  created_at?: string; // 생성일시
+  updated_at?: string; // 수정일시
 }
 ```
 
 #### 8. club_personal_like (게시물 좋아요)
+
 ```typescript
 interface ClubPersonalLike {
-  id: number;                     // PK, 자동 증가
+  id: number; // PK, 자동 증가
   club_personal_article_id: number; // FK → club_personal_article.id
-  club_personal_id: number;       // FK → club_personal.id (좋아요한 사용자)
-  created_at?: string;            // 생성일시
+  club_personal_id: number; // FK → club_personal.id (좋아요한 사용자)
+  created_at?: string; // 생성일시
 }
 ```
 
 #### 9. club_personal_comment (게시물 댓글)
+
 ```typescript
 interface ClubPersonalComment {
-  id: number;                     // PK, 자동 증가
+  id: number; // PK, 자동 증가
   club_personal_article_id: number; // FK → club_personal_article.id
-  club_personal_id: number;       // FK → club_personal.id (댓글 작성자)
-  content: string;                 // 댓글 내용
-  created_at?: string;            // 생성일시
-  updated_at?: string;            // 수정일시
+  club_personal_id: number; // FK → club_personal.id (댓글 작성자)
+  content: string; // 댓글 내용
+  created_at?: string; // 생성일시
+  updated_at?: string; // 수정일시
 }
 ```
 
 ### 일정 테이블
 
 #### 10. club_personal_schedule (동아리 일정)
+
 ```typescript
 interface ClubPersonalSchedule {
-  id: number;                     // PK, 자동 증가
-  club_user_id: number;           // FK → club_user.id
-  title: string;                  // 일정 제목
-  content?: string;                // 일정 내용
-  date: string;                   // 날짜 (YYYY-MM-DD)
-  started_at?: string;            // 시작 시간 (HH:MM)
-  ended_at?: string;              // 종료 시간 (HH:MM)
-  location?: string;              // 장소
-  created_at?: string;            // 생성일시
-  updated_at?: string;            // 수정일시
+  id: number; // PK, 자동 증가
+  club_user_id: number; // FK → club_user.id
+  title: string; // 일정 제목
+  content?: string; // 일정 내용
+  date: string; // 날짜 (YYYY-MM-DD)
+  started_at?: string; // 시작 시간 (HH:MM)
+  ended_at?: string; // 종료 시간 (HH:MM)
+  location?: string; // 장소
+  created_at?: string; // 생성일시
+  updated_at?: string; // 수정일시
 }
 ```
 
 #### 11. schedule_participant (일정 참가자)
+
 ```typescript
 interface ScheduleParticipant {
-  id: number;                     // PK, 자동 증가
-  schedule_id: number;            // FK → club_personal_schedule.id
-  club_personal_id: number;       // FK → club_personal.id
-  created_at?: string;            // 생성일시
+  id: number; // PK, 자동 증가
+  schedule_id: number; // FK → club_personal_schedule.id
+  club_personal_id: number; // FK → club_personal.id
+  created_at?: string; // 생성일시
 }
 ```
 
 #### 12. schedule_comment (일정 댓글)
+
 ```typescript
 interface ScheduleComment {
-  id: number;                     // PK, 자동 증가
-  schedule_id: number;            // FK → club_personal_schedule.id
-  club_personal_id: number;       // FK → club_personal.id (댓글 작성자)
-  content: string;                // 댓글 내용
-  created_at?: string;            // 생성일시
-  updated_at?: string;            // 수정일시
+  id: number; // PK, 자동 증가
+  schedule_id: number; // FK → club_personal_schedule.id
+  club_personal_id: number; // FK → club_personal.id (댓글 작성자)
+  content: string; // 댓글 내용
+  created_at?: string; // 생성일시
+  updated_at?: string; // 수정일시
 }
 ```
 
 ### 프로필 테이블
 
 #### 13. club_user_profile (동아리 프로필 확장)
+
 ```typescript
 interface ClubUserProfile {
-  id?: number;                    // PK, 자동 증가
-  club_user_id: number;           // FK → club_user.id (UNIQUE)
-  score?: number;                  // 활동 점수
-  club_explanation?: string;       // 상세 설명
+  id?: number; // PK, 자동 증가
+  club_user_id: number; // FK → club_user.id (UNIQUE)
+  score?: number; // 활동 점수
+  club_explanation?: string; // 상세 설명
   club_simple_explanation?: string; // 간단 설명
-  instagram_url?: string;          // 인스타그램 URL
-  youtube_url?: string;           // 유튜브 URL
-  banner_image_url?: string;      // 배너 이미지 URL
-  profile_image_url?: string;      // 프로필 이미지 URL
-  created_at?: string;            // 생성일시
-  updated_at?: string;            // 수정일시
+  instagram_url?: string; // 인스타그램 URL
+  youtube_url?: string; // 유튜브 URL
+  banner_image_url?: string; // 배너 이미지 URL
+  profile_image_url?: string; // 프로필 이미지 URL
+  created_at?: string; // 생성일시
+  updated_at?: string; // 수정일시
 }
 ```
 
@@ -250,6 +263,7 @@ club_personal_schedule
 ## 📝 쿼리 패턴
 
 ### 사용자 조회
+
 ```typescript
 // 개인 사용자 조회
 const { data } = await supabase
@@ -268,25 +282,29 @@ const { data } = await supabase
 ```
 
 ### 관계 조회 (JOIN)
+
 ```typescript
 // 동아리 멤버 조회
 const { data } = await supabase
   .from("club_personal")
-  .select(`
+  .select(
+    `
     *,
     personal_user:personal_user_id (
       id,
       personal_name,
       profile_image_url
     )
-  `)
+  `
+  )
   .eq("club_user_id", clubId)
   .eq("approved", true);
 
 // 일정 참가자 조회
 const { data } = await supabase
   .from("schedule_participant")
-  .select(`
+  .select(
+    `
     *,
     club_personal:club_personal_id (
       personal_user:personal_user_id (
@@ -295,11 +313,13 @@ const { data } = await supabase
         profile_image_url
       )
     )
-  `)
+  `
+  )
   .eq("schedule_id", scheduleId);
 ```
 
 ### 집계 쿼리
+
 ```typescript
 // 멤버 수 계산
 const { count } = await supabase

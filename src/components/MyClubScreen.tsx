@@ -257,9 +257,7 @@ const MyClubScreen: React.FC = () => {
       tabParam &&
       ["posts", "payout", "schedule", "archive"].includes(tabParam)
     ) {
-      setActiveTab(
-        tabParam as "posts" | "payout" | "schedule" | "archive"
-      );
+      setActiveTab(tabParam as "posts" | "payout" | "schedule" | "archive");
     }
 
     // 날짜 파라미터가 있으면 해당 날짜 선택
@@ -458,7 +456,6 @@ const MyClubScreen: React.FC = () => {
       setSchedules([]);
     }
   }, [selectedClub?.club_user_id]);
-
 
   // 선택된 동아리 변경 시 데이터 로드
   useEffect(() => {
@@ -731,7 +728,6 @@ const MyClubScreen: React.FC = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [filteredAndSortedPosts]);
-
 
   // 달력 관련 상태
   const [currentDate, setCurrentDate] = useState(() => {
@@ -1015,9 +1011,7 @@ const MyClubScreen: React.FC = () => {
       .filter((date): date is Date => date !== null);
   }, [schedules]);
 
-  const handleTabClick = (
-    tab: "posts" | "payout" | "schedule" | "archive"
-  ) => {
+  const handleTabClick = (tab: "posts" | "payout" | "schedule" | "archive") => {
     setActiveTab(tab);
     // 일정 탭이 아닌 다른 탭으로 이동할 때 일정 관련 상태 초기화
     if (tab !== "schedule") {

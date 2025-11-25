@@ -26,6 +26,9 @@ import PayoutRegisterScreen from "./components/PayoutRegisterScreen";
 import PayoutMemberSearchScreen from "./components/PayoutMemberSearchScreen";
 import PayoutDetailScreen from "./components/PayoutDetailScreen";
 import MemberManageScreen from "./components/MemberManageScreen";
+import PostWriteScreen from "./components/PostWriteScreen";
+import ScheduleSelectScreen from "./components/ScheduleSelectScreen";
+import PayoutSelectScreen from "./components/PayoutSelectScreen";
 import "./App.css";
 
 function App() {
@@ -73,7 +76,15 @@ function App() {
           <Route path="/chat" element={<ComingSoonScreen title="채팅" />} />
           <Route
             path="/myclub/post/write"
-            element={<ComingSoonScreen title="글 작성" />}
+            element={<PostWriteScreen />}
+          />
+          <Route
+            path="/myclub/post/write/schedule"
+            element={<ScheduleSelectScreen />}
+          />
+          <Route
+            path="/myclub/post/write/payout"
+            element={<PayoutSelectScreen />}
           />
           <Route path="/profile" element={<ProfileScreen />} />
           <Route path="/account-approval" element={<AccountApprovalScreen />} />

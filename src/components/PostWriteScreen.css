@@ -1,0 +1,723 @@
+/* 글 작성 화면 전체 컨테이너 */
+.post-write-screen {
+  background-color: #fffcfa;
+  padding-bottom: 100px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: #28201b;
+}
+
+.post-write-inner {
+  flex: 1;
+  width: 100%;
+  padding: clamp(16px, 4vw, 24px);
+  padding-bottom: calc(100px + clamp(16px, 4vw, 24px));
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 24px);
+  box-sizing: border-box;
+}
+
+/* 헤더 */
+.post-write-header {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: #fffcfa;
+  z-index: 100;
+  padding: clamp(12px, 3vw, 16px);
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  pointer-events: none;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.post-write-back-btn {
+  background: transparent;
+  border: none;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  cursor: pointer;
+  padding: 8px 0;
+  pointer-events: auto;
+  z-index: 101;
+  box-sizing: border-box;
+  transition: color 0.2s ease;
+}
+
+.post-write-back-btn:hover {
+  color: #c34e00;
+}
+
+/* 폼 */
+.post-write-form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 24px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 섹션 A: 카테고리 + 공지글 토글 */
+.post-write-section-a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.post-write-category-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.post-write-category-btn {
+  width: 100%;
+  padding: clamp(12px, 3vw, 16px);
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: white;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.post-write-category-btn:hover {
+  border-color: #c34e00;
+  background: #fff5f0;
+}
+
+.post-write-category-dropdown {
+  position: absolute;
+  top: calc(100% + clamp(4px, 1vw, 8px));
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: clamp(200px, 50vw, 300px);
+  overflow-y: auto;
+}
+
+.post-write-category-option {
+  padding: clamp(12px, 3vw, 16px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.post-write-category-option:last-child {
+  border-bottom: none;
+}
+
+.post-write-category-option:hover {
+  background: #fff5f0;
+}
+
+.post-write-notice-toggle-wrapper {
+  flex-shrink: 0;
+}
+
+.post-write-toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 10px);
+  cursor: pointer;
+  user-select: none;
+}
+
+.post-write-toggle-switch input {
+  display: none;
+}
+
+.post-write-toggle-slider {
+  position: relative;
+  width: clamp(44px, 11vw, 52px);
+  height: clamp(24px, 6vw, 28px);
+  background: #e0e0e0;
+  border-radius: 34px;
+  transition: background 0.3s ease;
+}
+
+.post-write-toggle-slider::before {
+  content: "";
+  position: absolute;
+  width: clamp(20px, 5vw, 22px);
+  height: clamp(20px, 5vw, 22px);
+  left: clamp(2px, 0.5vw, 3px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.post-write-toggle-switch input:checked ~ .post-write-toggle-slider {
+  background: #c34e00;
+}
+
+.post-write-toggle-switch
+  input:checked
+  ~ .post-write-toggle-slider::before {
+  transform: translate(calc(100% + clamp(2px, 0.5vw, 4px)), -50%);
+}
+
+.post-write-toggle-label {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 500;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #28201b;
+}
+
+/* 폼 필드 */
+.post-write-field {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.post-write-label {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+}
+
+.post-write-input,
+.post-write-textarea {
+  width: 100%;
+  padding: clamp(12px, 3vw, 16px);
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  background: white;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.post-write-input:focus,
+.post-write-textarea:focus {
+  border-color: #c34e00;
+  box-shadow: 0 0 0 3px rgba(195, 78, 0, 0.1);
+}
+
+.post-write-input::placeholder,
+.post-write-textarea::placeholder {
+  color: #888888;
+}
+
+.post-write-textarea {
+  resize: vertical;
+  min-height: clamp(120px, 30vw, 200px);
+  line-height: 1.5;
+}
+
+/* 첨부 버튼 */
+.post-write-attach-btn {
+  width: 100%;
+  padding: clamp(12px, 3vw, 16px);
+  border: 1px dashed #c34e00;
+  border-radius: 12px;
+  background: white;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #c34e00;
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.post-write-attach-btn:hover {
+  background: #fff5f0;
+  border-color: #a03d00;
+}
+
+.post-write-remove-attach-btn {
+  margin-top: clamp(8px, 2vw, 12px);
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f5f5f5;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666666;
+  cursor: pointer;
+  align-self: flex-start;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.post-write-remove-attach-btn:hover {
+  background: #e8e8e8;
+  border-color: #c34e00;
+  color: #c34e00;
+}
+
+/* 파일 입력 */
+.post-write-file-input {
+  width: 100%;
+  padding: clamp(12px, 3vw, 16px);
+  border: 1px dashed #e0e0e0;
+  border-radius: 12px;
+  background: white;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.post-write-file-input:hover {
+  border-color: #c34e00;
+  background: #fff5f0;
+}
+
+.post-write-files-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+  margin-top: clamp(8px, 2vw, 12px);
+}
+
+.post-write-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(10px, 2.5vw, 14px);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f5f5f5;
+  box-sizing: border-box;
+}
+
+.post-write-file-name {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(13px, 3vw, 15px);
+  color: #28201b;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.post-write-file-remove-btn {
+  padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 10px);
+  border: none;
+  border-radius: 6px;
+  background: #e0e0e0;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666666;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.post-write-file-remove-btn:hover {
+  background: #c34e00;
+  color: white;
+}
+
+/* 제출 버튼 */
+.post-write-submit-btn {
+  width: 100%;
+  padding: clamp(14px, 3.5vw, 18px);
+  border: none;
+  border-radius: 12px;
+  background: #c34e00;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(16px, 4vw, 18px);
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  margin-top: clamp(8px, 2vw, 12px);
+}
+
+.post-write-submit-btn:hover:not(:disabled) {
+  background: #a03d00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(195, 78, 0, 0.3);
+}
+
+.post-write-submit-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 선택 페이지 공통 스타일 */
+.post-write-select-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(22px, 5.5vw, 28px);
+  font-weight: 700;
+  color: #28201b;
+  margin: 0;
+  margin-top: clamp(6px, 1.5vw, 8px);
+  margin-bottom: clamp(16px, 4vw, 24px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.post-write-select-complete-btn {
+  width: 100%;
+  padding: clamp(14px, 3.5vw, 18px);
+  border: none;
+  border-radius: 12px;
+  background: #c34e00;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(16px, 4vw, 18px);
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  margin-top: clamp(16px, 4vw, 24px);
+}
+
+.post-write-select-complete-btn:hover {
+  background: #a03d00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(195, 78, 0, 0.3);
+}
+
+.post-write-loading,
+.post-write-empty {
+  text-align: center;
+  padding: clamp(40px, 10vw, 60px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #666666;
+}
+
+/* 달력 스타일 (행사 선택) */
+.post-write-calendar-container {
+  background: white;
+  border-radius: 16px;
+  padding: clamp(16px, 4vw, 20px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.post-write-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: clamp(16px, 4vw, 20px);
+}
+
+.post-write-calendar-nav-btn {
+  background: transparent;
+  border: none;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(18px, 4.5vw, 22px);
+  color: #28201b;
+  cursor: pointer;
+  padding: clamp(8px, 2vw, 10px);
+  transition: color 0.2s ease;
+}
+
+.post-write-calendar-nav-btn:hover {
+  color: #c34e00;
+}
+
+.post-write-calendar-month {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(18px, 4.5vw, 22px);
+  font-weight: 600;
+  color: #28201b;
+  margin: 0;
+}
+
+.post-write-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1vw, 8px);
+  margin-bottom: clamp(8px, 2vw, 12px);
+}
+
+.post-write-calendar-weekday {
+  text-align: center;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 600;
+  color: #666666;
+  padding: clamp(8px, 2vw, 10px);
+}
+
+.post-write-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1vw, 8px);
+}
+
+.post-write-calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  padding: clamp(4px, 1vw, 8px);
+  box-sizing: border-box;
+}
+
+.post-write-calendar-day:hover:not(.other-month) {
+  background: #fff5f0;
+}
+
+.post-write-calendar-day.selected {
+  background: #c34e00;
+  color: white;
+}
+
+.post-write-calendar-day.other-month {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.post-write-calendar-day-number {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 500;
+}
+
+.post-write-calendar-event-dot {
+  position: absolute;
+  bottom: clamp(4px, 1vw, 6px);
+  width: clamp(4px, 1vw, 6px);
+  height: clamp(4px, 1vw, 6px);
+  background: #c34e00;
+  border-radius: 50%;
+}
+
+.post-write-calendar-day.selected .post-write-calendar-event-dot {
+  background: white;
+}
+
+/* 행사 목록 */
+.post-write-events-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.post-write-event-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: clamp(12px, 3vw, 16px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.post-write-event-card:hover {
+  border-color: #c34e00;
+  background: #fff5f0;
+}
+
+.post-write-event-card.selected {
+  border-color: #c34e00;
+  background: #fff5f0;
+}
+
+.post-write-event-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 600;
+  color: #28201b;
+  margin-bottom: clamp(4px, 1vw, 6px);
+}
+
+.post-write-event-date {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666666;
+}
+
+/* 행사 상세 정보 */
+.post-write-event-detail-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: clamp(16px, 4vw, 20px);
+  margin-top: clamp(12px, 3vw, 16px);
+  box-sizing: border-box;
+}
+
+.post-write-event-detail-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(18px, 4.5vw, 22px);
+  font-weight: 700;
+  color: #28201b;
+  margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+.post-write-event-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+  margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+.post-write-event-detail-date,
+.post-write-event-detail-time,
+.post-write-event-detail-location {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #666666;
+}
+
+.post-write-event-detail-content {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+  line-height: 1.6;
+  margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+.post-write-event-detail-agenda {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #28201b;
+}
+
+.post-write-event-detail-agenda strong {
+  display: block;
+  margin-bottom: clamp(8px, 2vw, 12px);
+}
+
+.post-write-event-detail-agenda ul {
+  margin: 0;
+  padding-left: clamp(20px, 5vw, 24px);
+}
+
+.post-write-event-detail-agenda li {
+  margin-bottom: clamp(4px, 1vw, 6px);
+}
+
+/* 정산 목록 */
+.post-write-payout-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.post-write-payout-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: clamp(12px, 3vw, 16px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.post-write-payout-card:hover {
+  border-color: #c34e00;
+  background: #fff5f0;
+}
+
+.post-write-payout-card.selected {
+  border-color: #c34e00;
+  background: #fff5f0;
+}
+
+.post-write-payout-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(16px, 4vw, 18px);
+  font-weight: 600;
+  color: #28201b;
+  margin-bottom: clamp(4px, 1vw, 6px);
+}
+
+.post-write-payout-date {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666666;
+  margin-bottom: clamp(8px, 2vw, 12px);
+}
+
+.post-write-payout-content {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(13px, 3vw, 15px);
+  color: #666666;
+  line-height: 1.5;
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .post-write-inner {
+    padding: clamp(12px, 3vw, 16px);
+    padding-bottom: calc(100px + clamp(12px, 3vw, 16px));
+  }
+
+  .post-write-section-a {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .post-write-notice-toggle-wrapper {
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .post-write-inner {
+    padding: clamp(10px, 2.5vw, 12px);
+    padding-bottom: calc(100px + clamp(10px, 2.5vw, 12px));
+  }
+}
+
+@media (max-width: 320px) {
+  .post-write-select-title {
+    font-size: 20px;
+  }
+}
+

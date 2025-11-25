@@ -42,7 +42,9 @@ const ClubAccountBankInputScreen: React.FC = () => {
       const parsed: StoredClub = JSON.parse(storedClub);
       setSelectedClub(parsed);
       setIsAuthorized(
-        parsed.role === "회장" || parsed.role === "스태프" || parsed.role === "관리자"
+        parsed.role === "회장" ||
+          parsed.role === "스태프" ||
+          parsed.role === "관리자"
       );
     }
   }, []);

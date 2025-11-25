@@ -46,7 +46,6 @@ const ClubDetailScreen: React.FC = () => {
   const [selectedSchedule, setSelectedSchedule] = useState<any | null>(null);
   const [scheduleParticipants, setScheduleParticipants] = useState<any[]>([]);
 
-
   // 일정이 있는 날짜들 (DB에서 로드된 데이터 기반)
   const eventsDates = useMemo(() => {
     return schedules.map((schedule) => {
