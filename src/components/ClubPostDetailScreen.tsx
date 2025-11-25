@@ -144,17 +144,25 @@ const ClubPostDetailScreen: React.FC = () => {
           currentUserLiked = !!likeData;
         }
 
+        // club_personal이 배열일 수 있으므로 처리
+        const clubPersonal = Array.isArray(article.club_personal)
+          ? article.club_personal[0]
+          : article.club_personal;
+        const personalUser = Array.isArray(clubPersonal?.personal_user)
+          ? clubPersonal.personal_user[0]
+          : clubPersonal?.personal_user;
+
         const authorName =
-          article.club_personal?.personal_user?.personal_name ||
+          personalUser?.personal_name ||
           selectedClub?.name ||
           "작성자";
         const authorAvatar =
-          article.club_personal?.personal_user?.profile_image_url ||
+          personalUser?.profile_image_url ||
           "/profile-icon.png";
 
         const isAuthor =
           userData.type === "personal" &&
-          article.club_personal?.personal_user?.id === userData.id;
+          personalUser?.id === userData.id;
 
         const articleCategories =
           article.club_personal_article_category || [];
@@ -255,7 +263,14 @@ const ClubPostDetailScreen: React.FC = () => {
 
       if (commentsData) {
         const formattedComments: Comment[] = commentsData.map((comment: any) => {
-          const personalUser = comment.club_personal?.personal_user;
+          // club_personal이 배열일 수 있으므로 처리
+          const clubPersonal = Array.isArray(comment.club_personal)
+            ? comment.club_personal[0]
+            : comment.club_personal;
+          const personalUser = Array.isArray(clubPersonal?.personal_user)
+            ? clubPersonal.personal_user[0]
+            : clubPersonal?.personal_user;
+
           const authorName = comment.anonymous
             ? "익명"
             : personalUser?.personal_name || "작성자";
