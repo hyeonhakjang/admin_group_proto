@@ -106,7 +106,7 @@
   justify-content: space-between;
   align-items: flex-start;
   box-sizing: border-box;
-  gap: clamp(12px, 3vw, 16px);
+  position: relative;
 }
 
 .payout-item-card:hover {
@@ -152,6 +152,8 @@
   flex-shrink: 0;
   white-space: nowrap;
   box-sizing: border-box;
+  margin-left: auto;
+  align-self: flex-start;
 }
 
 .status-paid {
