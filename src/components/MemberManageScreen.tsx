@@ -100,7 +100,7 @@ const MemberManageScreen: React.FC = () => {
           clubPersonalId: member.id,
           name: member.personal_user?.personal_name || "이름 없음",
           email: member.personal_user?.email || "",
-          role: member.role || "동아리원",
+          role: member.role || "회원",
           approved: member.approved || false,
           isOwner: member.role === "회장" || member.role === "관리자",
           avatar:
