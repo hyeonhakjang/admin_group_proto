@@ -2526,16 +2526,12 @@ const MyClubScreen: React.FC = () => {
               >
                 ← 뒤로가기
               </button>
-              <h4 className="post-detail-title">
-                {selectedPost?.title || "공지 상세"}
-              </h4>
+              <h4 className="post-detail-title">공지 상세</h4>
               <div className="post-detail-meta">
                 <div className="post-detail-author">홍익대 HICC ✓</div>
                 <div className="post-detail-time">오늘 18:41</div>
               </div>
-              <div className="post-detail-body">
-                {selectedPost?.content || "내용이 없습니다."}
-              </div>
+              <div className="post-detail-body">내용이 없습니다.</div>
 
               {false ? (
                 <div className="dues-section">
