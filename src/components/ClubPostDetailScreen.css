@@ -130,6 +130,77 @@
   border: none;
 }
 
+.post-attached-schedule-card {
+  margin-top: clamp(16px, 4vw, 24px);
+  padding: clamp(16px, 4vw, 24px);
+  border-radius: 16px;
+  border: 1px solid #f1e9e3;
+  background: #fffdf8;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.post-attached-schedule-label {
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #c34e00;
+  font-weight: 600;
+}
+
+.post-attached-schedule-title {
+  font-size: clamp(18px, 4.5vw, 22px);
+  font-weight: 700;
+  color: #28201b;
+  margin: 0;
+}
+
+.post-attached-schedule-row {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 6px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #444444;
+}
+
+.post-attached-schedule-row-label {
+  font-weight: 600;
+  color: #777777;
+}
+
+.post-attached-schedule-row-value {
+  font-weight: 500;
+  color: #28201b;
+}
+
+.post-attached-schedule-description {
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #555555;
+  line-height: 1.5;
+}
+
+.post-attached-schedule-agenda {
+  margin-top: clamp(8px, 2vw, 12px);
+}
+
+.post-attached-schedule-agenda h4 {
+  font-size: clamp(15px, 3.75vw, 17px);
+  font-weight: 600;
+  margin: 0 0 clamp(6px, 1.5vw, 8px) 0;
+}
+
+.post-attached-schedule-agenda ul {
+  margin: 0;
+  padding-left: clamp(18px, 4.5vw, 22px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 6px);
+}
+
+.post-attached-schedule-agenda li {
+  font-size: clamp(13px, 3.25vw, 15px);
+  color: #555555;
+}
+
 /* 게시글 액션 버튼 */
 .club-post-detail-actions {
   display: flex;

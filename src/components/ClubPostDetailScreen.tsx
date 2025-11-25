@@ -28,6 +28,17 @@ interface Post {
   isAdmin: boolean;
 }
 
+interface AttachedSchedule {
+  id: number;
+  title: string;
+  date: string;
+  startedAt?: string | null;
+  endedAt?: string | null;
+  location?: string | null;
+  description?: string | null;
+  agenda?: string[] | null;
+}
+
 interface Comment {
   id: number;
   author: string;
@@ -47,6 +58,7 @@ const ClubPostDetailScreen: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [selectedClub, setSelectedClub] = useState<any>(null);
   const [post, setPost] = useState<Post | null>(null);
+  const [attachedSchedule, setAttachedSchedule] = useState<AttachedSchedule | null>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [isScrapped, setIsScrapped] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -101,6 +113,18 @@ const ClubPostDetailScreen: React.FC = () => {
             ),
             club_personal_article_category:club_personal_article_category (
               name
+            ),
+            club_personal_article_schedule:club_personal_article_schedule (
+              club_personal_schedule:club_personal_schedule_id (
+                id,
+                title,
+                content,
+                date,
+                started_at,
+                ended_at,
+                location,
+                agenda
+              )
             )
           `
           )
@@ -208,6 +232,40 @@ const ClubPostDetailScreen: React.FC = () => {
           isAuthor: isAuthor,
           isAdmin: userData.type === "club" || false,
         });
+
+        // 첨부 일정 정보
+        const articleScheduleRelation = article
+          .club_personal_article_schedule as
+          | any[]
+          | Record<string, any>
+          | null;
+        let scheduleDataRaw: any = null;
+
+        if (Array.isArray(articleScheduleRelation)) {
+          scheduleDataRaw =
+            articleScheduleRelation[0]?.club_personal_schedule || null;
+        } else if (articleScheduleRelation) {
+          scheduleDataRaw = articleScheduleRelation.club_personal_schedule;
+        }
+
+        const normalizedSchedule = Array.isArray(scheduleDataRaw)
+          ? scheduleDataRaw[0]
+          : scheduleDataRaw;
+
+        if (normalizedSchedule) {
+          setAttachedSchedule({
+            id: normalizedSchedule.id,
+            title: normalizedSchedule.title || "첨부된 일정",
+            date: normalizedSchedule.date,
+            startedAt: normalizedSchedule.started_at,
+            endedAt: normalizedSchedule.ended_at,
+            location: normalizedSchedule.location,
+            description: normalizedSchedule.content,
+            agenda: normalizedSchedule.agenda || [],
+          });
+        } else {
+          setAttachedSchedule(null);
+        }
 
         setIsLiked(currentUserLiked);
         setLikeCount(likeCount || 0);
@@ -455,6 +513,30 @@ const ClubPostDetailScreen: React.FC = () => {
     );
   }
 
+  const formatScheduleDate = (dateString: string) => {
+    if (!dateString) return "";
+    const [yearStr, monthStr, dayStr] = dateString.split("-");
+    const year = Number(yearStr);
+    const month = Number(monthStr);
+    const day = Number(dayStr);
+    const dateObj = new Date(year, month - 1, day);
+    const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+    const weekday = weekdays[dateObj.getDay()] || "";
+    return `${year}년 ${month}월 ${day}일 (${weekday})`;
+  };
+
+  const formatScheduleTimeRange = (
+    start?: string | null,
+    end?: string | null
+  ) => {
+    if (start && end) {
+      return `${start} ~ ${end}`;
+    }
+    if (start) return start;
+    if (end) return end;
+    return "시간 정보 없음";
+  };
+
   return (
     <div className="club-post-detail-screen">
       {/* 헤더: 뒤로가기 버튼 */}
@@ -487,6 +569,51 @@ const ClubPostDetailScreen: React.FC = () => {
         <div className="club-post-detail-body">
           <pre className="club-post-detail-content-text">{post.content}</pre>
         </div>
+
+        {/* 첨부 일정 */}
+        {attachedSchedule && (
+          <div className="post-attached-schedule-card">
+            <div className="post-attached-schedule-label">첨부된 일정</div>
+            <h3 className="post-attached-schedule-title">
+              {attachedSchedule.title}
+            </h3>
+            <div className="post-attached-schedule-row">
+              <span className="post-attached-schedule-row-label">일시</span>
+              <strong className="post-attached-schedule-row-value">
+                {formatScheduleDate(attachedSchedule.date)}{" "}
+                {formatScheduleTimeRange(
+                  attachedSchedule.startedAt,
+                  attachedSchedule.endedAt
+                )}
+              </strong>
+            </div>
+            {attachedSchedule.location && (
+              <div className="post-attached-schedule-row">
+                <span className="post-attached-schedule-row-label">장소</span>
+                <span className="post-attached-schedule-row-value">
+                  {attachedSchedule.location}
+                </span>
+              </div>
+            )}
+            {attachedSchedule.description && (
+              <div className="post-attached-schedule-description">
+                {attachedSchedule.description}
+              </div>
+            )}
+            {attachedSchedule.agenda &&
+              Array.isArray(attachedSchedule.agenda) &&
+              attachedSchedule.agenda.length > 0 && (
+                <div className="post-attached-schedule-agenda">
+                  <h4>일정표</h4>
+                  <ul>
+                    {attachedSchedule.agenda.map((item, index) => (
+                      <li key={`${item}-${index}`}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+          </div>
+        )}
 
         {/* 좋아요, 스크랩 버튼 */}
         <div className="club-post-detail-actions">
