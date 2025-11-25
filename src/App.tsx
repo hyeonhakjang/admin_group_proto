@@ -114,6 +114,14 @@ function App() {
             element={<MemberManageScreen />}
           />
           <Route path="/myclub/post/:id" element={<ClubPostDetailScreen />} />
+          <Route
+            path="/myclub/manage/payout"
+            element={<PayoutManageScreen />}
+          />
+          <Route
+            path="/myclub/manage/payout/:id"
+            element={<PayoutDetailScreen />}
+          />
         </Routes>
       </div>
     </BrowserRouter>
