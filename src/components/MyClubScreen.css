@@ -1939,10 +1939,10 @@
 /* 섹션 B-C, B-D: 날짜와 상태 (같은 줄) */
 .payout-item-footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: clamp(12px, 3vw, 16px);
   margin-top: clamp(4px, 1vw, 6px);
+  width: 100%;
 }
 
 /* 섹션 B-C: 정산 요청 날짜 */
@@ -1951,7 +1951,6 @@
   font-weight: 400;
   font-size: clamp(12px, 3vw, 14px);
   color: #888888;
-  flex: 1;
 }
 
 /* 섹션 B-D: 자신의 정산 현황 */
@@ -1963,6 +1962,8 @@
   border-radius: 999px;
   white-space: nowrap;
   box-sizing: border-box;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .payout-item-status.status-paid {
