@@ -139,6 +139,10 @@ function App() {
             path="/myclub/manage/approvals"
             element={<ComingSoonScreen title="신청폼 관리" />}
           />
+          <Route
+            path="/myclub/page/edit"
+            element={<ComingSoonScreen title="동아리 페이지 관리" />}
+          />
         </Routes>
       </div>
     </BrowserRouter>
