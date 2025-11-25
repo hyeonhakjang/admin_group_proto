@@ -31,6 +31,7 @@ import ScheduleSelectScreen from "./components/ScheduleSelectScreen";
 import PayoutSelectScreen from "./components/PayoutSelectScreen";
 import ClubPostDetailScreen from "./components/ClubPostDetailScreen";
 import PayoutManageScreen from "./components/PayoutManageScreen";
+import PayoutManageDetailScreen from "./components/PayoutManageDetailScreen";
 import "./App.css";
 
 function App() {
@@ -120,7 +121,7 @@ function App() {
           />
           <Route
             path="/myclub/manage/payout/:id"
-            element={<PayoutDetailScreen />}
+            element={<PayoutManageDetailScreen />}
           />
         </Routes>
       </div>
