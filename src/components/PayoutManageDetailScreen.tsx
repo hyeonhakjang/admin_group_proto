@@ -261,11 +261,9 @@ const PayoutManageDetailScreen: React.FC = () => {
         <section className="payout-manage-detail-section payout-manage-detail-summary">
           <div className="payout-manage-detail-label">정산 관리</div>
           <h1 className="payout-manage-detail-title">{payout.title}</h1>
-          <p className="payout-manage-detail-description">{payout.description}</p>
-          <div className="payout-manage-detail-amount-row">
-            <span>총 정산 금액</span>
-            <strong>{payout.totalAmount.toLocaleString()}원</strong>
-          </div>
+          <p className="payout-manage-detail-description">
+            {payout.description}
+          </p>
           <div className="payout-manage-detail-date">
             정산 요청{" "}
             {new Date(payout.requestDate).toLocaleDateString("ko-KR", {
@@ -275,6 +273,14 @@ const PayoutManageDetailScreen: React.FC = () => {
             })}{" "}
             {payout.requestTime}
           </div>
+        </section>
+
+        {/* 총 정산 금액 블록 */}
+        <section className="payout-manage-detail-section payout-manage-detail-amount-card">
+          <span className="payout-manage-detail-amount-label">총 정산 금액</span>
+          <strong className="payout-manage-detail-amount-value">
+            {payout.totalAmount.toLocaleString()}원
+          </strong>
         </section>
 
         {/* 섹션 F: 네비게이션 */}

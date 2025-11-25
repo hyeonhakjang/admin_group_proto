@@ -64,16 +64,20 @@
   line-height: 1.5;
 }
 
-.payout-manage-detail-amount-row {
+.payout-manage-detail-amount-card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+  align-items: flex-start;
+}
+
+.payout-manage-detail-amount-label {
   font-size: clamp(14px, 3.5vw, 16px);
   color: #666666;
 }
 
-.payout-manage-detail-amount-row strong {
-  font-size: clamp(24px, 6vw, 28px);
+.payout-manage-detail-amount-value {
+  font-size: clamp(28px, 7vw, 32px);
   font-weight: 700;
   color: #28201b;
 }
