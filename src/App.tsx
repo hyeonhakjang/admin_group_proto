@@ -30,6 +30,7 @@ import PostWriteScreen from "./components/PostWriteScreen";
 import ScheduleSelectScreen from "./components/ScheduleSelectScreen";
 import PayoutSelectScreen from "./components/PayoutSelectScreen";
 import ClubPostDetailScreen from "./components/ClubPostDetailScreen";
+import PayoutManageScreen from "./components/PayoutManageScreen";
 import "./App.css";
 
 function App() {
@@ -112,10 +113,7 @@ function App() {
             path="/myclub/manage/members"
             element={<MemberManageScreen />}
           />
-          <Route
-            path="/myclub/post/:id"
-            element={<ClubPostDetailScreen />}
-          />
+          <Route path="/myclub/post/:id" element={<ClubPostDetailScreen />} />
         </Routes>
       </div>
     </BrowserRouter>

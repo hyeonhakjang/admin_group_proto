@@ -132,37 +132,33 @@ const ClubPostDetailScreen: React.FC = () => {
           .select("*", { count: "exact", head: true })
           .eq("club_personal_article_id", article.id);
 
-         // 현재 사용자의 좋아요 여부 확인
-         let currentUserLiked = false;
-         if (userData.type === "personal" && selectedClub?.club_personal_id) {
-           const { data: likeData } = await supabase
-             .from("club_personal_like")
-             .select("id")
-             .eq("club_personal_article_id", article.id)
-             .eq("club_personal_id", selectedClub.club_personal_id)
-             .single();
-           currentUserLiked = !!likeData;
-         }
+        // 현재 사용자의 좋아요 여부 확인
+        let currentUserLiked = false;
+        if (userData.type === "personal" && selectedClub?.club_personal_id) {
+          const { data: likeData } = await supabase
+            .from("club_personal_like")
+            .select("id")
+            .eq("club_personal_article_id", article.id)
+            .eq("club_personal_id", selectedClub.club_personal_id)
+            .single();
+          currentUserLiked = !!likeData;
+        }
 
-         // club_personal이 배열일 수 있으므로 처리
-         const clubPersonal = Array.isArray(article.club_personal)
-           ? article.club_personal[0]
-           : article.club_personal;
-         const personalUser = Array.isArray(clubPersonal?.personal_user)
-           ? clubPersonal.personal_user[0]
-           : clubPersonal?.personal_user;
+        // club_personal이 배열일 수 있으므로 처리
+        const clubPersonal = Array.isArray(article.club_personal)
+          ? article.club_personal[0]
+          : article.club_personal;
+        const personalUser = Array.isArray(clubPersonal?.personal_user)
+          ? clubPersonal.personal_user[0]
+          : clubPersonal?.personal_user;
 
-         const authorName =
-           personalUser?.personal_name ||
-           selectedClub?.name ||
-           "작성자";
-         const authorAvatar =
-           personalUser?.profile_image_url ||
-           "/profile-icon.png";
+        const authorName =
+          personalUser?.personal_name || selectedClub?.name || "작성자";
+        const authorAvatar =
+          personalUser?.profile_image_url || "/profile-icon.png";
 
-         const isAuthor =
-           userData.type === "personal" &&
-           personalUser?.id === userData.id;
+        const isAuthor =
+          userData.type === "personal" && personalUser?.id === userData.id;
 
         const articleCategories = article.club_personal_article_category || [];
         const categoryNames = Array.isArray(articleCategories)
@@ -258,23 +254,23 @@ const ClubPostDetailScreen: React.FC = () => {
         return;
       }
 
-       if (commentsData) {
-         const formattedComments: Comment[] = commentsData.map(
-           (comment: any) => {
-             // club_personal이 배열일 수 있으므로 처리
-             const clubPersonal = Array.isArray(comment.club_personal)
-               ? comment.club_personal[0]
-               : comment.club_personal;
-             const personalUser = Array.isArray(clubPersonal?.personal_user)
-               ? clubPersonal.personal_user[0]
-               : clubPersonal?.personal_user;
+      if (commentsData) {
+        const formattedComments: Comment[] = commentsData.map(
+          (comment: any) => {
+            // club_personal이 배열일 수 있으므로 처리
+            const clubPersonal = Array.isArray(comment.club_personal)
+              ? comment.club_personal[0]
+              : comment.club_personal;
+            const personalUser = Array.isArray(clubPersonal?.personal_user)
+              ? clubPersonal.personal_user[0]
+              : clubPersonal?.personal_user;
 
-             const authorName = comment.anonymous
-               ? "익명"
-               : personalUser?.personal_name || "작성자";
-             const authorAvatar = comment.anonymous
-               ? "/profile-icon.png"
-               : personalUser?.profile_image_url || "/profile-icon.png";
+            const authorName = comment.anonymous
+              ? "익명"
+              : personalUser?.personal_name || "작성자";
+            const authorAvatar = comment.anonymous
+              ? "/profile-icon.png"
+              : personalUser?.profile_image_url || "/profile-icon.png";
 
             const formatDate = (dateString: string) => {
               if (!dateString) return "";
