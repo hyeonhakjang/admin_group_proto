@@ -251,7 +251,19 @@ const PostWriteScreen: React.FC = () => {
         }
       }
 
-      // 4. 정산 첨부는 별도 테이블이 필요할 수 있음 (일단 스킵)
+      // 4. 정산 첨부 저장
+      if (selectedPayout) {
+        const { error: payoutLinkError } = await supabase
+          .from("club_personal_article_payout")
+          .insert({
+            club_personal_article_id: article.id,
+            club_personal_payout_id: selectedPayout.id,
+          });
+
+        if (payoutLinkError) {
+          console.error("정산 첨부 저장 오류:", payoutLinkError);
+        }
+      }
 
       // 5. 첨부 파일은 추후 구현 (Supabase Storage 사용)
 
