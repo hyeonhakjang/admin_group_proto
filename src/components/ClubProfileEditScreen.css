@@ -1,0 +1,214 @@
+.club-profile-edit-screen {
+  min-height: 100vh;
+  background-color: var(--background-cream, #fffcfa);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: clamp(60px, 15vw, 80px);
+}
+
+/* 헤더 */
+.club-profile-edit-header-back {
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  background-color: transparent;
+}
+
+.club-profile-edit-header-back .back-btn {
+  background: none;
+  border: none;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: var(--text-dark, #28201b);
+  cursor: pointer;
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  padding: clamp(4px, 1vw, 8px) 0;
+}
+
+.club-profile-edit-header-back .back-btn:hover {
+  opacity: 0.7;
+}
+
+/* 프로필 섹션 */
+.club-profile-edit-profile-section {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(12px, 3vw, 16px);
+  padding: clamp(16px, 4vw, 20px);
+  padding-top: clamp(8px, 2vw, 12px);
+}
+
+/* 섹션 A: 프로필 이미지 */
+.club-profile-edit-image-wrapper {
+  flex-shrink: 0;
+  width: clamp(60px, 15vw, 80px);
+  height: clamp(60px, 15vw, 80px);
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #e0e0e0;
+}
+
+.club-profile-edit-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 섹션 B, C: 닉네임 정보 */
+.club-profile-edit-info {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 6px);
+  flex: 1;
+  min-width: 0;
+}
+
+/* 섹션 B: 동아리 닉네임 */
+.club-profile-edit-nickname {
+  font-size: clamp(16px, 4vw, 20px);
+  font-weight: 600;
+  color: var(--text-dark, #28201b);
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  line-height: 1.4;
+}
+
+/* 섹션 C: personal_user 계정 닉네임 */
+.club-profile-edit-personal-name {
+  font-size: clamp(12px, 3vw, 14px);
+  color: var(--text-muted, #666);
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  line-height: 1.4;
+}
+
+/* 네비게이션 */
+.club-profile-edit-nav {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 clamp(16px, 4vw, 20px);
+  gap: clamp(8px, 2vw, 12px);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.club-profile-edit-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.club-profile-edit-nav-item {
+  background: none;
+  border: none;
+  padding: clamp(12px, 3vw, 16px) clamp(8px, 2vw, 12px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: var(--text-muted, #666);
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.club-profile-edit-nav-item:hover {
+  color: var(--text-dark, #28201b);
+}
+
+.club-profile-edit-nav-item.active {
+  color: var(--primary-orange, #c34e00);
+  border-bottom-color: var(--primary-orange, #c34e00);
+  font-weight: 600;
+}
+
+/* 리스트 영역 */
+.club-profile-edit-content {
+  flex: 1;
+  padding: clamp(16px, 4vw, 20px);
+  overflow-y: auto;
+}
+
+.club-profile-edit-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.club-profile-edit-list-item {
+  background-color: #fff;
+  border-radius: clamp(8px, 2vw, 12px);
+  padding: clamp(16px, 4vw, 20px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.club-profile-edit-list-item:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.club-profile-edit-item-title {
+  font-size: clamp(16px, 4vw, 18px);
+  font-weight: 600;
+  color: var(--text-dark, #28201b);
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  margin-bottom: clamp(8px, 2vw, 12px);
+  line-height: 1.4;
+}
+
+.club-profile-edit-item-content {
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: var(--text-muted, #666);
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  line-height: 1.5;
+  margin-bottom: clamp(8px, 2vw, 12px);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.club-profile-edit-item-date {
+  font-size: clamp(12px, 3vw, 14px);
+  color: var(--text-muted, #999);
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+}
+
+.club-profile-edit-loading,
+.club-profile-edit-empty {
+  text-align: center;
+  padding: clamp(40px, 10vw, 60px) clamp(20px, 5vw, 40px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: var(--text-muted, #666);
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  .club-profile-edit-profile-section {
+    padding: clamp(12px, 3vw, 16px);
+  }
+
+  .club-profile-edit-image-wrapper {
+    width: clamp(50px, 12.5vw, 70px);
+    height: clamp(50px, 12.5vw, 70px);
+  }
+}
+
+@media (max-width: 360px) {
+  .club-profile-edit-nav {
+    gap: clamp(4px, 1vw, 8px);
+  }
+
+  .club-profile-edit-nav-item {
+    padding: clamp(10px, 2.5vw, 14px) clamp(6px, 1.5vw, 10px);
+    font-size: clamp(13px, 3.25vw, 15px);
+  }
+}
+
+@media (max-width: 320px) {
+  .club-profile-edit-profile-section {
+    gap: clamp(8px, 2vw, 12px);
+  }
+
+  .club-profile-edit-image-wrapper {
+    width: clamp(45px, 11.25vw, 60px);
+    height: clamp(45px, 11.25vw, 60px);
+  }
+}
+

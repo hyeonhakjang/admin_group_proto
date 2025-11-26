@@ -32,6 +32,7 @@ import PayoutSelectScreen from "./components/PayoutSelectScreen";
 import ClubPostDetailScreen from "./components/ClubPostDetailScreen";
 import PayoutManageScreen from "./components/PayoutManageScreen";
 import PayoutManageDetailScreen from "./components/PayoutManageDetailScreen";
+import ClubProfileEditScreen from "./components/ClubProfileEditScreen";
 import "./App.css";
 
 function App() {
@@ -142,6 +143,10 @@ function App() {
           <Route
             path="/myclub/page/edit"
             element={<ComingSoonScreen title="동아리 페이지 관리" />}
+          />
+          <Route
+            path="/myclub/profile/edit"
+            element={<ClubProfileEditScreen />}
           />
         </Routes>
       </div>
