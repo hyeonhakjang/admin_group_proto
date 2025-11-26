@@ -56,7 +56,9 @@ const MyClubScreen: React.FC = () => {
   } | null>(null);
 
   const canAccessSideNav =
-    selectedClub?.role === "회장" || selectedClub?.role === "스태프";
+    userData?.type === "club" ||
+    selectedClub?.role === "회장" ||
+    selectedClub?.role === "스태프";
 
   // 가입된 동아리 목록
   const [clubs, setClubs] = useState<Club[]>([]);
