@@ -44,21 +44,16 @@ const PostWriteScreen: React.FC = () => {
   const [isNotice, setIsNotice] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [selectedSchedule, setSelectedSchedule] = useState<SelectedSchedule | null>(null);
-  const [selectedPayout, setSelectedPayout] = useState<SelectedPayout | null>(null);
+  const [selectedSchedule, setSelectedSchedule] =
+    useState<SelectedSchedule | null>(null);
+  const [selectedPayout, setSelectedPayout] = useState<SelectedPayout | null>(
+    null
+  );
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 카테고리 목록
-  const categories = [
-    "공지",
-    "일정",
-    "정산",
-    "자유",
-    "질문",
-    "정보",
-    "기타",
-  ];
+  const categories = ["공지", "일정", "정산", "자유", "질문", "정보", "기타"];
 
   useEffect(() => {
     const storedUser =
@@ -142,26 +137,32 @@ const PostWriteScreen: React.FC = () => {
   }, []);
 
   const handleNavigateScheduleSelect = () => {
-    sessionStorage.setItem("articleWriteData", JSON.stringify({
-      category,
-      isNotice,
-      title,
-      content,
-      selectedSchedule,
-      selectedPayout,
-    }));
+    sessionStorage.setItem(
+      "articleWriteData",
+      JSON.stringify({
+        category,
+        isNotice,
+        title,
+        content,
+        selectedSchedule,
+        selectedPayout,
+      })
+    );
     navigate("/myclub/post/write/schedule");
   };
 
   const handleNavigatePayoutSelect = () => {
-    sessionStorage.setItem("articleWriteData", JSON.stringify({
-      category,
-      isNotice,
-      title,
-      content,
-      selectedSchedule,
-      selectedPayout,
-    }));
+    sessionStorage.setItem(
+      "articleWriteData",
+      JSON.stringify({
+        category,
+        isNotice,
+        title,
+        content,
+        selectedSchedule,
+        selectedPayout,
+      })
+    );
     navigate("/myclub/post/write/payout");
   };
 
@@ -179,6 +180,11 @@ const PostWriteScreen: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!category) {
+      alert("카테고리를 선택해 주세요.");
+      return;
+    }
+
     if (!title.trim()) {
       alert("글 제목을 입력해 주세요.");
       return;
@@ -195,7 +201,9 @@ const PostWriteScreen: React.FC = () => {
     }
 
     if (userData?.type === "personal" && !clubPersonalId) {
-      alert("동아리 멤버 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.");
+      alert(
+        "동아리 멤버 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요."
+      );
       return;
     }
 
@@ -223,18 +231,17 @@ const PostWriteScreen: React.FC = () => {
         throw new Error("게시글 저장 실패");
       }
 
-      // 2. 카테고리 저장
-      if (category) {
-        const { error: categoryError } = await supabase
-          .from("club_personal_article_category")
-          .insert({
-            club_personal_article_id: article.id,
-            name: category,
-          });
+      // 2. 카테고리 저장 (필수)
+      const { error: categoryError } = await supabase
+        .from("club_personal_article_category")
+        .insert({
+          club_personal_article_id: article.id,
+          name: category,
+        });
 
-        if (categoryError) {
-          console.error("카테고리 저장 오류:", categoryError);
-        }
+      if (categoryError) {
+        console.error("카테고리 저장 오류:", categoryError);
+        throw categoryError;
       }
 
       // 3. 행사 첨부 저장
@@ -282,10 +289,7 @@ const PostWriteScreen: React.FC = () => {
       <div className="post-write-inner">
         {/* 헤더 */}
         <header className="post-write-header">
-          <button
-            className="post-write-back-btn"
-            onClick={() => navigate(-1)}
-          >
+          <button className="post-write-back-btn" onClick={() => navigate(-1)}>
             ← 뒤로가기
           </button>
         </header>
@@ -306,15 +310,6 @@ const PostWriteScreen: React.FC = () => {
               </button>
               {showCategoryDropdown && (
                 <div className="post-write-category-dropdown">
-                  <div
-                    className="post-write-category-option"
-                    onClick={() => {
-                      setCategory("");
-                      setShowCategoryDropdown(false);
-                    }}
-                  >
-                    선택 안함
-                  </div>
                   {categories.map((cat) => (
                     <div
                       key={cat}
@@ -445,7 +440,7 @@ const PostWriteScreen: React.FC = () => {
           <button
             type="submit"
             className="post-write-submit-btn"
-            disabled={isSubmitting || !title.trim() || !content.trim()}
+            disabled={isSubmitting || !category || !title.trim() || !content.trim()}
           >
             {isSubmitting ? "등록 중..." : "등록"}
           </button>
@@ -457,4 +452,3 @@ const PostWriteScreen: React.FC = () => {
 };
 
 export default PostWriteScreen;
-
