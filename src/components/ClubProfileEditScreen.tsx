@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import BottomTabBar from "./BottomTabBar";
@@ -57,6 +57,10 @@ const ClubProfileEditScreen: React.FC = () => {
   const [clubNickname, setClubNickname] = useState<string>("");
   const [personalName, setPersonalName] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string>("/profile-icon.png");
+  const [isEditingNickname, setIsEditingNickname] = useState(false);
+  const [editingNickname, setEditingNickname] = useState<string>("");
+  const [personalUserId, setPersonalUserId] = useState<number | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 데이터 리스트
   const [posts, setPosts] = useState<Post[]>([]);
@@ -64,6 +68,7 @@ const ClubProfileEditScreen: React.FC = () => {
   const [commentedPosts, setCommentedPosts] = useState<Post[]>([]);
   const [likedPosts, setLikedPosts] = useState<LikedPost[]>([]);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // 사용자 정보 및 동아리 정보 로드
   useEffect(() => {
@@ -130,6 +135,7 @@ const ClubProfileEditScreen: React.FC = () => {
           setProfileImage(
             personalUser?.profile_image_url || "/profile-icon.png"
           );
+          setPersonalUserId(personalUser?.id || null);
         }
       } catch (error) {
         console.error("프로필 정보 로드 중 오류:", error);
@@ -333,6 +339,91 @@ const ClubProfileEditScreen: React.FC = () => {
     navigate(`/myclub/post/${postId}`);
   };
 
+  // 프로필 이미지 클릭 핸들러
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  // 프로필 이미지 변경
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !personalUserId) return;
+
+    // 이미지 미리보기
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProfileImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // TODO: Supabase Storage에 업로드하고 URL을 personal_user 테이블에 저장
+    // 현재는 미리보기만 구현
+    try {
+      setSaving(true);
+      // 파일을 Base64로 변환하여 임시로 저장하거나
+      // Supabase Storage에 업로드하는 로직을 여기에 추가
+      // const fileExt = file.name.split('.').pop();
+      // const fileName = `${personalUserId}-${Date.now()}.${fileExt}`;
+      // const { data, error } = await supabase.storage
+      //   .from('profile-images')
+      //   .upload(fileName, file);
+      // if (error) throw error;
+      // const { data: { publicUrl } } = supabase.storage
+      //   .from('profile-images')
+      //   .getPublicUrl(fileName);
+      // await supabase
+      //   .from('personal_user')
+      //   .update({ profile_image_url: publicUrl })
+      //   .eq('id', personalUserId);
+      alert("프로필 이미지 업로드 기능은 준비 중입니다.");
+    } catch (error) {
+      console.error("프로필 이미지 업로드 오류:", error);
+      alert("프로필 이미지 업로드 중 오류가 발생했습니다.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // 닉네임 편집 시작
+  const handleNicknameClick = () => {
+    setIsEditingNickname(true);
+    setEditingNickname(clubNickname);
+  };
+
+  // 닉네임 저장
+  const handleNicknameSave = async () => {
+    if (!selectedClub?.club_personal_id || !editingNickname.trim()) {
+      setIsEditingNickname(false);
+      return;
+    }
+
+    try {
+      setSaving(true);
+      const { error } = await supabase
+        .from("club_personal")
+        .update({ nickname: editingNickname.trim() })
+        .eq("id", selectedClub.club_personal_id);
+
+      if (error) {
+        throw error;
+      }
+
+      setClubNickname(editingNickname.trim());
+      setIsEditingNickname(false);
+    } catch (error) {
+      console.error("닉네임 업데이트 오류:", error);
+      alert("닉네임 업데이트 중 오류가 발생했습니다.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // 닉네임 편집 취소
+  const handleNicknameCancel = () => {
+    setIsEditingNickname(false);
+    setEditingNickname(clubNickname);
+  };
+
   return (
     <div className="club-profile-edit-screen">
       {/* 헤더: 뒤로가기 버튼 */}
@@ -345,18 +436,74 @@ const ClubProfileEditScreen: React.FC = () => {
       {/* 프로필 섹션 */}
       <div className="club-profile-edit-profile-section">
         {/* 섹션 A: 프로필 이미지 */}
-        <div className="club-profile-edit-image-wrapper">
+        <div
+          className="club-profile-edit-image-wrapper"
+          onClick={handleImageClick}
+          style={{ cursor: "pointer" }}
+        >
           <img
             src={profileImage}
             alt="프로필"
             className="club-profile-edit-image"
+          />
+          <div className="club-profile-edit-image-overlay">
+            <span className="club-profile-edit-image-edit-icon">✏️</span>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ display: "none" }}
           />
         </div>
 
         {/* 섹션 B, C: 닉네임 정보 */}
         <div className="club-profile-edit-info">
           {/* 섹션 B: 동아리 닉네임 */}
-          <div className="club-profile-edit-nickname">{clubNickname}</div>
+          {isEditingNickname ? (
+            <div className="club-profile-edit-nickname-edit">
+              <input
+                type="text"
+                value={editingNickname}
+                onChange={(e) => setEditingNickname(e.target.value)}
+                className="club-profile-edit-nickname-input"
+                autoFocus
+                onBlur={handleNicknameSave}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleNicknameSave();
+                  } else if (e.key === "Escape") {
+                    handleNicknameCancel();
+                  }
+                }}
+              />
+              <div className="club-profile-edit-nickname-actions">
+                <button
+                  className="club-profile-edit-nickname-save"
+                  onClick={handleNicknameSave}
+                  disabled={saving}
+                >
+                  저장
+                </button>
+                <button
+                  className="club-profile-edit-nickname-cancel"
+                  onClick={handleNicknameCancel}
+                  disabled={saving}
+                >
+                  취소
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="club-profile-edit-nickname"
+              onClick={handleNicknameClick}
+              style={{ cursor: "pointer" }}
+            >
+              {clubNickname}
+            </div>
+          )}
           {/* 섹션 C: personal_user 계정 닉네임 */}
           <div className="club-profile-edit-personal-name">{personalName}</div>
         </div>
