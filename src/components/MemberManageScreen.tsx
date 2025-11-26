@@ -133,9 +133,13 @@ const MemberManageScreen: React.FC = () => {
   const handleApproveMember = useCallback(
     async (clubPersonalId: number) => {
       try {
+        // 승인 시 기본 역할을 "회원"으로 설정
         const { error } = await supabase
           .from("club_personal")
-          .update({ approved: true })
+          .update({ 
+            approved: true,
+            role: "회원" // 기본 역할을 "회원"으로 명시적으로 설정
+          })
           .eq("id", clubPersonalId);
 
         if (error) {
