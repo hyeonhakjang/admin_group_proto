@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import BottomTabBar from "./BottomTabBar";
 import "./MemberManageScreen.css";
 
 interface UserData {
@@ -357,6 +358,7 @@ const MemberManageScreen: React.FC = () => {
           </div>
         </div>
       </div>
+      <BottomTabBar />
     </div>
   );
 };
