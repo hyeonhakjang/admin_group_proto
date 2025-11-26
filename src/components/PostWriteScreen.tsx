@@ -55,6 +55,12 @@ const PostWriteScreen: React.FC = () => {
   // 카테고리 목록
   const categories = ["공지", "일정", "정산", "자유", "질문", "정보", "기타"];
 
+  // 역할 확인: 회장, 스태프, 또는 club_user 계정인지 확인
+  const canUseAdvancedFeatures =
+    userData?.type === "club" ||
+    selectedClub?.role === "회장" ||
+    selectedClub?.role === "스태프";
+
   useEffect(() => {
     const storedUser =
       localStorage.getItem("user") || sessionStorage.getItem("user");
@@ -326,17 +332,20 @@ const PostWriteScreen: React.FC = () => {
               )}
             </div>
 
-            <div className="post-write-notice-toggle-wrapper">
-              <label className="post-write-toggle-switch">
-                <input
-                  type="checkbox"
-                  checked={isNotice}
-                  onChange={(e) => setIsNotice(e.target.checked)}
-                />
-                <span className="post-write-toggle-label">공지글</span>
-                <span className="post-write-toggle-slider"></span>
-              </label>
-            </div>
+            {/* 공지글 토글: 회장/스태프/club_user만 표시 */}
+            {canUseAdvancedFeatures && (
+              <div className="post-write-notice-toggle-wrapper">
+                <label className="post-write-toggle-switch">
+                  <input
+                    type="checkbox"
+                    checked={isNotice}
+                    onChange={(e) => setIsNotice(e.target.checked)}
+                  />
+                  <span className="post-write-toggle-label">공지글</span>
+                  <span className="post-write-toggle-slider"></span>
+                </label>
+              </div>
+            )}
           </div>
 
           {/* 글 제목 */}
@@ -363,78 +372,84 @@ const PostWriteScreen: React.FC = () => {
             />
           </div>
 
-          {/* 행사 첨부 */}
-          <div className="post-write-field">
-            <label className="post-write-label">행사 첨부</label>
-            <button
-              type="button"
-              className="post-write-attach-btn"
-              onClick={handleNavigateScheduleSelect}
-            >
-              {selectedSchedule
-                ? `${selectedSchedule.title} (${selectedSchedule.date})`
-                : "행사 선택"}
-            </button>
-            {selectedSchedule && (
+          {/* 행사 첨부: 회장/스태프/club_user만 표시 */}
+          {canUseAdvancedFeatures && (
+            <div className="post-write-field">
+              <label className="post-write-label">행사 첨부</label>
               <button
                 type="button"
-                className="post-write-remove-attach-btn"
-                onClick={() => setSelectedSchedule(null)}
+                className="post-write-attach-btn"
+                onClick={handleNavigateScheduleSelect}
               >
-                X
+                {selectedSchedule
+                  ? `${selectedSchedule.title} (${selectedSchedule.date})`
+                  : "행사 선택"}
               </button>
-            )}
-          </div>
+              {selectedSchedule && (
+                <button
+                  type="button"
+                  className="post-write-remove-attach-btn"
+                  onClick={() => setSelectedSchedule(null)}
+                >
+                  X
+                </button>
+              )}
+            </div>
+          )}
 
-          {/* 정산 첨부 */}
-          <div className="post-write-field">
-            <label className="post-write-label">정산 첨부</label>
-            <button
-              type="button"
-              className="post-write-attach-btn"
-              onClick={handleNavigatePayoutSelect}
-            >
-              {selectedPayout
-                ? `${selectedPayout.title} (${selectedPayout.applied_date})`
-                : "정산 선택"}
-            </button>
-            {selectedPayout && (
+          {/* 정산 첨부: 회장/스태프/club_user만 표시 */}
+          {canUseAdvancedFeatures && (
+            <div className="post-write-field">
+              <label className="post-write-label">정산 첨부</label>
               <button
                 type="button"
-                className="post-write-remove-attach-btn"
-                onClick={() => setSelectedPayout(null)}
+                className="post-write-attach-btn"
+                onClick={handleNavigatePayoutSelect}
               >
-                X
+                {selectedPayout
+                  ? `${selectedPayout.title} (${selectedPayout.applied_date})`
+                  : "정산 선택"}
               </button>
-            )}
-          </div>
+              {selectedPayout && (
+                <button
+                  type="button"
+                  className="post-write-remove-attach-btn"
+                  onClick={() => setSelectedPayout(null)}
+                >
+                  X
+                </button>
+              )}
+            </div>
+          )}
 
-          {/* 첨부 자료 */}
-          <div className="post-write-field">
-            <label className="post-write-label">첨부 자료</label>
-            <input
-              type="file"
-              className="post-write-file-input"
-              onChange={handleFileChange}
-              multiple
-            />
-            {attachedFiles.length > 0 && (
-              <div className="post-write-files-list">
-                {attachedFiles.map((file, index) => (
-                  <div key={index} className="post-write-file-item">
-                    <span className="post-write-file-name">{file.name}</span>
-                    <button
-                      type="button"
-                      className="post-write-file-remove-btn"
-                      onClick={() => handleRemoveFile(index)}
-                    >
-                      X
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* 첨부 자료: 회장/스태프/club_user만 표시 */}
+          {canUseAdvancedFeatures && (
+            <div className="post-write-field">
+              <label className="post-write-label">첨부 자료</label>
+              <input
+                type="file"
+                className="post-write-file-input"
+                onChange={handleFileChange}
+                multiple
+              />
+              {attachedFiles.length > 0 && (
+                <div className="post-write-files-list">
+                  {attachedFiles.map((file, index) => (
+                    <div key={index} className="post-write-file-item">
+                      <span className="post-write-file-name">{file.name}</span>
+                      <button
+                        type="button"
+                        className="post-write-file-remove-btn"
+                        onClick={() => handleRemoveFile(index)}
+                      >
+                        X
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* 제출 버튼 */}
           <button
