@@ -212,13 +212,13 @@ const ClubProfileEditScreen: React.FC = () => {
       }
 
       // 2. 중복 제거된 article_id 목록
-      const articleIds = [
-        ...new Set(
+      const articleIds = Array.from(
+        new Set(
           commentsData
             .map((c) => c.club_personal_article_id)
             .filter((id) => id !== null)
-        ),
-      ];
+        )
+      );
 
       if (articleIds.length === 0) {
         setCommentedPosts([]);
@@ -268,13 +268,13 @@ const ClubProfileEditScreen: React.FC = () => {
       }
 
       // 2. 중복 제거된 article_id 목록
-      const articleIds = [
-        ...new Set(
+      const articleIds = Array.from(
+        new Set(
           likesData
             .map((l) => l.club_personal_article_id)
             .filter((id) => id !== null)
-        ),
-      ];
+        )
+      );
 
       if (articleIds.length === 0) {
         setLikedPosts([]);
@@ -533,4 +533,3 @@ const ClubProfileEditScreen: React.FC = () => {
 };
 
 export default ClubProfileEditScreen;
-
