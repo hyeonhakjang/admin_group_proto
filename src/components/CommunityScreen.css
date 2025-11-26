@@ -63,6 +63,23 @@
   padding-bottom: calc(100px + clamp(16px, 4vw, 24px));
 }
 
+/* 게시판 빈 상태 */
+.board-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: clamp(40px, 10vw, 60px);
+  text-align: center;
+}
+
+.board-empty-state p {
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  font-size: clamp(16px, 4vw, 18px);
+  color: var(--text-muted, #666);
+  margin: 0;
+}
+
 .community-section {
   margin-bottom: clamp(24px, 6vw, 32px);
 }
