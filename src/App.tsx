@@ -75,9 +75,14 @@ function App() {
           <Route path="/community/post/:id" element={<PostDetailScreen />} />
           <Route
             path="/booking"
-            element={<ComingSoonScreen title="예약/구매" />}
+            element={
+              <ComingSoonScreen title="예약/구매" showBottomTabBar />
+            }
           />
-          <Route path="/chat" element={<ComingSoonScreen title="채팅" />} />
+          <Route
+            path="/chat"
+            element={<ComingSoonScreen title="채팅" showBottomTabBar />}
+          />
           <Route path="/myclub/post/write" element={<PostWriteScreen />} />
           <Route
             path="/myclub/post/write/schedule"
