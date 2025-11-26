@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import { supabase } from "../lib/supabase";
 import "./ClubAccountScreens.css";
 import { getBankById } from "./clubAccountBanks";
@@ -206,7 +205,6 @@ const ClubAccountBankInputScreen: React.FC = () => {
           </section>
         )}
       </div>
-      <BottomTabBar />
     </div>
   );
 };

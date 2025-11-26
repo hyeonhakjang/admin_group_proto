@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-import BottomTabBar from "./BottomTabBar";
 import "./PayoutScreens.css";
 
 const STORAGE_KEY = "payoutSelectedMembers";
@@ -795,7 +794,6 @@ const PayoutMemberSearchScreen: React.FC = () => {
           </>
         )}
       </div>
-      <BottomTabBar />
     </div>
   );
 };

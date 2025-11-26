@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import { supabase } from "../lib/supabase";
 import "./PostDetailScreen.css";
 
@@ -571,7 +570,6 @@ const PostDetailScreen: React.FC = () => {
           </button>
         </div>
         <div className="post-loading">게시글을 불러오는 중입니다...</div>
-        <BottomTabBar />
       </div>
     );
   }
@@ -588,7 +586,6 @@ const PostDetailScreen: React.FC = () => {
           <p>게시글을 찾을 수 없습니다.</p>
           <button onClick={() => navigate("/community")}>목록으로</button>
         </div>
-        <BottomTabBar />
       </div>
     );
   }
@@ -838,7 +835,6 @@ const PostDetailScreen: React.FC = () => {
         )}
       </div>
 
-      <BottomTabBar />
     </div>
   );
 };

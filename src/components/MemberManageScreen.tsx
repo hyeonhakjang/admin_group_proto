@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-import BottomTabBar from "./BottomTabBar";
 import "./MemberManageScreen.css";
 
 interface UserData {
@@ -136,9 +135,9 @@ const MemberManageScreen: React.FC = () => {
         // 승인 시 기본 역할을 "회원"으로 설정
         const { error } = await supabase
           .from("club_personal")
-          .update({ 
+          .update({
             approved: true,
-            role: "회원" // 기본 역할을 "회원"으로 명시적으로 설정
+            role: "회원", // 기본 역할을 "회원"으로 명시적으로 설정
           })
           .eq("id", clubPersonalId);
 
@@ -362,7 +361,6 @@ const MemberManageScreen: React.FC = () => {
           </div>
         </div>
       </div>
-      <BottomTabBar />
     </div>
   );
 };

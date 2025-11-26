@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import { supabase } from "../lib/supabase";
 import "./PostWriteScreen.css";
 
@@ -455,13 +454,14 @@ const PostWriteScreen: React.FC = () => {
           <button
             type="submit"
             className="post-write-submit-btn"
-            disabled={isSubmitting || !category || !title.trim() || !content.trim()}
+            disabled={
+              isSubmitting || !category || !title.trim() || !content.trim()
+            }
           >
             {isSubmitting ? "등록 중..." : "등록"}
           </button>
         </form>
       </div>
-      <BottomTabBar />
     </div>
   );
 };

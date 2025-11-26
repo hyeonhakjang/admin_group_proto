@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import "./RankingDomesticScreen.css";
 
 const categories = [
@@ -112,7 +111,6 @@ const RankingDomesticScreen: React.FC = () => {
         ))}
       </div>
 
-      <BottomTabBar />
     </div>
   );
 };

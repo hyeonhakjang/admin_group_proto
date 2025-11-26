@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import { supabase } from "../lib/supabase";
 import "./PayoutScreens.css";
 
@@ -244,7 +243,6 @@ const PayoutDetailScreen: React.FC = () => {
           </header>
           <div className="payout-loading">로딩 중...</div>
         </div>
-        <BottomTabBar />
       </div>
     );
   }
@@ -322,7 +320,6 @@ const PayoutDetailScreen: React.FC = () => {
           </button>
         </div>
       </div>
-      <BottomTabBar />
     </div>
   );
 };

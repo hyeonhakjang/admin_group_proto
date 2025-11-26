@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-import BottomTabBar from "./BottomTabBar";
 import "./ClubProfileEditScreen.css";
 
 interface UserData {
@@ -674,7 +673,6 @@ const ClubProfileEditScreen: React.FC = () => {
         )}
       </div>
 
-      <BottomTabBar />
     </div>
   );
 };

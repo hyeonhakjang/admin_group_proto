@@ -5,9 +5,13 @@ import "./ComingSoonScreen.css";
 
 interface ComingSoonScreenProps {
   title: string;
+  showBottomTabBar?: boolean;
 }
 
-const ComingSoonScreen: React.FC<ComingSoonScreenProps> = ({ title }) => {
+const ComingSoonScreen: React.FC<ComingSoonScreenProps> = ({
+  title,
+  showBottomTabBar = false,
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -34,7 +38,7 @@ const ComingSoonScreen: React.FC<ComingSoonScreenProps> = ({ title }) => {
         </button>
       </div>
 
-      <BottomTabBar />
+      {showBottomTabBar && <BottomTabBar />}
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import { supabase } from "../lib/supabase";
 import "./ClubPostDetailScreen.css";
 
@@ -737,7 +736,6 @@ const ClubPostDetailScreen: React.FC = () => {
           </button>
         </div>
         <div className="club-post-detail-loading">로딩 중...</div>
-        <BottomTabBar />
       </div>
     );
   }
@@ -754,7 +752,6 @@ const ClubPostDetailScreen: React.FC = () => {
           <p>게시글을 찾을 수 없습니다.</p>
           <button onClick={() => navigate("/myclub")}>목록으로</button>
         </div>
-        <BottomTabBar />
       </div>
     );
   }
@@ -1178,7 +1175,6 @@ const ClubPostDetailScreen: React.FC = () => {
         )}
       </div>
 
-      <BottomTabBar />
     </div>
   );
 };

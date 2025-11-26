@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import { supabase, ClubCategory } from "../lib/supabase";
 import "./ExploreDomesticScreen.css";
 
@@ -305,7 +304,6 @@ const ExploreDomesticScreen: React.FC = () => {
         )}
       </div>
 
-      <BottomTabBar />
     </div>
   );
 };

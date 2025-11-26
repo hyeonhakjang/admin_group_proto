@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import "./ClubAccountScreens.css";
 import { bankOptions } from "./clubAccountBanks";
 
@@ -46,7 +45,6 @@ const ClubAccountRegisterScreen: React.FC = () => {
           ))}
         </section>
       </div>
-      <BottomTabBar />
     </div>
   );
 };

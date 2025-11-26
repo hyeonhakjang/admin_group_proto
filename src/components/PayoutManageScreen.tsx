@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import { supabase } from "../lib/supabase";
 import "./PayoutManageScreen.css";
 
@@ -58,13 +57,7 @@ const PayoutManageScreen: React.FC = () => {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    if (!selectedClub?.club_personal_id || !userData) return;
-
-    loadPayouts();
-  }, [selectedClub, userData]);
-
-  const loadPayouts = async () => {
+  const loadPayouts = useCallback(async () => {
     if (!selectedClub?.club_user_id || !selectedClub?.club_personal_id) {
       setPayouts([]);
       setLoading(false);
@@ -147,7 +140,13 @@ const PayoutManageScreen: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedClub]);
+
+  useEffect(() => {
+    if (!selectedClub?.club_personal_id || !userData) return;
+
+    loadPayouts();
+  }, [selectedClub, userData, loadPayouts]);
 
   // 월별 그룹핑
   const groupedPayouts = payouts.reduce((groups, payout) => {
@@ -191,13 +190,6 @@ const PayoutManageScreen: React.FC = () => {
       "12월",
     ];
     return months[month - 1];
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${month}월 ${day}일`;
   };
 
   return (
@@ -277,7 +269,6 @@ const PayoutManageScreen: React.FC = () => {
         )}
       </div>
 
-      <BottomTabBar />
     </div>
   );
 };

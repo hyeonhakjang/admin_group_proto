@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import "./ExploreAllianceScreen.css";
 
 const categories = [
@@ -155,7 +154,6 @@ const ExploreAllianceScreen: React.FC = () => {
         ))}
       </div>
 
-      <BottomTabBar />
     </div>
   );
 };

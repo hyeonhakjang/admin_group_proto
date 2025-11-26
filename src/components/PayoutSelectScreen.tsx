@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import { supabase } from "../lib/supabase";
 import "./PostWriteScreen.css";
 
@@ -155,7 +154,6 @@ const PayoutSelectScreen: React.FC = () => {
           </button>
         )}
       </div>
-      <BottomTabBar />
     </div>
   );
 };

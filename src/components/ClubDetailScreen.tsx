@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import { supabase } from "../lib/supabase";
 import "./ClubDetailScreen.css";
 
@@ -869,7 +868,6 @@ const ClubDetailScreen: React.FC = () => {
         </>
       )}
 
-      <BottomTabBar />
     </div>
   );
 };

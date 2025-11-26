@@ -23,7 +23,6 @@ interface Club {
   };
 }
 
-
 const CommunityScreen: React.FC = () => {
   const navigate = useNavigate();
   const [activeTopTab, setActiveTopTab] = useState<"find-clubs" | "board">(
@@ -113,7 +112,6 @@ const CommunityScreen: React.FC = () => {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="community-screen" data-name="커뮤니티 화면">

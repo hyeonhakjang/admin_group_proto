@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomTabBar from "./BottomTabBar";
 import "./ClubAccountScreens.css";
 
 interface ClubAccountInfo {
@@ -69,7 +68,6 @@ const ClubAccountScreen: React.FC = () => {
           </p>
         </section>
       </div>
-      <BottomTabBar />
     </div>
   );
 };
