@@ -409,7 +409,7 @@ const MemberManageScreen: React.FC = () => {
                           (userData?.type === "personal" &&
                             selectedClub?.role === "회장")) &&
                         member.role !== "관리자" &&
-                        member.role !== "회장" && (
+                        (
                           <div className="role-dropdown">
                             <button
                               className="role-option"
@@ -432,6 +432,18 @@ const MemberManageScreen: React.FC = () => {
                               }
                             >
                               회원
+                            </button>
+                            <button
+                              className="role-option"
+                              onClick={() =>
+                                handleChangeMemberRole(
+                                  member.clubPersonalId,
+                                  "회장"
+                                )
+                              }
+                              disabled={member.role === "회장"}
+                            >
+                              회장
                             </button>
                           </div>
                         )}
