@@ -506,6 +506,7 @@ const ClubDetailScreen: React.FC = () => {
   const canEditCategory =
     userData?.type === "club" && club && userData.id === club.id;
   const canManageFeed = canEditCategory;
+  const isOwnClub = canEditCategory;
 
   const handleCategorySelect = async (newCategory: string) => {
     if (!club || !canEditCategory || isUpdatingCategory) return;
@@ -536,6 +537,11 @@ const ClubDetailScreen: React.FC = () => {
   const handleAddFeedClick = () => {
     if (!club || !canManageFeed) return;
     navigate(`/community/club/${club.id}/feed/new`);
+  };
+
+  const handleJoinSettingsClick = () => {
+    if (!club || !isOwnClub) return;
+    navigate(`/community/club/${club.id}/join-settings`);
   };
 
   if (loading) {
@@ -656,13 +662,19 @@ const ClubDetailScreen: React.FC = () => {
 
         {/* Section F: 가입 신청 + 채팅 문의 */}
         <div className="club-action-section">
-          <button
-            className="join-btn"
-            onClick={handleJoinRequest}
-            disabled={!club.isRecruiting || userData?.type !== "personal"}
-          >
-            가입 신청
-          </button>
+          {isOwnClub ? (
+            <button className="join-btn" onClick={handleJoinSettingsClick}>
+              가입 설정
+            </button>
+          ) : (
+            <button
+              className="join-btn"
+              onClick={handleJoinRequest}
+              disabled={!club.isRecruiting || userData?.type !== "personal"}
+            >
+              가입 신청
+            </button>
+          )}
           <button className="chat-btn" onClick={() => navigate("/chat")}>
             채팅 문의
           </button>
@@ -914,15 +926,15 @@ const ClubDetailScreen: React.FC = () => {
           ) : (
             <div className="feed-empty-state">
               <p>아직 활동 피드가 없습니다.</p>
-                {canManageFeed && (
-                  <button
-                    type="button"
-                    className="feed-add-btn"
-                    onClick={handleAddFeedClick}
-                  >
-                    + 피드 등록하기
-                  </button>
-                )}
+              {canManageFeed && (
+                <button
+                  type="button"
+                  className="feed-add-btn"
+                  onClick={handleAddFeedClick}
+                >
+                  + 피드 등록하기
+                </button>
+              )}
             </div>
           )}
         </div>
