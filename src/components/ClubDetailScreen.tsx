@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import "./ClubDetailScreen.css";
@@ -42,6 +48,10 @@ const ClubDetailScreen: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [isUpdatingCategory, setIsUpdatingCategory] = useState(false);
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+  const [descriptionInput, setDescriptionInput] = useState("");
+  const [isUpdatingDescription, setIsUpdatingDescription] = useState(false);
 
   // 달력 관련 상태 (MyClubScreen에서 재사용)
   const [currentDate, setCurrentDate] = useState(() => {
@@ -507,6 +517,7 @@ const ClubDetailScreen: React.FC = () => {
     userData?.type === "club" && club && userData.id === club.id;
   const canManageFeed = canEditCategory;
   const isOwnClub = canEditCategory;
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleCategorySelect = async (newCategory: string) => {
     if (!club || !canEditCategory || isUpdatingCategory) return;
@@ -542,6 +553,100 @@ const ClubDetailScreen: React.FC = () => {
   const handleJoinSettingsClick = () => {
     if (!club || !isOwnClub) return;
     navigate(`/community/club/${club.id}/join-settings`);
+  };
+
+  const handleLogoClick = () => {
+    if (!isOwnClub || isUploadingLogo) return;
+    fileInputRef.current?.click();
+  };
+
+  const handleLogoChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!club || !isOwnClub) return;
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploadingLogo(true);
+      const fileExt = file.name.split(".").pop();
+      const fileName = `club-${club.id}-${Date.now()}.${fileExt}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("club-profile-images")
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError || !uploadData) {
+        throw uploadError;
+      }
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("club-profile-images").getPublicUrl(fileName);
+
+      const { error: updateError } = await supabase
+        .from("club_user")
+        .update({ profile_image_url: publicUrl })
+        .eq("id", club.id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      setClub((prev) =>
+        prev
+          ? {
+              ...prev,
+              logo: publicUrl,
+            }
+          : prev
+      );
+    } catch (error) {
+      console.error("프로필 이미지 업로드 오류:", error);
+      alert("프로필 이미지 업로드 중 오류가 발생했습니다.");
+    } finally {
+      setIsUploadingLogo(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleDescriptionClick = () => {
+    if (!isOwnClub || !club) return;
+    setDescriptionInput(club.description || "");
+    setShowDescriptionModal(true);
+  };
+
+  const handleDescriptionSave = async () => {
+    if (!club || !isOwnClub) return;
+
+    try {
+      setIsUpdatingDescription(true);
+      const trimmed = descriptionInput.trim();
+      const { error } = await supabase
+        .from("club_user")
+        .update({ club_explanation: trimmed })
+        .eq("id", club.id);
+
+      if (error) {
+        throw error;
+      }
+
+      setClub((prev) =>
+        prev
+          ? {
+              ...prev,
+              description: trimmed,
+            }
+          : prev
+      );
+      setShowDescriptionModal(false);
+    } catch (error) {
+      console.error("동아리 설명 업데이트 오류:", error);
+      alert("동아리 설명 업데이트 중 오류가 발생했습니다.");
+    } finally {
+      setIsUpdatingDescription(false);
+    }
   };
 
   if (loading) {
@@ -608,7 +713,34 @@ const ClubDetailScreen: React.FC = () => {
                   {club.category || "카테고리 미지정"}
                 </span>
               </div>
-              <img src={club.logo} alt={club.name} className="club-logo" />
+              <div
+                className={`club-logo ${isOwnClub ? "editable" : ""}`}
+                onClick={handleLogoClick}
+                role={isOwnClub ? "button" : undefined}
+                tabIndex={isOwnClub ? 0 : undefined}
+                onKeyDown={(e) => {
+                  if (!isOwnClub) return;
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleLogoClick();
+                  }
+                }}
+              >
+                {isUploadingLogo ? (
+                  <span className="club-logo-uploading">업로드 중...</span>
+                ) : (
+                  <img src={club.logo} alt={club.name} />
+                )}
+              </div>
+              {isOwnClub && (
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handleLogoChange}
+                />
+              )}
             </div>
 
             {/* Section C: 통계 (피드, 멤버, 활동점수) */}
@@ -630,8 +762,27 @@ const ClubDetailScreen: React.FC = () => {
         </div>
 
         {/* Section D: 소개글 */}
-        <div className="club-description-section">
-          <p className="club-description">{club.description}</p>
+        <div
+          className={`club-description-section ${isOwnClub ? "editable" : ""}`}
+          onClick={handleDescriptionClick}
+          role={isOwnClub ? "button" : undefined}
+          tabIndex={isOwnClub ? 0 : undefined}
+          onKeyDown={(e) => {
+            if (!isOwnClub) return;
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handleDescriptionClick();
+            }
+          }}
+        >
+          <p className="club-description">
+            {club.description || "동아리 설명이 없습니다."}
+          </p>
+          {isOwnClub && (
+            <span className="club-description-edit-hint">
+              설명을 수정하려면 클릭하세요
+            </span>
+          )}
         </div>
 
         {/* Section E: 외부 링크 */}
@@ -973,6 +1124,55 @@ const ClubDetailScreen: React.FC = () => {
                   {category}
                 </button>
               ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* 동아리 설명 모달 */}
+      {showDescriptionModal && (
+        <>
+          <div
+            className="description-modal-overlay"
+            onClick={() =>
+              !isUpdatingDescription && setShowDescriptionModal(false)
+            }
+          ></div>
+          <div className="description-modal">
+            <div className="description-modal-header">
+              <h2 className="description-modal-title">동아리 설명 수정</h2>
+              <button
+                className="description-modal-close"
+                onClick={() =>
+                  !isUpdatingDescription && setShowDescriptionModal(false)
+                }
+                disabled={isUpdatingDescription}
+              >
+                ✕
+              </button>
+            </div>
+            <textarea
+              className="description-modal-textarea"
+              value={descriptionInput}
+              onChange={(e) => setDescriptionInput(e.target.value)}
+              maxLength={1000}
+              placeholder="동아리 설명을 입력하세요"
+            ></textarea>
+            <div className="description-modal-actions">
+              <button
+                className="description-modal-cancel"
+                onClick={() => setShowDescriptionModal(false)}
+                disabled={isUpdatingDescription}
+              >
+                취소
+              </button>
+              <button
+                className="description-modal-save"
+                onClick={handleDescriptionSave}
+                disabled={isUpdatingDescription}
+              >
+                {isUpdatingDescription ? "저장 중..." : "저장"}
+              </button>
             </div>
           </div>
         </>

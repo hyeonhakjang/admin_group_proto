@@ -166,9 +166,46 @@
   border-radius: 50%;
   border: 2px solid #e0e0e0;
   background: white;
-  object-fit: cover;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.club-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.club-logo.editable {
+  cursor: pointer;
+}
+
+.club-logo.editable::after {
+  content: "편집";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: clamp(12px, 3vw, 14px);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.club-logo.editable:hover::after {
+  opacity: 1;
+}
+
+.club-logo-uploading {
+  font-size: clamp(12px, 3vw, 14px);
+  color: #666;
 }
 
 /* Section C: 통계 섹션 (피드, 멤버, 활동점수) */
@@ -222,6 +259,26 @@
   line-height: 1.6;
   margin: 0;
   word-break: keep-all;
+}
+
+.club-description-section.editable {
+  cursor: pointer;
+  border: 1px dashed transparent;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.club-description-section.editable:hover {
+  border-color: #c34e00;
+  background: #fff5f0;
+}
+
+.club-description-edit-hint {
+  display: block;
+  margin-top: clamp(6px, 1.5vw, 8px);
+  font-size: clamp(12px, 3vw, 13px);
+  color: #c34e00;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
 }
 
 /* Section E: External Links */
@@ -1012,6 +1069,122 @@
 }
 
 .category-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 동아리 설명 모달 */
+.description-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1300;
+}
+
+.description-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, calc(100% - 32px));
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  z-index: 1301;
+  padding: clamp(16px, 4vw, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 20px);
+  box-sizing: border-box;
+}
+
+.description-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.description-modal-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(18px, 4.5vw, 20px);
+  margin: 0;
+  color: #28201b;
+}
+
+.description-modal-close {
+  background: none;
+  border: none;
+  font-size: clamp(18px, 4.5vw, 20px);
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.description-modal-close:hover:not(:disabled) {
+  color: #c34e00;
+}
+
+.description-modal-close:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.description-modal-textarea {
+  width: 100%;
+  min-height: 160px;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  padding: clamp(12px, 3vw, 16px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 15px);
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.description-modal-textarea:focus {
+  outline: none;
+  border-color: #c34e00;
+  box-shadow: 0 0 0 2px rgba(195, 78, 0, 0.15);
+}
+
+.description-modal-actions {
+  display: flex;
+  gap: clamp(8px, 2vw, 12px);
+  justify-content: flex-end;
+}
+
+.description-modal-cancel,
+.description-modal-save {
+  border: none;
+  border-radius: 999px;
+  padding: clamp(10px, 2.5vw, 12px) clamp(20px, 5vw, 24px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(13px, 3vw, 14px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.description-modal-cancel {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.description-modal-cancel:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.description-modal-save {
+  background: #c34e00;
+  color: #fff;
+}
+
+.description-modal-save:hover:not(:disabled) {
+  background: #a03f00;
+}
+
+.description-modal-cancel:disabled,
+.description-modal-save:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
