@@ -437,22 +437,25 @@ const ClubDetailScreen: React.FC = () => {
         .eq("club_user_id", clubId)
         .eq("approved", true);
 
-      // 게시물 수 계산
-      const { data: clubPersonals } = await supabase
-        .from("club_personal")
-        .select("id")
-        .eq("club_user_id", clubId)
-        .eq("approved", true);
+      // 피드 개수 계산 (club_feed 테이블에서)
+      const { count: feedCount } = await supabase
+        .from("club_feed")
+        .select("*", { count: "exact", head: true })
+        .eq("club_user_id", clubId);
 
-      let postCount = 0;
-      if (clubPersonals && clubPersonals.length > 0) {
-        const clubPersonalIds = clubPersonals.map((cp) => cp.id);
-        const { count: articleCount } = await supabase
-          .from("club_personal_article")
-          .select("*", { count: "exact", head: true })
-          .in("club_personal_id", clubPersonalIds);
-        postCount = articleCount || 0;
-      }
+      // 피드 데이터 로드
+      const { data: feedData } = await supabase
+        .from("club_feed")
+        .select("id, image_url, caption")
+        .eq("club_user_id", clubId)
+        .order("created_at", { ascending: false })
+        .limit(9); // 최근 9개만 미리보기용으로 로드
+
+      const feedItems = (feedData || []).map((item) => ({
+        id: item.id,
+        image: item.image_url,
+        caption: item.caption || "",
+      }));
 
       const activityScore = clubUser.score || (memberCount || 0) * 10;
       const groupUser = Array.isArray(clubUser.group_user)
@@ -476,8 +479,8 @@ const ClubDetailScreen: React.FC = () => {
           instagram: clubUser.instagram_url || undefined,
           youtube: clubUser.youtube_url || undefined,
         },
-        feed: [], // 피드는 별도로 구현 필요
-        postCount: postCount, // 게시물 수 추가
+        feed: feedItems,
+        postCount: feedCount || 0, // 피드 개수
       };
 
       setClub(clubData);
