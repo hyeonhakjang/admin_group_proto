@@ -81,7 +81,6 @@ const MemberManageScreen: React.FC = () => {
           id,
           role,
           approved,
-          leave_requested,
           personal_user:personal_user_id (
             id,
             personal_name,
