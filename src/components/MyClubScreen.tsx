@@ -2777,7 +2777,12 @@ const MyClubScreen: React.FC = () => {
                 className="side-nav-profile-info"
                 onClick={() => {
                   setShowSideNav(false);
-                  navigate("/myclub/profile/edit");
+                  // club_user 타입이면 ClubDetailScreen으로 이동
+                  if (userData?.type === "club") {
+                    navigate(`/community/club/${userData.id}`);
+                  } else {
+                    navigate("/myclub/profile/edit");
+                  }
                 }}
               >
                 <img
