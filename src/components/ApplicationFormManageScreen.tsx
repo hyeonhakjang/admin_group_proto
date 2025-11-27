@@ -27,32 +27,33 @@ const ApplicationFormManageScreen: React.FC = () => {
       </header>
 
       <main className="application-form-content">
-        <section className="application-form-title-section">
-          <h1>신청폼 관리</h1>
-          <p>동아리 신청폼을 만들고 관리하세요.</p>
-        </section>
+        <div className="application-form-content-inner">
+          <section className="application-form-title-section">
+            <h1>신청폼 관리</h1>
+            <p>동아리 신청폼을 만들고 관리하세요.</p>
+          </section>
 
-        <section className="application-form-grid">
-          {mockForms.map((form) => (
-            <div key={form.id} className="application-form-card">
-              <div className="application-form-card-icon">
-                <div className="application-form-card-icon-circle">
-                  <span role="img" aria-label="document">
-                    📄
-                  </span>
+          <section className="application-form-grid">
+            {mockForms.map((form) => (
+              <div key={form.id} className="application-form-card">
+                <div className="application-form-card-icon">
+                  <div className="application-form-card-icon-circle">
+                    <span role="img" aria-label="document">
+                      📄
+                    </span>
+                  </div>
+                </div>
+                <div className="application-form-card-body">
+                  <h3>{form.name}</h3>
+                  <span>{form.createdAt}</span>
                 </div>
               </div>
-              <div className="application-form-card-body">
-                <h3>{form.name}</h3>
-                <span>{form.createdAt}</span>
-              </div>
-            </div>
-          ))}
-        </section>
+            ))}
+          </section>
+        </div>
       </main>
     </div>
   );
 };
 
 export default ApplicationFormManageScreen;
-
