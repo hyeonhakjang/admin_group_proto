@@ -23,6 +23,16 @@ interface ClubData {
   postCount: number;
 }
 
+const categoryOptions = [
+  "학술",
+  "공연",
+  "체육",
+  "종교",
+  "봉사",
+  "문화",
+  "기타",
+];
+
 const ClubDetailScreen: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -30,6 +40,8 @@ const ClubDetailScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showJoinSuccess, setShowJoinSuccess] = useState(false);
   const [userData, setUserData] = useState<any>(null);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [isUpdatingCategory, setIsUpdatingCategory] = useState(false);
 
   // 달력 관련 상태 (MyClubScreen에서 재사용)
   const [currentDate, setCurrentDate] = useState(() => {
@@ -491,6 +503,41 @@ const ClubDetailScreen: React.FC = () => {
     }
   };
 
+  const canEditCategory =
+    userData?.type === "club" && club && userData.id === club.id;
+  const canManageFeed = canEditCategory;
+
+  const handleCategorySelect = async (newCategory: string) => {
+    if (!club || !canEditCategory || isUpdatingCategory) return;
+
+    try {
+      setIsUpdatingCategory(true);
+      const { error } = await supabase
+        .from("club_user")
+        .update({ category: newCategory })
+        .eq("id", club.id);
+
+      if (error) {
+        throw error;
+      }
+
+      setClub((prevClub) =>
+        prevClub ? { ...prevClub, category: newCategory } : prevClub
+      );
+      setShowCategoryModal(false);
+    } catch (error) {
+      console.error("카테고리 업데이트 오류:", error);
+      alert("카테고리 변경 중 오류가 발생했습니다.");
+    } finally {
+      setIsUpdatingCategory(false);
+    }
+  };
+
+  const handleAddFeedClick = () => {
+    if (!club || !canManageFeed) return;
+    navigate(`/community/club/${club.id}/feed/new`);
+  };
+
   if (loading) {
     return (
       <div className="club-detail-screen">
@@ -535,7 +582,25 @@ const ClubDetailScreen: React.FC = () => {
               {/* Section A: 동아리 이름과 카테고리 (로고 위) */}
               <div className="club-name-section">
                 <h1 className="club-name">{club.name}</h1>
-                <span className="club-category">{club.category}</span>
+                <span
+                  className={`club-category ${
+                    canEditCategory ? "editable" : ""
+                  }`}
+                  onClick={() => canEditCategory && setShowCategoryModal(true)}
+                  role={canEditCategory ? "button" : undefined}
+                  tabIndex={canEditCategory ? 0 : undefined}
+                  onKeyDown={(e) => {
+                    if (
+                      canEditCategory &&
+                      (e.key === "Enter" || e.key === " ")
+                    ) {
+                      e.preventDefault();
+                      setShowCategoryModal(true);
+                    }
+                  }}
+                >
+                  {club.category || "카테고리 미지정"}
+                </span>
               </div>
               <img src={club.logo} alt={club.name} className="club-logo" />
             </div>
@@ -825,6 +890,16 @@ const ClubDetailScreen: React.FC = () => {
           <h2 className="section-title">동아리 활동 피드</h2>
           {club.feed.length > 0 ? (
             <div className="feed-grid">
+              {canManageFeed && (
+                <button
+                  type="button"
+                  className="feed-add-card"
+                  onClick={handleAddFeedClick}
+                >
+                  <span className="feed-add-plus">+</span>
+                  <span className="feed-add-label">새 피드</span>
+                </button>
+              )}
               {club.feed.map((item) => (
                 <div key={item.id} className="feed-item">
                   <img
@@ -839,10 +914,57 @@ const ClubDetailScreen: React.FC = () => {
           ) : (
             <div className="feed-empty-state">
               <p>아직 활동 피드가 없습니다.</p>
+                {canManageFeed && (
+                  <button
+                    type="button"
+                    className="feed-add-btn"
+                    onClick={handleAddFeedClick}
+                  >
+                    + 피드 등록하기
+                  </button>
+                )}
             </div>
           )}
         </div>
       </div>
+
+      {/* 카테고리 선택 모달 */}
+      {showCategoryModal && (
+        <>
+          <div
+            className="category-modal-overlay"
+            onClick={() => !isUpdatingCategory && setShowCategoryModal(false)}
+          ></div>
+          <div className="category-modal">
+            <div className="category-modal-header">
+              <h2 className="category-modal-title">카테고리 선택</h2>
+              <button
+                className="category-modal-close"
+                onClick={() =>
+                  !isUpdatingCategory && setShowCategoryModal(false)
+                }
+                disabled={isUpdatingCategory}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="category-list">
+              {categoryOptions.map((category) => (
+                <button
+                  key={category}
+                  className={`category-item ${
+                    category === club.category ? "active" : ""
+                  }`}
+                  onClick={() => handleCategorySelect(category)}
+                  disabled={isUpdatingCategory}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
 
       {/* 가입 신청 완료 모달 */}
       {showJoinSuccess && (
@@ -870,7 +992,6 @@ const ClubDetailScreen: React.FC = () => {
           </div>
         </>
       )}
-
     </div>
   );
 };
