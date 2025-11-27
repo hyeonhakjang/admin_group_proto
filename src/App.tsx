@@ -75,9 +75,7 @@ function App() {
           <Route path="/community/post/:id" element={<PostDetailScreen />} />
           <Route
             path="/booking"
-            element={
-              <ComingSoonScreen title="예약/구매" showBottomTabBar />
-            }
+            element={<ComingSoonScreen title="예약/구매" showBottomTabBar />}
           />
           <Route
             path="/chat"

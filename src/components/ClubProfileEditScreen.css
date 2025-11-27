@@ -318,3 +318,118 @@
     height: clamp(45px, 11.25vw, 60px);
   }
 }
+
+/* 동아리 탈퇴 섹션 */
+.club-profile-edit-leave-section {
+  padding: clamp(20px, 5vw, 32px) clamp(16px, 4vw, 20px);
+  border-top: 1px solid #e0e0e0;
+  margin-top: auto;
+}
+
+.club-profile-edit-leave-btn {
+  width: 100%;
+  padding: clamp(12px, 3vw, 16px);
+  background-color: transparent;
+  border: 2px solid #dc3545;
+  border-radius: clamp(8px, 2vw, 12px);
+  color: #dc3545;
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.club-profile-edit-leave-btn:hover:not(:disabled) {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.club-profile-edit-leave-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 탈퇴 확인 모달 */
+.club-profile-edit-leave-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: clamp(16px, 4vw, 20px);
+}
+
+.club-profile-edit-leave-modal-content {
+  background-color: #fff;
+  border-radius: clamp(12px, 3vw, 16px);
+  padding: clamp(20px, 5vw, 28px);
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.club-profile-edit-leave-modal-title {
+  font-size: clamp(18px, 4.5vw, 22px);
+  font-weight: 700;
+  color: var(--text-dark, #28201b);
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  margin-bottom: clamp(12px, 3vw, 16px);
+  text-align: center;
+}
+
+.club-profile-edit-leave-modal-message {
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: var(--text-muted, #666);
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  line-height: 1.6;
+  margin-bottom: clamp(20px, 5vw, 24px);
+  text-align: center;
+}
+
+.club-profile-edit-leave-modal-actions {
+  display: flex;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.club-profile-edit-leave-modal-cancel,
+.club-profile-edit-leave-modal-confirm {
+  flex: 1;
+  padding: clamp(10px, 2.5vw, 14px);
+  border: none;
+  border-radius: clamp(6px, 1.5vw, 8px);
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-family: "Noto Sans KR", "Inter", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.club-profile-edit-leave-modal-cancel {
+  background-color: #e0e0e0;
+  color: var(--text-dark, #28201b);
+}
+
+.club-profile-edit-leave-modal-cancel:hover:not(:disabled) {
+  background-color: #d0d0d0;
+}
+
+.club-profile-edit-leave-modal-confirm {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.club-profile-edit-leave-modal-confirm:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.club-profile-edit-leave-modal-cancel:disabled,
+.club-profile-edit-leave-modal-confirm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

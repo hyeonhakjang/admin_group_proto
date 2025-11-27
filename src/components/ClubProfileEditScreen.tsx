@@ -68,6 +68,8 @@ const ClubProfileEditScreen: React.FC = () => {
   const [likedPosts, setLikedPosts] = useState<LikedPost[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [leaving, setLeaving] = useState(false);
 
   // 사용자 정보 및 동아리 정보 로드
   useEffect(() => {
@@ -423,6 +425,50 @@ const ClubProfileEditScreen: React.FC = () => {
     setEditingNickname(clubNickname);
   };
 
+  // 동아리 탈퇴 확인
+  const handleLeaveClubClick = () => {
+    setShowLeaveConfirm(true);
+  };
+
+  // 동아리 탈퇴 취소
+  const handleLeaveCancel = () => {
+    setShowLeaveConfirm(false);
+  };
+
+  // 동아리 탈퇴 실행
+  const handleLeaveClub = async () => {
+    if (!selectedClub?.club_personal_id) {
+      alert("동아리 정보를 찾을 수 없습니다.");
+      return;
+    }
+
+    try {
+      setLeaving(true);
+      // club_personal 테이블에서 해당 레코드 삭제
+      const { error } = await supabase
+        .from("club_personal")
+        .delete()
+        .eq("id", selectedClub.club_personal_id);
+
+      if (error) {
+        throw error;
+      }
+
+      // 세션 스토리지에서 선택된 동아리 정보 제거
+      sessionStorage.removeItem("selectedClub");
+
+      alert("동아리에서 탈퇴되었습니다.");
+      // 내 동아리 페이지로 리다이렉트
+      navigate("/myclub");
+    } catch (error) {
+      console.error("동아리 탈퇴 오류:", error);
+      alert("동아리 탈퇴 중 오류가 발생했습니다.");
+    } finally {
+      setLeaving(false);
+      setShowLeaveConfirm(false);
+    }
+  };
+
   return (
     <div className="club-profile-edit-screen">
       {/* 헤더: 뒤로가기 버튼 */}
@@ -673,6 +719,48 @@ const ClubProfileEditScreen: React.FC = () => {
         )}
       </div>
 
+      {/* 동아리 탈퇴 버튼 */}
+      <div className="club-profile-edit-leave-section">
+        <button
+          className="club-profile-edit-leave-btn"
+          onClick={handleLeaveClubClick}
+          disabled={leaving}
+        >
+          동아리 탈퇴하기
+        </button>
+      </div>
+
+      {/* 탈퇴 확인 모달 */}
+      {showLeaveConfirm && (
+        <div className="club-profile-edit-leave-modal">
+          <div className="club-profile-edit-leave-modal-content">
+            <h3 className="club-profile-edit-leave-modal-title">
+              동아리 탈퇴
+            </h3>
+            <p className="club-profile-edit-leave-modal-message">
+              정말로 이 동아리에서 탈퇴하시겠습니까?
+              <br />
+              탈퇴 후에는 동아리의 모든 활동 내역을 확인할 수 없습니다.
+            </p>
+            <div className="club-profile-edit-leave-modal-actions">
+              <button
+                className="club-profile-edit-leave-modal-cancel"
+                onClick={handleLeaveCancel}
+                disabled={leaving}
+              >
+                취소
+              </button>
+              <button
+                className="club-profile-edit-leave-modal-confirm"
+                onClick={handleLeaveClub}
+                disabled={leaving}
+              >
+                {leaving ? "처리 중..." : "탈퇴하기"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
