@@ -29,8 +29,16 @@ const ApplicationFormManageScreen: React.FC = () => {
       <main className="application-form-content">
         <div className="application-form-content-inner">
           <section className="application-form-title-section">
-            <h1>신청폼 관리</h1>
-            <p>동아리 신청폼을 만들고 관리하세요.</p>
+            <div>
+              <h1>신청폼 관리</h1>
+              <p>동아리 신청폼을 만들고 관리하세요.</p>
+            </div>
+            <button
+              className="application-form-add-btn"
+              onClick={() => alert("신청폼 추가 기능은 준비 중입니다.")}
+            >
+              + 신청폼 만들기
+            </button>
           </section>
 
           <section className="application-form-grid">
