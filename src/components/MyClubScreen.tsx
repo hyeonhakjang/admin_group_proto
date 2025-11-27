@@ -526,10 +526,13 @@ const MyClubScreen: React.FC = () => {
   // 프로필 정보 로드 (동아리 내부용)
   useEffect(() => {
     const loadProfileInfo = async () => {
-      if (!userData || !selectedClub?.club_personal_id) return;
+      if (!userData) return;
+      
+      // personal 타입일 때는 club_personal_id가 필요
+      if (userData.type === "personal" && !selectedClub?.club_personal_id) return;
 
       try {
-        if (userData.type === "personal") {
+        if (userData.type === "personal" && selectedClub?.club_personal_id) {
           const { data: clubPersonal, error } = await supabase
             .from("club_personal")
             .select(
@@ -562,11 +565,27 @@ const MyClubScreen: React.FC = () => {
             });
           }
         } else if (userData.type === "club") {
-          setProfileInfo({
-            nickname: selectedClub.name || userData.name,
-            role: "관리자",
-            profileImage: "/profile-icon.png",
-          });
+          // club_user 테이블에서 동아리 정보 가져오기
+          const { data: clubUserData, error: clubUserError } = await supabase
+            .from("club_user")
+            .select("club_name, profile_image_url")
+            .eq("id", userData.id)
+            .single();
+
+          if (clubUserError) {
+            console.error("동아리 정보 로드 오류:", clubUserError);
+            setProfileInfo({
+              nickname: selectedClub?.name || userData.name,
+              role: "동아리 계정",
+              profileImage: "/profile-icon.png",
+            });
+          } else {
+            setProfileInfo({
+              nickname: clubUserData?.club_name || selectedClub?.name || userData.name,
+              role: "동아리 계정",
+              profileImage: clubUserData?.profile_image_url || "/profile-icon.png",
+            });
+          }
         }
       } catch (error) {
         console.error("프로필 정보 로드 중 오류:", error);
