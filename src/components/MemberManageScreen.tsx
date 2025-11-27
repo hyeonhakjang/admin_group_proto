@@ -384,8 +384,7 @@ const MemberManageScreen: React.FC = () => {
                             (userData?.type === "club" ||
                               (userData?.type === "personal" &&
                                 selectedClub?.role === "회장")) &&
-                            member.role !== "관리자" &&
-                            member.role !== "회장";
+                            member.role !== "관리자";
                           if (canChangeRole) {
                             setSelectedMemberForRole(
                               selectedMemberForRole === member.clubPersonalId
@@ -394,9 +393,7 @@ const MemberManageScreen: React.FC = () => {
                             );
                           }
                         }}
-                        disabled={
-                          member.role === "관리자" || member.role === "회장"
-                        }
+                        disabled={member.role === "관리자"}
                       >
                         {member.role}
                         {member.role !== "관리자" &&
