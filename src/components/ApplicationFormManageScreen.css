@@ -23,13 +23,11 @@
 .application-form-content {
   flex: 1;
   padding: 0 clamp(16px, 4vw, 24px) clamp(24px, 6vw, 32px);
-  display: flex;
-  justify-content: center;
 }
 
 .application-form-content-inner {
-  width: 100%;
-  max-width: 720px;
+  width: min(960px, 100%);
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: clamp(16px, 4vw, 20px);
@@ -51,8 +49,14 @@
 
 .application-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(12px, 3vw, 16px);
+}
+
+@media (max-width: 640px) {
+  .application-form-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .application-form-card {
