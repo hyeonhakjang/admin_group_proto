@@ -163,6 +163,29 @@ const MemberManageScreen: React.FC = () => {
   const handleChangeMemberRole = useCallback(
     async (clubPersonalId: number, newRole: string) => {
       try {
+        if (newRole === "회장") {
+          const { data: existingChairs, error: chairsError } = await supabase
+            .from("club_personal")
+            .select("id")
+            .eq("club_user_id", selectedClub?.club_user_id || 0)
+            .eq("role", "회장");
+
+          if (chairsError) {
+            console.error("회장 조회 오류:", chairsError);
+            alert("회장 정보를 조회하는 중 오류가 발생했습니다.");
+            return;
+          }
+
+          if (
+            existingChairs &&
+            existingChairs.length > 0 &&
+            !existingChairs.some((chair) => chair.id === clubPersonalId)
+          ) {
+            alert("회장은 한 명만 지정할 수 있습니다. 기존 회장을 먼저 변경하세요.");
+            return;
+          }
+        }
+
         const { error } = await supabase
           .from("club_personal")
           .update({ role: newRole })
@@ -181,7 +204,7 @@ const MemberManageScreen: React.FC = () => {
         alert("멤버 역할 변경 중 오류가 발생했습니다.");
       }
     },
-    [loadMembers]
+    [loadMembers, selectedClub?.club_user_id]
   );
 
   // 탈퇴 신청 승인 함수
@@ -408,8 +431,7 @@ const MemberManageScreen: React.FC = () => {
                         (userData?.type === "club" ||
                           (userData?.type === "personal" &&
                             selectedClub?.role === "회장")) &&
-                        member.role !== "관리자" &&
-                        (
+                        member.role !== "관리자" && (
                           <div className="role-dropdown">
                             <button
                               className="role-option"
