@@ -1,0 +1,103 @@
+.application-form-manage-screen {
+  min-height: 100vh;
+  background: #fffcfa;
+  display: flex;
+  flex-direction: column;
+}
+
+.application-form-header {
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  background: #fffcfa;
+}
+
+.application-form-header .back-btn {
+  background: none;
+  border: none;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 600;
+  color: #28201b;
+  cursor: pointer;
+}
+
+.application-form-content {
+  flex: 1;
+  padding: 0 clamp(16px, 4vw, 24px) clamp(24px, 6vw, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 20px);
+}
+
+.application-form-title-section h1 {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(22px, 5.5vw, 26px);
+  font-weight: 700;
+  margin: 0 0 clamp(6px, 1.5vw, 8px);
+  color: #28201b;
+}
+
+.application-form-title-section p {
+  margin: 0;
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #666;
+}
+
+.application-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(12px, 3vw, 16px);
+}
+
+@media (max-width: 480px) {
+  .application-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.application-form-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #ededed;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 3 / 4;
+  padding: clamp(12px, 3vw, 16px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.application-form-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.application-form-card-icon {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.application-form-card-icon-circle {
+  width: clamp(60px, 15vw, 72px);
+  height: clamp(60px, 15vw, 72px);
+  border-radius: 16px;
+  background: #fff5f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(24px, 6vw, 30px);
+}
+
+.application-form-card-body h3 {
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 600;
+  margin: clamp(8px, 2vw, 10px) 0 4px;
+  color: #28201b;
+}
+
+.application-form-card-body span {
+  font-size: clamp(12px, 3vw, 13px);
+  color: #999;
+}
+

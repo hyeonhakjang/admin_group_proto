@@ -33,6 +33,7 @@ import ClubPostDetailScreen from "./components/ClubPostDetailScreen";
 import PayoutManageScreen from "./components/PayoutManageScreen";
 import PayoutManageDetailScreen from "./components/PayoutManageDetailScreen";
 import ClubProfileEditScreen from "./components/ClubProfileEditScreen";
+import ApplicationFormManageScreen from "./components/ApplicationFormManageScreen";
 import "./App.css";
 
 function App() {
@@ -141,7 +142,7 @@ function App() {
           />
           <Route
             path="/myclub/manage/approvals"
-            element={<ComingSoonScreen title="신청폼 관리" />}
+            element={<ApplicationFormManageScreen />}
           />
           <Route
             path="/myclub/page/edit"
