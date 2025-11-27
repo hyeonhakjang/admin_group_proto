@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import BottomTabBar from "./BottomTabBar";
@@ -17,6 +17,7 @@ interface Club {
   activityScore: number;
   isRecruiting: boolean;
   affiliation: string;
+  universityName?: string;
   externalLinks?: {
     instagram?: string;
     youtube?: string;
@@ -29,6 +30,28 @@ const CommunityScreen: React.FC = () => {
     "find-clubs"
   );
   const [clubs, setClubs] = useState<Club[]>([]);
+  const [selectedUniversity, setSelectedUniversity] = useState<string>(() => {
+    return localStorage.getItem("selectedUniversityName") || "홍익대학교";
+  });
+  useEffect(() => {
+    const handleUniversitySelected = (event: Event) => {
+      const customEvent = event as CustomEvent<string>;
+      if (customEvent.detail) {
+        setSelectedUniversity(customEvent.detail);
+      }
+    };
+    window.addEventListener(
+      "universitySelected",
+      handleUniversitySelected as EventListener
+    );
+    return () => {
+      window.removeEventListener(
+        "universitySelected",
+        handleUniversitySelected as EventListener
+      );
+    };
+  }, []);
+
   const [loading, setLoading] = useState(true);
 
   // 동아리 데이터 로드
@@ -87,6 +110,8 @@ const CommunityScreen: React.FC = () => {
 
           // 소속 정보
           const affiliation = club.group_user?.group_name || "미지정";
+          const universityName =
+            club.group_user?.university?.univ_name || "홍익대학교";
 
           return {
             id: club.id,
@@ -101,6 +126,7 @@ const CommunityScreen: React.FC = () => {
             activityScore: activityScore,
             isRecruiting: club.recruiting || false,
             affiliation: affiliation,
+            universityName,
           };
         })
       );
@@ -112,6 +138,21 @@ const CommunityScreen: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const domesticClubs = useMemo(
+    () =>
+      clubs.filter(
+        (club) =>
+          club.affiliation !== "총동아리연합회" &&
+          (!selectedUniversity || club.universityName === selectedUniversity)
+      ),
+    [clubs, selectedUniversity]
+  );
+
+  const allianceClubs = useMemo(
+    () => clubs.filter((club) => club.affiliation === "총동아리연합회"),
+    [clubs]
+  );
 
   return (
     <div className="community-screen" data-name="커뮤니티 화면">
@@ -158,8 +199,7 @@ const CommunityScreen: React.FC = () => {
                 {loading ? (
                   <div>로딩 중...</div>
                 ) : (
-                  clubs
-                    .filter((club) => club.affiliation !== "총동아리연합회")
+                  domesticClubs
                     .slice(0, 3)
                     .map((club) => (
                       <div
@@ -208,8 +248,7 @@ const CommunityScreen: React.FC = () => {
                 {loading ? (
                   <div>로딩 중...</div>
                 ) : (
-                  clubs
-                    .filter((club) => club.affiliation !== "총동아리연합회")
+                  domesticClubs
                     .sort((a, b) => b.activityScore - a.activityScore)
                     .slice(0, 3)
                     .map((club, index) => (
@@ -252,8 +291,7 @@ const CommunityScreen: React.FC = () => {
                 {loading ? (
                   <div>로딩 중...</div>
                 ) : (
-                  clubs
-                    .filter((club) => club.affiliation === "총동아리연합회")
+                  allianceClubs
                     .slice(0, 3)
                     .map((club) => (
                       <div
@@ -302,8 +340,7 @@ const CommunityScreen: React.FC = () => {
                 {loading ? (
                   <div>로딩 중...</div>
                 ) : (
-                  clubs
-                    .filter((club) => club.affiliation === "총동아리연합회")
+                  allianceClubs
                     .sort((a, b) => b.activityScore - a.activityScore)
                     .slice(0, 3)
                     .map((club, index) => (

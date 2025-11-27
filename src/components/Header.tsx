@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
 
@@ -8,7 +8,8 @@ const imgTrailingIcon1 = "/alarm-icon.png"; // 알림 아이콘
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedUniversity, setSelectedUniversity] = useState("홍익대");
+  const [selectedUniversity, setSelectedUniversity] =
+    useState<string>("홍익대학교");
   const [showUniversityModal, setShowUniversityModal] = useState(false);
   const [universitySearch, setUniversitySearch] = useState("");
 
@@ -40,10 +41,27 @@ const Header: React.FC = () => {
     univ.toLowerCase().includes(universitySearch.toLowerCase())
   );
 
+  useEffect(() => {
+    const stored =
+      localStorage.getItem("selectedUniversityName") || "홍익대학교";
+    setSelectedUniversity(stored);
+  }, []);
+
   const handleUniversitySelect = (university: string) => {
-    setSelectedUniversity(university.replace("학교", ""));
+    setSelectedUniversity(university);
+    localStorage.setItem("selectedUniversityName", university);
+    window.dispatchEvent(
+    new CustomEvent("universitySelected", { detail: university })
+    );
     setShowUniversityModal(false);
     setUniversitySearch("");
+  };
+
+  const getUniversityDisplayName = (name: string) => {
+    if (name.endsWith("대학교")) {
+      return name.replace("대학교", "대");
+    }
+    return name;
   };
 
   return (
@@ -66,7 +84,7 @@ const Header: React.FC = () => {
             onClick={() => setShowUniversityModal(true)}
             style={{ cursor: "pointer" }}
           >
-            {selectedUniversity} ▼
+            {getUniversityDisplayName(selectedUniversity)} ▼
           </p>
           <div
             className="trailing-icons"
