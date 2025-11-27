@@ -340,6 +340,78 @@
   transform: scale(0.98);
 }
 
+/* 탈퇴 신청 관련 스타일 */
+.member-leave-actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 12px);
+  flex-wrap: wrap;
+}
+
+.member-leave-badge {
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(12px, 3vw, 14px);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.member-leave-buttons {
+  display: flex;
+  gap: clamp(6px, 1.5vw, 8px);
+}
+
+.member-leave-approve-btn {
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(12px, 3vw, 14px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.member-leave-approve-btn:hover {
+  background: #c82333;
+}
+
+.member-leave-approve-btn:active {
+  transform: scale(0.98);
+}
+
+.member-leave-reject-btn {
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  font-size: clamp(12px, 3vw, 14px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.member-leave-reject-btn:hover {
+  background: #5a6268;
+}
+
+.member-leave-reject-btn:active {
+  transform: scale(0.98);
+}
+
 /* 반응형 */
 @media (max-width: 480px) {
   .member-manage-main-content {

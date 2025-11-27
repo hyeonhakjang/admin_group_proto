@@ -435,7 +435,7 @@ const ClubProfileEditScreen: React.FC = () => {
     setShowLeaveConfirm(false);
   };
 
-  // 동아리 탈퇴 실행
+  // 동아리 탈퇴 신청 실행
   const handleLeaveClub = async () => {
     if (!selectedClub?.club_personal_id) {
       alert("동아리 정보를 찾을 수 없습니다.");
@@ -444,25 +444,22 @@ const ClubProfileEditScreen: React.FC = () => {
 
     try {
       setLeaving(true);
-      // club_personal 테이블에서 해당 레코드 삭제
+      // club_personal 테이블에 탈퇴 신청 상태 업데이트
       const { error } = await supabase
         .from("club_personal")
-        .delete()
+        .update({ leave_requested: true })
         .eq("id", selectedClub.club_personal_id);
 
       if (error) {
         throw error;
       }
 
-      // 세션 스토리지에서 선택된 동아리 정보 제거
-      sessionStorage.removeItem("selectedClub");
-
-      alert("동아리에서 탈퇴되었습니다.");
-      // 내 동아리 페이지로 리다이렉트
-      navigate("/myclub");
+      alert("탈퇴 신청이 완료되었습니다. 관리자 승인 후 탈퇴가 처리됩니다.");
+      // 페이지 새로고침 또는 상태 업데이트
+      navigate(-1);
     } catch (error) {
-      console.error("동아리 탈퇴 오류:", error);
-      alert("동아리 탈퇴 중 오류가 발생했습니다.");
+      console.error("동아리 탈퇴 신청 오류:", error);
+      alert("동아리 탈퇴 신청 중 오류가 발생했습니다.");
     } finally {
       setLeaving(false);
       setShowLeaveConfirm(false);
@@ -734,13 +731,11 @@ const ClubProfileEditScreen: React.FC = () => {
       {showLeaveConfirm && (
         <div className="club-profile-edit-leave-modal">
           <div className="club-profile-edit-leave-modal-content">
-            <h3 className="club-profile-edit-leave-modal-title">
-              동아리 탈퇴
-            </h3>
+            <h3 className="club-profile-edit-leave-modal-title">동아리 탈퇴</h3>
             <p className="club-profile-edit-leave-modal-message">
               정말로 이 동아리에서 탈퇴하시겠습니까?
               <br />
-              탈퇴 후에는 동아리의 모든 활동 내역을 확인할 수 없습니다.
+              탈퇴 신청 후 관리자 승인을 거쳐 탈퇴가 처리됩니다.
             </p>
             <div className="club-profile-edit-leave-modal-actions">
               <button
@@ -755,7 +750,7 @@ const ClubProfileEditScreen: React.FC = () => {
                 onClick={handleLeaveClub}
                 disabled={leaving}
               >
-                {leaving ? "처리 중..." : "탈퇴하기"}
+                {leaving ? "처리 중..." : "탈퇴 신청하기"}
               </button>
             </div>
           </div>

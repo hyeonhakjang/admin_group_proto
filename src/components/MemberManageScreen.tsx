@@ -29,6 +29,7 @@ interface Member {
   approved: boolean;
   isOwner: boolean;
   avatar: string;
+  leaveRequested?: boolean;
 }
 
 const MemberManageScreen: React.FC = () => {
@@ -80,6 +81,7 @@ const MemberManageScreen: React.FC = () => {
           id,
           role,
           approved,
+          leave_requested,
           personal_user:personal_user_id (
             id,
             personal_name,
@@ -105,6 +107,7 @@ const MemberManageScreen: React.FC = () => {
           isOwner: member.role === "회장" || member.role === "관리자",
           avatar:
             member.personal_user?.profile_image_url || "/profile-icon.png",
+          leaveRequested: member.leave_requested || false,
         }));
 
         // 역할 순서로 정렬: 회장 - 스태프 - 회원
@@ -176,6 +179,66 @@ const MemberManageScreen: React.FC = () => {
       } catch (error) {
         console.error("멤버 역할 변경 처리 중 오류:", error);
         alert("멤버 역할 변경 중 오류가 발생했습니다.");
+      }
+    },
+    [loadMembers]
+  );
+
+  // 탈퇴 신청 승인 함수
+  const handleApproveLeave = useCallback(
+    async (clubPersonalId: number) => {
+      if (!window.confirm("정말로 이 멤버의 탈퇴를 승인하시겠습니까?")) {
+        return;
+      }
+
+      try {
+        // club_personal 테이블에서 해당 레코드 삭제
+        const { error } = await supabase
+          .from("club_personal")
+          .delete()
+          .eq("id", clubPersonalId);
+
+        if (error) {
+          console.error("탈퇴 승인 오류:", error);
+          alert("탈퇴 승인 중 오류가 발생했습니다.");
+          return;
+        }
+
+        await loadMembers();
+        alert("탈퇴가 승인되었습니다.");
+      } catch (error) {
+        console.error("탈퇴 승인 처리 중 오류:", error);
+        alert("탈퇴 승인 중 오류가 발생했습니다.");
+      }
+    },
+    [loadMembers]
+  );
+
+  // 탈퇴 신청 거부 함수
+  const handleRejectLeave = useCallback(
+    async (clubPersonalId: number) => {
+      if (!window.confirm("탈퇴 신청을 거부하시겠습니까?")) {
+        return;
+      }
+
+      try {
+        // leave_requested를 false로 업데이트
+        const { error } = await supabase
+          .from("club_personal")
+          .update({ leave_requested: false })
+          .eq("id", clubPersonalId);
+
+        if (error) {
+          console.error("탈퇴 거부 오류:", error);
+          alert("탈퇴 거부 중 오류가 발생했습니다.");
+          return;
+        }
+
+        await loadMembers();
+        alert("탈퇴 신청이 거부되었습니다.");
+      } catch (error) {
+        console.error("탈퇴 거부 처리 중 오류:", error);
+        alert("탈퇴 거부 중 오류가 발생했습니다.");
       }
     },
     [loadMembers]
@@ -281,73 +344,102 @@ const MemberManageScreen: React.FC = () => {
                   </div>
                 </div>
                 {member.approved ? (
-                  <div style={{ position: "relative" }}>
-                    <button
-                      className={`member-role-btn ${
-                        member.role === "관리자" ? "owner-role" : ""
-                      }`}
-                      onClick={() => {
-                        // club_user 계정 또는 personal_user 계정 중 회장인 경우에만 역할 변경 가능
-                        // 단, 회장 자기 자신은 역할 변경 불가
-                        const canChangeRole =
-                          (userData?.type === "club" ||
-                            (userData?.type === "personal" &&
-                              selectedClub?.role === "회장")) &&
-                          member.role !== "관리자" &&
-                          member.role !== "회장";
-                        if (canChangeRole) {
-                          setSelectedMemberForRole(
-                            selectedMemberForRole === member.clubPersonalId
-                              ? null
-                              : member.clubPersonalId
-                          );
-                        }
-                      }}
-                      disabled={
-                        member.role === "관리자" || member.role === "회장"
-                      }
-                    >
-                      {member.role}
-                      {member.role !== "관리자" &&
-                        member.role !== "회장" &&
-                        (userData?.type === "club" ||
-                          (userData?.type === "personal" &&
-                            selectedClub?.role === "회장")) && (
-                          <span className="dropdown-icon">▼</span>
-                        )}
-                    </button>
-                    {selectedMemberForRole === member.clubPersonalId &&
-                      (userData?.type === "club" ||
+                  member.leaveRequested ? (
+                    // 탈퇴 신청된 멤버
+                    <div className="member-leave-actions">
+                      <span className="member-leave-badge">탈퇴 신청</span>
+                      {(userData?.type === "club" ||
                         (userData?.type === "personal" &&
-                          selectedClub?.role === "회장")) &&
-                      member.role !== "관리자" &&
-                      member.role !== "회장" && (
-                        <div className="role-dropdown">
+                          selectedClub?.role === "회장")) && (
+                        <div className="member-leave-buttons">
                           <button
-                            className="role-option"
+                            className="member-leave-approve-btn"
                             onClick={() =>
-                              handleChangeMemberRole(
-                                member.clubPersonalId,
-                                "스태프"
-                              )
+                              handleApproveLeave(member.clubPersonalId)
                             }
                           >
-                            스태프
+                            승인
                           </button>
                           <button
-                            className="role-option"
+                            className="member-leave-reject-btn"
                             onClick={() =>
-                              handleChangeMemberRole(
-                                member.clubPersonalId,
-                                "회원"
-                              )
+                              handleRejectLeave(member.clubPersonalId)
                             }
                           >
-                            회원
+                            거부
                           </button>
                         </div>
                       )}
-                  </div>
+                    </div>
+                  ) : (
+                    <div style={{ position: "relative" }}>
+                      <button
+                        className={`member-role-btn ${
+                          member.role === "관리자" ? "owner-role" : ""
+                        }`}
+                        onClick={() => {
+                          // club_user 계정 또는 personal_user 계정 중 회장인 경우에만 역할 변경 가능
+                          // 단, 회장 자기 자신은 역할 변경 불가
+                          const canChangeRole =
+                            (userData?.type === "club" ||
+                              (userData?.type === "personal" &&
+                                selectedClub?.role === "회장")) &&
+                            member.role !== "관리자" &&
+                            member.role !== "회장";
+                          if (canChangeRole) {
+                            setSelectedMemberForRole(
+                              selectedMemberForRole === member.clubPersonalId
+                                ? null
+                                : member.clubPersonalId
+                            );
+                          }
+                        }}
+                        disabled={
+                          member.role === "관리자" || member.role === "회장"
+                        }
+                      >
+                        {member.role}
+                        {member.role !== "관리자" &&
+                          member.role !== "회장" &&
+                          (userData?.type === "club" ||
+                            (userData?.type === "personal" &&
+                              selectedClub?.role === "회장")) && (
+                            <span className="dropdown-icon">▼</span>
+                          )}
+                      </button>
+                      {selectedMemberForRole === member.clubPersonalId &&
+                        (userData?.type === "club" ||
+                          (userData?.type === "personal" &&
+                            selectedClub?.role === "회장")) &&
+                        member.role !== "관리자" &&
+                        member.role !== "회장" && (
+                          <div className="role-dropdown">
+                            <button
+                              className="role-option"
+                              onClick={() =>
+                                handleChangeMemberRole(
+                                  member.clubPersonalId,
+                                  "스태프"
+                                )
+                              }
+                            >
+                              스태프
+                            </button>
+                            <button
+                              className="role-option"
+                              onClick={() =>
+                                handleChangeMemberRole(
+                                  member.clubPersonalId,
+                                  "회원"
+                                )
+                              }
+                            >
+                              회원
+                            </button>
+                          </div>
+                        )}
+                    </div>
+                  )
                 ) : (
                   <button
                     className="member-approve-btn"
