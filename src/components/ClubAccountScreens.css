@@ -121,6 +121,11 @@
   background: #fff5f0;
 }
 
+.account-loading {
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #666;
+}
+
 .club-account-card.warning-card {
   background: #fff5f0;
   border-color: #ffd6c2;
