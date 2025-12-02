@@ -142,6 +142,12 @@
   gap: clamp(12px, 3vw, 16px);
 }
 
+.payout-manage-participant-actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 12px);
+}
+
 .payout-manage-participant-info {
   display: flex;
   align-items: center;
@@ -178,6 +184,49 @@
   color: #999999;
 }
 
+.payout-manage-status-btn {
+  width: clamp(32px, 8vw, 40px);
+  height: clamp(32px, 8vw, 40px);
+  border-radius: 50%;
+  border: none;
+  font-size: clamp(18px, 4.5vw, 22px);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.payout-manage-status-btn-complete {
+  background-color: #c34e00;
+  color: white;
+}
+
+.payout-manage-status-btn-complete:hover {
+  background-color: #a04000;
+  transform: scale(1.05);
+}
+
+.payout-manage-status-btn-complete:active {
+  transform: scale(0.95);
+}
+
+.payout-manage-status-btn-unpaid {
+  background-color: #e0e0e0;
+  color: #666666;
+}
+
+.payout-manage-status-btn-unpaid:hover {
+  background-color: #d0d0d0;
+  transform: scale(1.05);
+}
+
+.payout-manage-status-btn-unpaid:active {
+  transform: scale(0.95);
+}
+
 .payout-manage-detail-empty {
   display: flex;
   flex-direction: column;
@@ -206,7 +255,13 @@
     align-items: flex-start;
   }
 
+  .payout-manage-participant-actions {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .payout-manage-participant-time {
-    align-self: flex-end;
+    align-self: flex-start;
   }
 }

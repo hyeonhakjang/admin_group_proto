@@ -187,9 +187,51 @@ const PayoutManageDetailScreen: React.FC = () => {
     ).padStart(2, "0")}`;
   };
 
+  // 참가자 상태 변경 함수
+  const handleStatusChange = async (
+    participantId: number,
+    newStatus: ParticipantStatus
+  ) => {
+    if (!payout) return;
+
+    try {
+      const { error } = await supabase
+        .from("payout_participant")
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq("id", participantId);
+
+      if (error) {
+        throw error;
+      }
+
+      // 로컬 상태 업데이트
+      setPayout((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          participants: prev.participants.map((p) =>
+            p.id === participantId
+              ? { ...p, status: newStatus, timestamp: new Date().toISOString() }
+              : p
+          ),
+        };
+      });
+
+      alert(
+        newStatus === "paid"
+          ? "정산 완료로 변경되었습니다."
+          : "정산 미납으로 변경되었습니다."
+      );
+    } catch (error) {
+      console.error("상태 변경 오류:", error);
+      alert("상태를 변경하는 중 오류가 발생했습니다.");
+    }
+  };
+
   const renderParticipantList = (
     list: ParticipantItem[],
-    emptyMessage: string
+    emptyMessage: string,
+    isPendingTab: boolean
   ) => {
     if (list.length === 0) {
       return (
@@ -217,9 +259,36 @@ const PayoutManageDetailScreen: React.FC = () => {
             </span>
           </div>
         </div>
-        <span className="payout-manage-participant-time">
-          {getDisplayDateTime(participant.timestamp)}
-        </span>
+        <div className="payout-manage-participant-actions">
+          <span className="payout-manage-participant-time">
+            {getDisplayDateTime(participant.timestamp)}
+          </span>
+          {isPendingTab ? (
+            // 정산 미납 탭: 체크 버튼으로 완료 처리
+            <button
+              className="payout-manage-status-btn payout-manage-status-btn-complete"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleStatusChange(participant.id, "paid");
+              }}
+              title="정산 완료로 변경"
+            >
+              ✓
+            </button>
+          ) : (
+            // 정산 완료 탭: X 버튼으로 미납 처리
+            <button
+              className="payout-manage-status-btn payout-manage-status-btn-unpaid"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleStatusChange(participant.id, "unpaid");
+              }}
+              title="정산 미납으로 변경"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
     ));
   };
@@ -308,11 +377,13 @@ const PayoutManageDetailScreen: React.FC = () => {
             {activeTab === "pending"
               ? renderParticipantList(
                   pendingParticipants,
-                  "모든 정산이 완료됐어요."
+                  "모든 정산이 완료됐어요.",
+                  true
                 )
               : renderParticipantList(
                   completedParticipants,
-                  "정산 완료된 내역이 없어요."
+                  "정산 완료된 내역이 없어요.",
+                  false
                 )}
           </div>
         </section>
