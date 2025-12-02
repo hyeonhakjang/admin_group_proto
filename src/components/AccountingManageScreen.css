@@ -1,0 +1,328 @@
+.accounting-manage-screen {
+  min-height: 100vh;
+  background-color: #fffcfa;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 100vw;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.accounting-manage-header {
+  width: 100%;
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  background: #fffcfa;
+  box-sizing: border-box;
+}
+
+.accounting-back-btn {
+  background: none;
+  border: none;
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 600;
+  color: #28201b;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.2s ease;
+}
+
+.accounting-back-btn:hover {
+  color: #c34e00;
+}
+
+.accounting-manage-content {
+  flex: 1;
+  width: 100%;
+  padding: 0 clamp(16px, 4vw, 24px) clamp(24px, 6vw, 32px);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+}
+
+.accounting-manage-content-inner {
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 24px);
+  box-sizing: border-box;
+}
+
+/* 섹션 A: 회계 잔액 */
+.accounting-balance-section {
+  background: white;
+  border-radius: 16px;
+  padding: clamp(20px, 5vw, 32px);
+  border: 1px solid #f1e9e3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.accounting-balance-label {
+  font-size: clamp(14px, 3.5vw, 16px);
+  color: #666;
+  font-weight: 500;
+}
+
+.accounting-balance-amount {
+  font-size: clamp(32px, 8vw, 48px);
+  font-weight: 700;
+  color: #28201b;
+}
+
+/* 섹션 B, C: 월별 수익/비용 */
+.accounting-summary-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.accounting-summary-item {
+  background: white;
+  border-radius: 16px;
+  padding: clamp(16px, 4vw, 20px);
+  border: 1px solid #f1e9e3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.accounting-summary-label {
+  font-size: clamp(13px, 3.25vw, 14px);
+  color: #666;
+  font-weight: 500;
+}
+
+.accounting-summary-amount {
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 700;
+}
+
+.accounting-summary-amount.income {
+  color: #2563eb;
+}
+
+.accounting-summary-amount.expense {
+  color: #dc2626;
+}
+
+/* 섹션 D: Date Navigator */
+.accounting-date-navigator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 4vw, 24px);
+  background: white;
+  border-radius: 16px;
+  padding: clamp(12px, 3vw, 16px);
+  border: 1px solid #f1e9e3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.accounting-nav-btn {
+  background: transparent;
+  border: none;
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 600;
+  color: #28201b;
+  cursor: pointer;
+  padding: clamp(8px, 2vw, 12px);
+  transition: color 0.2s ease;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.accounting-nav-btn:hover {
+  color: #c34e00;
+}
+
+.accounting-date-display {
+  font-size: clamp(18px, 4.5vw, 22px);
+  font-weight: 700;
+  color: #28201b;
+  min-width: 80px;
+  text-align: center;
+}
+
+/* 섹션 E: 회계 리스트 */
+.accounting-list-section {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 5vw, 24px);
+}
+
+.accounting-date-group {
+  background: white;
+  border-radius: 16px;
+  padding: clamp(16px, 4vw, 20px);
+  border: 1px solid #f1e9e3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.accounting-date-header {
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 600;
+  color: #28201b;
+  padding-bottom: clamp(8px, 2vw, 12px);
+  border-bottom: 1px solid #f1e9e3;
+}
+
+.accounting-transactions {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.accounting-transaction-item {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.accounting-transaction-icon {
+  width: clamp(40px, 10vw, 48px);
+  height: clamp(40px, 10vw, 48px);
+  border-radius: 12px;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(20px, 5vw, 24px);
+  flex-shrink: 0;
+}
+
+.accounting-transaction-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 6px);
+  min-width: 0;
+}
+
+.accounting-transaction-name {
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 600;
+  color: #28201b;
+  word-break: break-word;
+}
+
+.accounting-transaction-time {
+  font-size: clamp(12px, 3vw, 13px);
+  color: #999;
+}
+
+.accounting-transaction-amounts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: clamp(4px, 1vw, 6px);
+  flex-shrink: 0;
+}
+
+.accounting-transaction-amount {
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 600;
+}
+
+.accounting-transaction-amount.income {
+  color: #2563eb;
+}
+
+.accounting-transaction-amount.expense {
+  color: #dc2626;
+}
+
+.accounting-transaction-balance {
+  font-size: clamp(12px, 3vw, 13px);
+  color: #999;
+}
+
+.accounting-empty {
+  text-align: center;
+  padding: clamp(48px, 12vw, 64px);
+  color: #999;
+  font-size: clamp(14px, 3.5vw, 16px);
+}
+
+/* 섹션 F: 액션 버튼 */
+.accounting-actions-section {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+  padding-bottom: clamp(16px, 4vw, 24px);
+}
+
+.accounting-action-btn {
+  flex: 1;
+  padding: clamp(14px, 3.5vw, 16px);
+  border: none;
+  border-radius: 12px;
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.accounting-receipt-btn {
+  background: white;
+  color: #28201b;
+  border: 1px solid #e0e0e0;
+}
+
+.accounting-receipt-btn:hover {
+  background: #f5f5f5;
+  border-color: #d0d0d0;
+}
+
+.accounting-edit-btn {
+  background: #c34e00;
+  color: white;
+}
+
+.accounting-edit-btn:hover {
+  background: #a03f00;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .accounting-manage-content-inner {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .accounting-manage-content {
+    padding: 0 clamp(12px, 3vw, 16px) clamp(16px, 4vw, 24px);
+  }
+
+  .accounting-summary-section {
+    grid-template-columns: 1fr;
+  }
+
+  .accounting-actions-section {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 360px) {
+  .accounting-balance-section {
+    padding: clamp(16px, 4vw, 20px);
+  }
+
+  .accounting-transaction-item {
+    gap: clamp(8px, 2vw, 12px);
+  }
+}
+

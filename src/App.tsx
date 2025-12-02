@@ -35,6 +35,7 @@ import PayoutManageDetailScreen from "./components/PayoutManageDetailScreen";
 import ClubProfileEditScreen from "./components/ClubProfileEditScreen";
 import ApplicationFormManageScreen from "./components/ApplicationFormManageScreen";
 import GoogleFormRegisterScreen from "./components/GoogleFormRegisterScreen";
+import AccountingManageScreen from "./components/AccountingManageScreen";
 import "./App.css";
 
 function App() {
@@ -131,7 +132,7 @@ function App() {
           />
           <Route
             path="/myclub/manage/accounting"
-            element={<ComingSoonScreen title="회계 내역" />}
+            element={<AccountingManageScreen />}
           />
           <Route
             path="/myclub/manage/events"
