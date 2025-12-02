@@ -59,7 +59,9 @@ const AccountingManageScreen: React.FC = () => {
       const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
       // 해당 월의 마지막 날 계산
       const lastDay = new Date(year, month, 0).getDate();
-      const monthEnd = `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+      const monthEnd = `${year}-${String(month).padStart(2, "0")}-${String(
+        lastDay
+      ).padStart(2, "0")}`;
 
       console.log("회계 데이터 조회:", {
         club_user_id: selectedClub.club_user_id,
@@ -341,8 +343,7 @@ const AccountingManageScreen: React.FC = () => {
               <button
                 className="accounting-action-btn accounting-edit-btn"
                 onClick={() => {
-                  // TODO: 수정하기 기능 구현
-                  alert("수정하기 기능은 준비 중입니다.");
+                  navigate("/myclub/manage/accounting/edit");
                 }}
               >
                 수정하기

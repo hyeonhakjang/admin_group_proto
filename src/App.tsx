@@ -36,6 +36,7 @@ import ClubProfileEditScreen from "./components/ClubProfileEditScreen";
 import ApplicationFormManageScreen from "./components/ApplicationFormManageScreen";
 import GoogleFormRegisterScreen from "./components/GoogleFormRegisterScreen";
 import AccountingManageScreen from "./components/AccountingManageScreen";
+import AccountingEditScreen from "./components/AccountingEditScreen";
 import "./App.css";
 
 function App() {
@@ -133,6 +134,10 @@ function App() {
           <Route
             path="/myclub/manage/accounting"
             element={<AccountingManageScreen />}
+          />
+          <Route
+            path="/myclub/manage/accounting/edit"
+            element={<AccountingEditScreen />}
           />
           <Route
             path="/myclub/manage/events"
