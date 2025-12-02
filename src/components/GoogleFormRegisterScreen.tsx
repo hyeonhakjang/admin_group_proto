@@ -25,11 +25,31 @@ const GoogleFormRegisterScreen: React.FC = () => {
     }
   }, []);
 
+  const validateGoogleFormUrl = (url: string): boolean => {
+    try {
+      const urlObj = new URL(url);
+      // 구글폼 URL 형식 검증: forms.gle 또는 docs.google.com/forms
+      return (
+        urlObj.hostname === "forms.gle" ||
+        urlObj.hostname === "docs.google.com" ||
+        urlObj.hostname.includes("google.com")
+      );
+    } catch {
+      return false;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 입력값 검증
     if (!title.trim()) {
       alert("제목을 입력해주세요.");
+      return;
+    }
+
+    if (title.trim().length > 200) {
+      alert("제목은 200자 이하로 입력해주세요.");
       return;
     }
 
@@ -38,38 +58,67 @@ const GoogleFormRegisterScreen: React.FC = () => {
       return;
     }
 
-    // URL 유효성 검사 (간단한 검사)
+    // URL 형식 검증
+    let normalizedUrl = googleFormUrl.trim();
+    if (!normalizedUrl.startsWith("http://") && !normalizedUrl.startsWith("https://")) {
+      normalizedUrl = "https://" + normalizedUrl;
+    }
+
     try {
-      new URL(googleFormUrl);
+      new URL(normalizedUrl);
     } catch {
       alert("올바른 URL 형식을 입력해주세요.");
       return;
     }
 
+    // 구글폼 URL 검증
+    if (!validateGoogleFormUrl(normalizedUrl)) {
+      alert("구글폼 URL 형식이 올바르지 않습니다.\n구글폼의 공유 링크를 입력해주세요.");
+      return;
+    }
+
     if (!selectedClub?.club_user_id) {
-      alert("동아리 정보를 찾을 수 없습니다.");
+      alert("동아리 정보를 찾을 수 없습니다. 다시 로그인해주세요.");
       return;
     }
 
     try {
       setIsSubmitting(true);
 
-      const { error } = await supabase.from("application_form").insert({
-        club_user_id: selectedClub.club_user_id,
-        title: title.trim(),
-        google_form_url: googleFormUrl.trim(),
-        form_type: "google",
-      });
+      // DB에 신청폼 저장
+      const { data, error } = await supabase
+        .from("application_form")
+        .insert({
+          club_user_id: selectedClub.club_user_id,
+          title: title.trim(),
+          google_form_url: normalizedUrl,
+          form_type: "google",
+        })
+        .select()
+        .single();
 
       if (error) {
-        throw error;
+        // 에러 코드별 처리
+        if (error.code === "23503") {
+          throw new Error("동아리 정보를 찾을 수 없습니다.");
+        } else if (error.code === "23505") {
+          throw new Error("이미 등록된 신청폼입니다.");
+        } else {
+          throw error;
+        }
       }
 
-      alert("구글폼이 성공적으로 등록되었습니다.");
+      if (!data) {
+        throw new Error("신청폼 등록에 실패했습니다.");
+      }
+
+      alert(`"${title.trim()}" 신청폼이 성공적으로 등록되었습니다.`);
       navigate("/myclub/manage/approvals");
     } catch (error: any) {
       console.error("구글폼 등록 오류:", error);
-      alert("구글폼 등록 중 오류가 발생했습니다: " + (error.message || "알 수 없는 오류"));
+      const errorMessage =
+        error.message || error.details || "알 수 없는 오류가 발생했습니다.";
+      alert(`구글폼 등록 중 오류가 발생했습니다.\n\n${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
