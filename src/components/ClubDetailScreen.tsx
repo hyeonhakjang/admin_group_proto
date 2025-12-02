@@ -728,7 +728,7 @@ const ClubDetailScreen: React.FC = () => {
 
   const handleAddFeedClick = () => {
     if (!club || !canManageFeed) return;
-    navigate(`/community/club/${club.id}/feed/new`);
+    navigate("/feed/register", { state: { title: "피드 등록" } });
   };
 
   const handleJoinSettingsClick = () => {

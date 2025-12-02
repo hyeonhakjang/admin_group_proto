@@ -83,6 +83,10 @@ function App() {
           />
           <Route path="/community/post/:id" element={<PostDetailScreen />} />
           <Route
+            path="/feed/register"
+            element={<ComingSoonScreen title="피드 등록" />}
+          />
+          <Route
             path="/booking"
             element={<ComingSoonScreen title="예약/구매" showBottomTabBar />}
           />
