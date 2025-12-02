@@ -409,6 +409,75 @@ const ClubDetailScreen: React.FC = () => {
     }
   }, [club?.id, loadActiveApplicationForm]);
 
+  // 구글폼 제출 후 돌아왔을 때 자동 가입 신청 처리
+  useEffect(() => {
+    const checkPendingJoin = async () => {
+      if (!club?.id || !userData || userData.type !== "personal") {
+        return;
+      }
+
+      const pendingJoinKey = `pending_join_${club.id}`;
+      const pendingJoinData = sessionStorage.getItem(pendingJoinKey);
+
+      if (!pendingJoinData) {
+        return;
+      }
+
+      try {
+        const pendingData = JSON.parse(pendingJoinData);
+        const timeDiff = Date.now() - pendingData.timestamp;
+
+        // 5분 이내에 구글폼으로 이동한 경우에만 처리
+        if (timeDiff > 5 * 60 * 1000) {
+          sessionStorage.removeItem(pendingJoinKey);
+          return;
+        }
+
+        // 이미 가입 신청한 경우 확인
+        const { data: existingMembership } = await supabase
+          .from("club_personal")
+          .select("id")
+          .eq("personal_user_id", userData.id)
+          .eq("club_user_id", club.id)
+          .single();
+
+        if (existingMembership) {
+          sessionStorage.removeItem(pendingJoinKey);
+          return;
+        }
+
+        // 가입 신청 처리
+        const { error: insertError } = await supabase
+          .from("club_personal")
+          .insert({
+            personal_user_id: userData.id,
+            club_user_id: club.id,
+            role: "member",
+            approved: false,
+          });
+
+        if (!insertError) {
+          sessionStorage.removeItem(pendingJoinKey);
+          setShowJoinSuccess(true);
+        }
+      } catch (error) {
+        console.error("자동 가입 신청 처리 오류:", error);
+      }
+    };
+
+    // 페이지 포커스 시 확인 (구글폼에서 돌아왔을 때)
+    const handleFocus = () => {
+      checkPendingJoin();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    checkPendingJoin(); // 초기 로드 시에도 확인
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [club?.id, userData]);
+
   // 가입 신청 처리 함수
   const handleJoinRequest = async () => {
     if (!userData || userData.type !== "personal" || !club) {
@@ -435,21 +504,28 @@ const ClubDetailScreen: React.FC = () => {
     // 활성 신청폼이 있으면 구글폼으로 이동
     if (activeApplicationForm?.google_form_url) {
       const googleFormUrl = activeApplicationForm.google_form_url;
-      const redirectUrl = `${window.location.origin}/community/club/${club.id}/join-success?club_id=${club.id}`;
 
-      // 구글폼 제출 후 리다이렉트 URL 설정 안내
-      alert(
-        `구글폼으로 이동합니다.\n\n` +
-        `구글폼 제출 후 자동으로 가입 신청이 완료되려면,\n` +
-        `구글폼 설정에서 "제출 후 리다이렉트" 옵션을 활성화하고\n` +
-        `리다이렉트 URL을 다음으로 설정해주세요:\n\n` +
-        `${redirectUrl}\n\n` +
-        `리다이렉트 URL을 설정하지 않으면,\n` +
-        `구글폼 제출 후 위 URL로 직접 이동해주세요.`
+      // 구글폼 제출 대기 상태 저장
+      sessionStorage.setItem(
+        `pending_join_${club.id}`,
+        JSON.stringify({
+          club_id: club.id,
+          user_id: userData.id,
+          form_id: activeApplicationForm.id,
+          timestamp: Date.now(),
+        })
       );
 
-      // 구글폼으로 이동 (현재 창에서)
-      window.location.href = googleFormUrl;
+      // 구글폼으로 이동 (새 탭에서 열기)
+      window.open(googleFormUrl, "_blank", "noopener,noreferrer");
+
+      // 안내 메시지
+      alert(
+        `구글폼이 새 탭에서 열렸습니다.\n\n` +
+        `구글폼을 작성하고 제출한 후,\n` +
+        `앱으로 돌아와서 동아리 페이지를 새로고침하시면\n` +
+        `자동으로 가입 신청이 완료됩니다.`
+      );
     } else {
       // 활성 신청폼이 없으면 기존 방식대로 처리
       try {
