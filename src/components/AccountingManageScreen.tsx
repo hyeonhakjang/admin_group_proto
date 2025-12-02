@@ -57,7 +57,17 @@ const AccountingManageScreen: React.FC = () => {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
       const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
-      const monthEnd = new Date(year, month, 0).toISOString().split("T")[0];
+      // 해당 월의 마지막 날 계산
+      const lastDay = new Date(year, month, 0).getDate();
+      const monthEnd = `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+
+      console.log("회계 데이터 조회:", {
+        club_user_id: selectedClub.club_user_id,
+        year,
+        month,
+        monthStart,
+        monthEnd,
+      });
 
       // DB에서 회계 거래 내역 가져오기
       const { data, error } = await supabase
@@ -70,8 +80,11 @@ const AccountingManageScreen: React.FC = () => {
         .order("transaction_time", { ascending: false });
 
       if (error) {
+        console.error("회계 데이터 조회 오류:", error);
         throw error;
       }
+
+      console.log("조회된 거래 내역:", data);
 
       // 전체 잔액 계산 (가장 최근 거래의 balance 사용)
       let currentBalance = 0;

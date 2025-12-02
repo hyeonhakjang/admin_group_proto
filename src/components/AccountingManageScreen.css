@@ -68,6 +68,7 @@
 .accounting-manage-section-bc {
   display: flex;
   gap: clamp(12px, 3vw, 16px);
+  align-items: stretch;
 }
 
 .accounting-monthly-income,
@@ -81,16 +82,21 @@
   border-radius: 12px;
   border: 1px solid #f1e9e3;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: clamp(100px, 25vw, 120px);
 }
 
 .accounting-monthly-label {
   font-size: clamp(13px, 3.25vw, 14px);
   color: #999999;
+  flex-shrink: 0;
 }
 
 .accounting-monthly-amount {
   font-size: clamp(20px, 5vw, 24px);
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .accounting-monthly-amount.income {
