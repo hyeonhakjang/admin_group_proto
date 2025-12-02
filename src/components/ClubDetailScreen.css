@@ -1400,6 +1400,128 @@
   cursor: not-allowed;
 }
 
+/* 신청폼 선택 리스트 */
+.join-settings-form-loading,
+.join-settings-form-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(24px, 6vw, 32px);
+  gap: clamp(12px, 3vw, 16px);
+  color: #666;
+  text-align: center;
+}
+
+.join-settings-form-empty p {
+  margin: 0;
+  font-size: clamp(14px, 3.5vw, 15px);
+}
+
+.join-settings-form-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.join-settings-form-item {
+  display: flex;
+  align-items: center;
+  padding: clamp(12px, 3vw, 16px);
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.join-settings-form-item:hover:not(:has(input:disabled)) {
+  border-color: #c34e00;
+  background: #fff5f0;
+}
+
+.join-settings-form-item.selected {
+  border-color: #c34e00;
+  background: #fff5f0;
+}
+
+.join-settings-form-item input[type="radio"] {
+  margin-right: clamp(12px, 3vw, 16px);
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #c34e00;
+}
+
+.join-settings-form-item input[type="radio"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.join-settings-form-item-content {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 16px);
+  flex: 1;
+}
+
+.join-settings-form-item-icon {
+  font-size: clamp(24px, 6vw, 28px);
+  width: clamp(40px, 10vw, 48px);
+  height: clamp(40px, 10vw, 48px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.join-settings-form-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.join-settings-form-item-text h4 {
+  margin: 0;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 600;
+  color: #28201b;
+}
+
+.join-settings-form-item-text span {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(12px, 3vw, 13px);
+  color: #666;
+}
+
+.join-settings-form-link-btn {
+  width: 100%;
+  padding: clamp(10px, 2.5vw, 12px);
+  background: transparent;
+  color: #c34e00;
+  border: 1px solid #c34e00;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 15px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: clamp(8px, 2vw, 12px);
+}
+
+.join-settings-form-link-btn:hover {
+  background: #fff5f0;
+  transform: translateY(-1px);
+}
+
+.join-settings-form-link-btn:active {
+  transform: translateY(0);
+}
+
 .feed-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

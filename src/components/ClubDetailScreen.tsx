@@ -54,9 +54,13 @@ const ClubDetailScreen: React.FC = () => {
   const [isUpdatingDescription, setIsUpdatingDescription] = useState(false);
   const [showJoinSettingsModal, setShowJoinSettingsModal] = useState(false);
   const [isUpdatingRecruiting, setIsUpdatingRecruiting] = useState(false);
-  const [applicationFormTitle, setApplicationFormTitle] = useState("");
-  const [applicationFormUrl, setApplicationFormUrl] = useState("");
-  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+  const [applicationForms, setApplicationForms] = useState<any[]>([]);
+  const [selectedApplicationFormId, setSelectedApplicationFormId] = useState<
+    number | null
+  >(null);
+  const [isLoadingForms, setIsLoadingForms] = useState(false);
+  const [isUpdatingApplicationForm, setIsUpdatingApplicationForm] =
+    useState(false);
 
   // 달력 관련 상태 (MyClubScreen에서 재사용)
   const [currentDate, setCurrentDate] = useState(() => {
@@ -589,63 +593,98 @@ const ClubDetailScreen: React.FC = () => {
     }
   };
 
-  // 신청폼 등록
-  const handleSubmitApplicationForm = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!club || !applicationFormTitle.trim() || !applicationFormUrl.trim()) {
-      alert("제목과 구글폼 URL을 모두 입력해주세요.");
+  // 신청폼 목록 로드
+  const loadApplicationForms = useCallback(async () => {
+    if (!club?.id) {
+      setApplicationForms([]);
       return;
     }
 
-    // URL 검증
-    const validateGoogleFormUrl = (url: string): boolean => {
-      try {
-        const urlObj = new URL(url);
-        return (
-          urlObj.hostname === "forms.gle" ||
-          urlObj.hostname === "docs.google.com" ||
-          urlObj.hostname.includes("google.com")
-        );
-      } catch {
-        return false;
-      }
-    };
-
-    if (!validateGoogleFormUrl(applicationFormUrl)) {
-      alert("올바른 구글폼 URL을 입력해주세요.");
-      return;
-    }
-
-    setIsSubmittingForm(true);
     try {
-      // URL 정규화
-      let normalizedUrl = applicationFormUrl.trim();
-      if (!normalizedUrl.startsWith("http://") && !normalizedUrl.startsWith("https://")) {
-        normalizedUrl = `https://${normalizedUrl}`;
+      setIsLoadingForms(true);
+      const { data, error } = await supabase
+        .from("application_form")
+        .select("id, title, created_at, google_form_url, form_type")
+        .eq("club_user_id", club.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("신청폼 목록 로드 오류:", error);
+        setApplicationForms([]);
+        return;
       }
 
-      const { error } = await supabase.from("application_form").insert({
-        club_user_id: club.id,
-        title: applicationFormTitle.trim(),
-        google_form_url: normalizedUrl,
-        form_type: "google",
-      });
+      setApplicationForms(data || []);
+    } catch (error) {
+      console.error("신청폼 목록 로드 중 오류:", error);
+      setApplicationForms([]);
+    } finally {
+      setIsLoadingForms(false);
+    }
+  }, [club?.id]);
+
+  // 활성 신청폼 ID 로드
+  const loadActiveApplicationFormId = useCallback(async () => {
+    if (!club?.id) return;
+
+    try {
+      const { data, error } = await supabase
+        .from("club_user")
+        .select("active_application_form_id")
+        .eq("id", club.id)
+        .single();
+
+      if (error) {
+        console.error("활성 신청폼 ID 로드 오류:", error);
+        return;
+      }
+
+      setSelectedApplicationFormId(data?.active_application_form_id || null);
+    } catch (error) {
+      console.error("활성 신청폼 ID 로드 중 오류:", error);
+    }
+  }, [club?.id]);
+
+  // 모달이 열릴 때 신청폼 목록 로드
+  useEffect(() => {
+    if (showJoinSettingsModal) {
+      loadApplicationForms();
+      loadActiveApplicationFormId();
+    }
+  }, [showJoinSettingsModal, loadApplicationForms, loadActiveApplicationFormId]);
+
+  // 신청폼 선택 및 등록
+  const handleSelectApplicationForm = async () => {
+    if (!club || selectedApplicationFormId === null) {
+      alert("신청폼을 선택해주세요.");
+      return;
+    }
+
+    setIsUpdatingApplicationForm(true);
+    try {
+      const { error } = await supabase
+        .from("club_user")
+        .update({ active_application_form_id: selectedApplicationFormId })
+        .eq("id", club.id);
 
       if (error) {
         throw error;
       }
 
-      alert(`"${applicationFormTitle.trim()}" 신청폼이 성공적으로 등록되었습니다.`);
-      setApplicationFormTitle("");
-      setApplicationFormUrl("");
+      const selectedForm = applicationForms.find(
+        (form) => form.id === selectedApplicationFormId
+      );
+      alert(
+        `"${selectedForm?.title || "신청폼"}"이(가) 활성 신청폼으로 등록되었습니다.`
+      );
+      setShowJoinSettingsModal(false);
     } catch (error: any) {
       console.error("신청폼 등록 오류:", error);
       const errorMessage =
         error.message || error.details || "알 수 없는 오류가 발생했습니다.";
       alert(`신청폼 등록 중 오류가 발생했습니다.\n\n${errorMessage}`);
     } finally {
-      setIsSubmittingForm(false);
+      setIsUpdatingApplicationForm(false);
     }
   };
 
@@ -1265,43 +1304,87 @@ const ClubDetailScreen: React.FC = () => {
               {/* 신청폼 등록 */}
               <div className="join-settings-section">
                 <h3 className="join-settings-section-title">신청폼 등록</h3>
-                <form
-                  onSubmit={handleSubmitApplicationForm}
-                  className="join-settings-form"
-                >
-                  <div className="join-settings-form-group">
-                    <label className="join-settings-form-label">제목</label>
-                    <input
-                      type="text"
-                      className="join-settings-form-input"
-                      value={applicationFormTitle}
-                      onChange={(e) => setApplicationFormTitle(e.target.value)}
-                      placeholder="신청폼 제목을 입력하세요"
-                      maxLength={200}
-                      disabled={isSubmittingForm}
-                    />
+                {isLoadingForms ? (
+                  <div className="join-settings-form-loading">
+                    신청폼 목록을 불러오는 중...
                   </div>
-                  <div className="join-settings-form-group">
-                    <label className="join-settings-form-label">
-                      구글폼 URL
-                    </label>
-                    <input
-                      type="url"
-                      className="join-settings-form-input"
-                      value={applicationFormUrl}
-                      onChange={(e) => setApplicationFormUrl(e.target.value)}
-                      placeholder="https://forms.gle/..."
-                      disabled={isSubmittingForm}
-                    />
+                ) : applicationForms.length === 0 ? (
+                  <div className="join-settings-form-empty">
+                    <p>등록된 신청폼이 없습니다.</p>
+                    <button
+                      className="join-settings-form-link-btn"
+                      onClick={() => {
+                        setShowJoinSettingsModal(false);
+                        navigate("/myclub/manage/approvals");
+                      }}
+                    >
+                      신청폼 만들기
+                    </button>
                   </div>
-                  <button
-                    type="submit"
-                    className="join-settings-form-submit"
-                    disabled={isSubmittingForm}
-                  >
-                    {isSubmittingForm ? "등록 중..." : "신청폼 등록"}
-                  </button>
-                </form>
+                ) : (
+                  <div className="join-settings-form-list">
+                    {applicationForms.map((form) => (
+                      <label
+                        key={form.id}
+                        className={`join-settings-form-item ${
+                          selectedApplicationFormId === form.id ? "selected" : ""
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="applicationForm"
+                          value={form.id}
+                          checked={selectedApplicationFormId === form.id}
+                          onChange={(e) =>
+                            setSelectedApplicationFormId(
+                              parseInt(e.target.value)
+                            )
+                          }
+                          disabled={isUpdatingApplicationForm}
+                        />
+                        <div className="join-settings-form-item-content">
+                          <div className="join-settings-form-item-icon">📄</div>
+                          <div className="join-settings-form-item-text">
+                            <h4>{form.title}</h4>
+                            <span>
+                              {form.created_at
+                                ? new Date(form.created_at).toLocaleDateString(
+                                    "ko-KR",
+                                    {
+                                      year: "numeric",
+                                      month: "2-digit",
+                                      day: "2-digit",
+                                    }
+                                  )
+                                : ""}
+                            </span>
+                          </div>
+                        </div>
+                      </label>
+                    ))}
+                    <button
+                      className="join-settings-form-submit"
+                      onClick={handleSelectApplicationForm}
+                      disabled={
+                        isUpdatingApplicationForm ||
+                        selectedApplicationFormId === null
+                      }
+                    >
+                      {isUpdatingApplicationForm
+                        ? "등록 중..."
+                        : "신청폼 등록"}
+                    </button>
+                    <button
+                      className="join-settings-form-link-btn"
+                      onClick={() => {
+                        setShowJoinSettingsModal(false);
+                        navigate("/myclub/manage/approvals");
+                      }}
+                    >
+                      + 신청폼 만들기
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
