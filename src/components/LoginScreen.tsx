@@ -163,7 +163,7 @@ const LoginScreen: React.FC = () => {
     <div className="login-screen">
       {/* 섹션 A: 프로그램 로고 */}
       <div className="login-logo-section">
-        <div className="login-logo">로고</div>
+        <div className="login-logo">UNICLUB</div>
       </div>
 
       {/* 섹션 B: 아이디/비밀번호 입력 */}
