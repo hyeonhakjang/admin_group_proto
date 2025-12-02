@@ -199,36 +199,34 @@ const CommunityScreen: React.FC = () => {
                 {loading ? (
                   <div>로딩 중...</div>
                 ) : (
-                  domesticClubs
-                    .slice(0, 3)
-                    .map((club) => (
-                      <div
-                        key={club.id}
-                        className="club-card"
-                        onClick={() => navigate(`/community/club/${club.id}`)}
-                      >
-                        <div className="club-card-logo">
-                          <img src={club.logo} alt={club.name} />
-                        </div>
-                        <div className="club-card-info">
-                          <h3 className="club-card-name">{club.name}</h3>
-                          <p className="club-card-desc">
-                            {club.description || club.name}
-                          </p>
-                          <div className="club-card-meta">
-                            <span className="club-card-category">
-                              {club.category}
-                            </span>
-                            <span className="club-card-score">
-                              활동점수: {club.activityScore}
-                            </span>
-                          </div>
-                          {club.isRecruiting && (
-                            <span className="recruiting-badge">모집중</span>
-                          )}
-                        </div>
+                  domesticClubs.slice(0, 3).map((club) => (
+                    <div
+                      key={club.id}
+                      className="club-card"
+                      onClick={() => navigate(`/community/club/${club.id}`)}
+                    >
+                      <div className="club-card-logo">
+                        <img src={club.logo} alt={club.name} />
                       </div>
-                    ))
+                      <div className="club-card-info">
+                        <h3 className="club-card-name">{club.name}</h3>
+                        <p className="club-card-desc">
+                          {club.description || club.name}
+                        </p>
+                        <div className="club-card-meta">
+                          <span className="club-card-category">
+                            {club.category}
+                          </span>
+                          <span className="club-card-score">
+                            활동점수: {club.activityScore}
+                          </span>
+                        </div>
+                        {club.isRecruiting && (
+                          <span className="recruiting-badge">모집중</span>
+                        )}
+                      </div>
+                    </div>
+                  ))
                 )}
               </div>
             </section>
@@ -291,36 +289,34 @@ const CommunityScreen: React.FC = () => {
                 {loading ? (
                   <div>로딩 중...</div>
                 ) : (
-                  allianceClubs
-                    .slice(0, 3)
-                    .map((club) => (
-                      <div
-                        key={club.id}
-                        className="club-card"
-                        onClick={() => navigate(`/community/club/${club.id}`)}
-                      >
-                        <div className="club-card-logo">
-                          <img src={club.logo} alt={club.name} />
-                        </div>
-                        <div className="club-card-info">
-                          <h3 className="club-card-name">{club.name}</h3>
-                          <p className="club-card-desc">
-                            {club.description || club.name}
-                          </p>
-                          <div className="club-card-meta">
-                            <span className="club-card-category">
-                              {club.category}
-                            </span>
-                            <span className="club-card-score">
-                              활동점수: {club.activityScore}
-                            </span>
-                          </div>
-                          {club.isRecruiting && (
-                            <span className="recruiting-badge">모집중</span>
-                          )}
-                        </div>
+                  allianceClubs.slice(0, 3).map((club) => (
+                    <div
+                      key={club.id}
+                      className="club-card"
+                      onClick={() => navigate(`/community/club/${club.id}`)}
+                    >
+                      <div className="club-card-logo">
+                        <img src={club.logo} alt={club.name} />
                       </div>
-                    ))
+                      <div className="club-card-info">
+                        <h3 className="club-card-name">{club.name}</h3>
+                        <p className="club-card-desc">
+                          {club.description || club.name}
+                        </p>
+                        <div className="club-card-meta">
+                          <span className="club-card-category">
+                            {club.category}
+                          </span>
+                          <span className="club-card-score">
+                            활동점수: {club.activityScore}
+                          </span>
+                        </div>
+                        {club.isRecruiting && (
+                          <span className="recruiting-badge">모집중</span>
+                        )}
+                      </div>
+                    </div>
+                  ))
                 )}
               </div>
             </section>

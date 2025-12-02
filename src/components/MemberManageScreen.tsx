@@ -181,7 +181,9 @@ const MemberManageScreen: React.FC = () => {
             existingChairs.length > 0 &&
             !existingChairs.some((chair) => chair.id === clubPersonalId)
           ) {
-            alert("회장은 한 명만 지정할 수 있습니다. 기존 회장을 먼저 변경하세요.");
+            alert(
+              "회장은 한 명만 지정할 수 있습니다. 기존 회장을 먼저 변경하세요."
+            );
             return;
           }
         }

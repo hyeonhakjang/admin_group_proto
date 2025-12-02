@@ -527,9 +527,10 @@ const MyClubScreen: React.FC = () => {
   useEffect(() => {
     const loadProfileInfo = async () => {
       if (!userData) return;
-      
+
       // personal 타입일 때는 club_personal_id가 필요
-      if (userData.type === "personal" && !selectedClub?.club_personal_id) return;
+      if (userData.type === "personal" && !selectedClub?.club_personal_id)
+        return;
 
       try {
         if (userData.type === "personal" && selectedClub?.club_personal_id) {
@@ -581,9 +582,11 @@ const MyClubScreen: React.FC = () => {
             });
           } else {
             setProfileInfo({
-              nickname: clubUserData?.club_name || selectedClub?.name || userData.name,
+              nickname:
+                clubUserData?.club_name || selectedClub?.name || userData.name,
               role: "동아리 계정",
-              profileImage: clubUserData?.profile_image_url || "/profile-icon.png",
+              profileImage:
+                clubUserData?.profile_image_url || "/profile-icon.png",
             });
           }
         }

@@ -51,7 +51,7 @@ const Header: React.FC = () => {
     setSelectedUniversity(university);
     localStorage.setItem("selectedUniversityName", university);
     window.dispatchEvent(
-    new CustomEvent("universitySelected", { detail: university })
+      new CustomEvent("universitySelected", { detail: university })
     );
     setShowUniversityModal(false);
     setUniversitySearch("");

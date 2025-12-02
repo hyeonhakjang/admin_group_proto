@@ -344,7 +344,9 @@ const PayoutManageDetailScreen: React.FC = () => {
 
         {/* 총 정산 금액 블록 */}
         <section className="payout-manage-detail-section payout-manage-detail-amount-card">
-          <span className="payout-manage-detail-amount-label">총 정산 금액</span>
+          <span className="payout-manage-detail-amount-label">
+            총 정산 금액
+          </span>
           <strong className="payout-manage-detail-amount-value">
             {payout.totalAmount.toLocaleString()}원
           </strong>

@@ -222,7 +222,10 @@ const PayoutManageScreen: React.FC = () => {
           </div>
         ) : (
           monthlyGroups.map((group) => (
-            <div key={`${group.year}-${group.month}`} className="payout-month-group">
+            <div
+              key={`${group.year}-${group.month}`}
+              className="payout-month-group"
+            >
               {/* 섹션 A: 연, 월 표시 */}
               <div className="payout-month-header">
                 <h2 className="payout-month-title">
@@ -236,7 +239,9 @@ const PayoutManageScreen: React.FC = () => {
                   <div
                     key={payout.id}
                     className="payout-item-card"
-                    onClick={() => navigate(`/myclub/manage/payout/${payout.id}`)}
+                    onClick={() =>
+                      navigate(`/myclub/manage/payout/${payout.id}`)
+                    }
                   >
                     <div className="payout-item-content">
                       {/* 섹션 B-A: 총 인원 */}
@@ -244,17 +249,18 @@ const PayoutManageScreen: React.FC = () => {
                         총 {payout.totalMembers}명
                       </div>
                       {/* 섹션 B-B: 정산 이름 */}
-                      <div className="payout-item-title">
-                        {payout.title}
-                      </div>
+                      <div className="payout-item-title">{payout.title}</div>
                       {/* 섹션 B-C: 정산 요청 날짜, 섹션 B-D: 자신의 정산 현황 (같은 줄) */}
                       <div className="payout-item-footer">
                         <span className="payout-item-date">
-                          {new Date(payout.requestDate).toLocaleDateString("ko-KR", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
+                          {new Date(payout.requestDate).toLocaleDateString(
+                            "ko-KR",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )}
                         </span>
                         <span
                           className={`payout-item-status ${
@@ -274,10 +280,8 @@ const PayoutManageScreen: React.FC = () => {
           ))
         )}
       </div>
-
     </div>
   );
 };
 
 export default PayoutManageScreen;
-
