@@ -46,7 +46,7 @@ const ClubSignupScreen: React.FC = () => {
         if (error) {
           console.error("대학 목록 로드 오류:", error);
         } else {
-          setUniversities((data || []).map((u) => u.univ_name));
+          setUniversities((data || []).map((u: any) => u.univ_name));
         }
       } catch (err) {
         console.error("대학 목록 로드 오류:", err);

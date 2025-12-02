@@ -654,7 +654,7 @@ const ClubDetailScreen: React.FC = () => {
         .order("created_at", { ascending: false })
         .limit(9); // 최근 9개만 미리보기용으로 로드
 
-      const feedItems = (feedData || []).map((item) => ({
+      const feedItems = (feedData || []).map((item: any) => ({
         id: item.id,
         image: item.image_url,
         caption: item.caption || "",

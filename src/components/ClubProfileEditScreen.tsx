@@ -222,8 +222,8 @@ const ClubProfileEditScreen: React.FC = () => {
       const articleIds = Array.from(
         new Set(
           commentsData
-            .map((c) => c.club_personal_article_id)
-            .filter((id) => id !== null)
+            .map((c: any) => c.club_personal_article_id)
+            .filter((id: any) => id !== null)
         )
       );
 
@@ -278,8 +278,8 @@ const ClubProfileEditScreen: React.FC = () => {
       const articleIds = Array.from(
         new Set(
           likesData
-            .map((l) => l.club_personal_article_id)
-            .filter((id) => id !== null)
+            .map((l: any) => l.club_personal_article_id)
+            .filter((id: any) => id !== null)
         )
       );
 

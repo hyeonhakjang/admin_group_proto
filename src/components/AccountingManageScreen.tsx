@@ -93,7 +93,7 @@ const AccountingManageScreen: React.FC = () => {
       if (data && data.length > 0) {
         // 최신 거래의 balance를 현재 잔액으로 사용
         const latestTransaction = data.sort(
-          (a, b) =>
+          (a: any, b: any) =>
             new Date(`${b.transaction_date}T${b.transaction_time}`).getTime() -
             new Date(`${a.transaction_date}T${a.transaction_time}`).getTime()
         )[0];
