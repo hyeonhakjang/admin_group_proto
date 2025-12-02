@@ -217,8 +217,13 @@ const AccountingManageScreen: React.FC = () => {
       {/* 헤더: 뒤로가기 버튼 */}
       <header className="accounting-manage-header">
         <button
+          type="button"
           className="accounting-manage-back-btn"
-          onClick={() => navigate(-1)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            navigate("/myclub");
+          }}
         >
           ← 뒤로가기
         </button>

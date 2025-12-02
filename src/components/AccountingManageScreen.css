@@ -14,6 +14,8 @@
   padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
   background: #fffcfa;
   box-sizing: border-box;
+  position: relative;
+  z-index: 10;
 }
 
 .accounting-manage-back-btn {
@@ -24,6 +26,10 @@
   color: #28201b;
   cursor: pointer;
   padding: 8px 0;
+  position: relative;
+  z-index: 11;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .accounting-manage-content {
