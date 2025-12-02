@@ -52,6 +52,11 @@ const ClubDetailScreen: React.FC = () => {
   const [showDescriptionModal, setShowDescriptionModal] = useState(false);
   const [descriptionInput, setDescriptionInput] = useState("");
   const [isUpdatingDescription, setIsUpdatingDescription] = useState(false);
+  const [showJoinSettingsModal, setShowJoinSettingsModal] = useState(false);
+  const [isUpdatingRecruiting, setIsUpdatingRecruiting] = useState(false);
+  const [applicationFormTitle, setApplicationFormTitle] = useState("");
+  const [applicationFormUrl, setApplicationFormUrl] = useState("");
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
 
   // 달력 관련 상태 (MyClubScreen에서 재사용)
   const [currentDate, setCurrentDate] = useState(() => {
@@ -552,7 +557,96 @@ const ClubDetailScreen: React.FC = () => {
 
   const handleJoinSettingsClick = () => {
     if (!club || !isOwnClub) return;
-    navigate(`/community/club/${club.id}/join-settings`);
+    setShowJoinSettingsModal(true);
+  };
+
+  // 모집중 상태 토글
+  const handleToggleRecruiting = async () => {
+    if (!club || !isOwnClub || isUpdatingRecruiting) return;
+
+    setIsUpdatingRecruiting(true);
+    try {
+      const newRecruitingStatus = !club.isRecruiting;
+      const { error } = await supabase
+        .from("club_user")
+        .update({ recruiting: newRecruitingStatus })
+        .eq("id", club.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // 로컬 상태 업데이트
+      setClub((prev) => {
+        if (!prev) return null;
+        return { ...prev, isRecruiting: newRecruitingStatus };
+      });
+    } catch (error) {
+      console.error("모집중 상태 업데이트 오류:", error);
+      alert("모집중 상태 변경 중 오류가 발생했습니다.");
+    } finally {
+      setIsUpdatingRecruiting(false);
+    }
+  };
+
+  // 신청폼 등록
+  const handleSubmitApplicationForm = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!club || !applicationFormTitle.trim() || !applicationFormUrl.trim()) {
+      alert("제목과 구글폼 URL을 모두 입력해주세요.");
+      return;
+    }
+
+    // URL 검증
+    const validateGoogleFormUrl = (url: string): boolean => {
+      try {
+        const urlObj = new URL(url);
+        return (
+          urlObj.hostname === "forms.gle" ||
+          urlObj.hostname === "docs.google.com" ||
+          urlObj.hostname.includes("google.com")
+        );
+      } catch {
+        return false;
+      }
+    };
+
+    if (!validateGoogleFormUrl(applicationFormUrl)) {
+      alert("올바른 구글폼 URL을 입력해주세요.");
+      return;
+    }
+
+    setIsSubmittingForm(true);
+    try {
+      // URL 정규화
+      let normalizedUrl = applicationFormUrl.trim();
+      if (!normalizedUrl.startsWith("http://") && !normalizedUrl.startsWith("https://")) {
+        normalizedUrl = `https://${normalizedUrl}`;
+      }
+
+      const { error } = await supabase.from("application_form").insert({
+        club_user_id: club.id,
+        title: applicationFormTitle.trim(),
+        google_form_url: normalizedUrl,
+        form_type: "google",
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      alert(`"${applicationFormTitle.trim()}" 신청폼이 성공적으로 등록되었습니다.`);
+      setApplicationFormTitle("");
+      setApplicationFormUrl("");
+    } catch (error: any) {
+      console.error("신청폼 등록 오류:", error);
+      const errorMessage =
+        error.message || error.details || "알 수 없는 오류가 발생했습니다.";
+      alert(`신청폼 등록 중 오류가 발생했습니다.\n\n${errorMessage}`);
+    } finally {
+      setIsSubmittingForm(false);
+    }
   };
 
   const handleLogoClick = () => {
@@ -1124,6 +1218,91 @@ const ClubDetailScreen: React.FC = () => {
                   {category}
                 </button>
               ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* 가입 설정 모달 */}
+      {showJoinSettingsModal && (
+        <>
+          <div
+            className="join-settings-modal-overlay"
+            onClick={() => setShowJoinSettingsModal(false)}
+          ></div>
+          <div className="join-settings-modal">
+            <div className="join-settings-modal-header">
+              <h2 className="join-settings-modal-title">가입 설정</h2>
+              <button
+                className="join-settings-modal-close"
+                onClick={() => setShowJoinSettingsModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="join-settings-modal-content">
+              {/* 모집중 상태 토글 */}
+              <div className="join-settings-section">
+                <div className="join-settings-section-header">
+                  <h3 className="join-settings-section-title">모집 상태</h3>
+                  <label className="join-settings-toggle">
+                    <input
+                      type="checkbox"
+                      checked={club?.isRecruiting || false}
+                      onChange={handleToggleRecruiting}
+                      disabled={isUpdatingRecruiting}
+                    />
+                    <span className="join-settings-toggle-slider"></span>
+                  </label>
+                </div>
+                <p className="join-settings-section-description">
+                  {club?.isRecruiting
+                    ? "현재 모집 중입니다"
+                    : "현재 모집 중이 아닙니다"}
+                </p>
+              </div>
+
+              {/* 신청폼 등록 */}
+              <div className="join-settings-section">
+                <h3 className="join-settings-section-title">신청폼 등록</h3>
+                <form
+                  onSubmit={handleSubmitApplicationForm}
+                  className="join-settings-form"
+                >
+                  <div className="join-settings-form-group">
+                    <label className="join-settings-form-label">제목</label>
+                    <input
+                      type="text"
+                      className="join-settings-form-input"
+                      value={applicationFormTitle}
+                      onChange={(e) => setApplicationFormTitle(e.target.value)}
+                      placeholder="신청폼 제목을 입력하세요"
+                      maxLength={200}
+                      disabled={isSubmittingForm}
+                    />
+                  </div>
+                  <div className="join-settings-form-group">
+                    <label className="join-settings-form-label">
+                      구글폼 URL
+                    </label>
+                    <input
+                      type="url"
+                      className="join-settings-form-input"
+                      value={applicationFormUrl}
+                      onChange={(e) => setApplicationFormUrl(e.target.value)}
+                      placeholder="https://forms.gle/..."
+                      disabled={isSubmittingForm}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="join-settings-form-submit"
+                    disabled={isSubmittingForm}
+                  >
+                    {isSubmittingForm ? "등록 중..." : "신청폼 등록"}
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </>

@@ -1189,6 +1189,217 @@
   cursor: not-allowed;
 }
 
+/* 가입 설정 모달 */
+.join-settings-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1300;
+}
+
+.join-settings-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, calc(100% - 32px));
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  z-index: 1301;
+  padding: clamp(16px, 4vw, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 20px);
+  box-sizing: border-box;
+}
+
+.join-settings-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.join-settings-modal-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(18px, 4.5vw, 20px);
+  margin: 0;
+  color: #28201b;
+  font-weight: 700;
+}
+
+.join-settings-modal-close {
+  background: none;
+  border: none;
+  font-size: clamp(18px, 4.5vw, 20px);
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s ease;
+  padding: 4px;
+}
+
+.join-settings-modal-close:hover {
+  color: #c34e00;
+}
+
+.join-settings-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 6vw, 32px);
+}
+
+.join-settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.join-settings-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.join-settings-section-title {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(16px, 4vw, 18px);
+  margin: 0;
+  color: #28201b;
+  font-weight: 600;
+}
+
+.join-settings-section-description {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(13px, 3.25vw, 14px);
+  color: #666;
+  margin: 0;
+}
+
+/* 토글 스위치 */
+.join-settings-toggle {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.join-settings-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.join-settings-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 28px;
+}
+
+.join-settings-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.join-settings-toggle input:checked + .join-settings-toggle-slider {
+  background-color: #c34e00;
+}
+
+.join-settings-toggle input:checked + .join-settings-toggle-slider:before {
+  transform: translateX(20px);
+}
+
+.join-settings-toggle input:disabled + .join-settings-toggle-slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 신청폼 등록 폼 */
+.join-settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 20px);
+}
+
+.join-settings-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 10px);
+}
+
+.join-settings-form-label {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 15px);
+  color: #28201b;
+  font-weight: 500;
+}
+
+.join-settings-form-input {
+  width: 100%;
+  padding: clamp(12px, 3vw, 14px);
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 15px);
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.join-settings-form-input:focus {
+  outline: none;
+  border-color: #c34e00;
+  box-shadow: 0 0 0 2px rgba(195, 78, 0, 0.15);
+}
+
+.join-settings-form-input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.join-settings-form-submit {
+  width: 100%;
+  padding: clamp(12px, 3vw, 14px);
+  background: #c34e00;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  font-size: clamp(14px, 3.5vw, 15px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.join-settings-form-submit:hover:not(:disabled) {
+  background: #a03f00;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(195, 78, 0, 0.3);
+}
+
+.join-settings-form-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.join-settings-form-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .feed-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
