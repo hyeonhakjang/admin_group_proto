@@ -56,27 +56,78 @@ const AccountingManageScreen: React.FC = () => {
       setLoading(true);
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
+      const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
+      const monthEnd = new Date(year, month, 0).toISOString().split("T")[0];
 
-      // TODO: 실제 DB 테이블과 연동 필요
-      // 현재는 임시 데이터 구조만 제공
-      // const { data, error } = await supabase
-      //   .from("accounting_transaction")
-      //   .select("*")
-      //   .eq("club_user_id", selectedClub.club_user_id)
-      //   .gte("date", `${year}-${String(month).padStart(2, "0")}-01`)
-      //   .lt("date", `${year}-${String(month + 1).padStart(2, "0")}-01`)
-      //   .order("date", { ascending: false })
-      //   .order("time", { ascending: false });
+      // DB에서 회계 거래 내역 가져오기
+      const { data, error } = await supabase
+        .from("accounting_transaction")
+        .select("*")
+        .eq("club_user_id", selectedClub.club_user_id)
+        .gte("transaction_date", monthStart)
+        .lte("transaction_date", monthEnd)
+        .order("transaction_date", { ascending: false })
+        .order("transaction_time", { ascending: false });
 
-      // 임시 데이터 (실제 구현 시 제거)
-      const mockTransactions: AccountingTransaction[] = [];
-      let runningBalance = 0;
+      if (error) {
+        throw error;
+      }
+
+      // 전체 잔액 계산 (가장 최근 거래의 balance 사용)
+      let currentBalance = 0;
+      if (data && data.length > 0) {
+        // 최신 거래의 balance를 현재 잔액으로 사용
+        const latestTransaction = data.sort(
+          (a, b) =>
+            new Date(`${b.transaction_date}T${b.transaction_time}`).getTime() -
+            new Date(`${a.transaction_date}T${a.transaction_time}`).getTime()
+        )[0];
+        currentBalance = latestTransaction.balance || 0;
+      } else {
+        // 해당 월에 거래가 없으면 이전 월의 마지막 잔액을 가져와야 하지만,
+        // 간단하게 0으로 설정 (실제로는 이전 월 데이터 조회 필요)
+        const { data: prevData } = await supabase
+          .from("accounting_transaction")
+          .select("balance")
+          .eq("club_user_id", selectedClub.club_user_id)
+          .lt("transaction_date", monthStart)
+          .order("transaction_date", { ascending: false })
+          .order("transaction_time", { ascending: false })
+          .limit(1)
+          .single();
+
+        if (prevData) {
+          currentBalance = prevData.balance || 0;
+        }
+      }
+
+      // 월별 수익/비용 계산
       let totalIncome = 0;
       let totalExpense = 0;
 
-      // TODO: 실제 데이터로 교체
-      setTransactions(mockTransactions);
-      setBalance(runningBalance);
+      const mappedTransactions: AccountingTransaction[] = (data || []).map(
+        (transaction: any) => {
+          if (transaction.type === "income") {
+            totalIncome += transaction.amount || 0;
+          } else {
+            totalExpense += transaction.amount || 0;
+          }
+
+          return {
+            id: transaction.id,
+            date: transaction.transaction_date,
+            name: transaction.name,
+            time: transaction.transaction_time,
+            amount: transaction.amount,
+            type: transaction.type as "income" | "expense",
+            balance: transaction.balance,
+            icon: transaction.icon,
+          };
+        }
+      );
+
+      setTransactions(mappedTransactions);
+      setBalance(currentBalance);
       setMonthlySummary({ totalIncome, totalExpense });
     } catch (error) {
       console.error("회계 데이터 로드 오류:", error);
@@ -123,21 +174,24 @@ const AccountingManageScreen: React.FC = () => {
   };
 
   const formatTime = (timeString: string) => {
+    // TIME 형식 (HH:MM:SS)을 HH:MM으로 변환
+    if (!timeString) return "";
+    const parts = timeString.split(":");
+    if (parts.length >= 2) {
+      return `${parts[0]}:${parts[1]}`;
+    }
     return timeString;
   };
 
   // 날짜별로 그룹화
-  const groupedTransactions = transactions.reduce(
-    (groups, transaction) => {
-      const date = transaction.date;
-      if (!groups[date]) {
-        groups[date] = [];
-      }
-      groups[date].push(transaction);
-      return groups;
-    },
-    {} as Record<string, AccountingTransaction[]>
-  );
+  const groupedTransactions = transactions.reduce((groups, transaction) => {
+    const date = transaction.date;
+    if (!groups[date]) {
+      groups[date] = [];
+    }
+    groups[date].push(transaction);
+    return groups;
+  }, {} as Record<string, AccountingTransaction[]>);
 
   const sortedDates = Object.keys(groupedTransactions).sort(
     (a, b) => new Date(b).getTime() - new Date(a).getTime()
@@ -147,7 +201,10 @@ const AccountingManageScreen: React.FC = () => {
     <div className="accounting-manage-screen">
       {/* 헤더: 뒤로가기 버튼 */}
       <header className="accounting-manage-header">
-        <button className="accounting-manage-back-btn" onClick={() => navigate(-1)}>
+        <button
+          className="accounting-manage-back-btn"
+          onClick={() => navigate(-1)}
+        >
           ← 뒤로가기
         </button>
       </header>
@@ -237,7 +294,9 @@ const AccountingManageScreen: React.FC = () => {
                           <div className="accounting-transaction-amount">
                             <div
                               className={`accounting-amount-value ${
-                                transaction.type === "income" ? "income" : "expense"
+                                transaction.type === "income"
+                                  ? "income"
+                                  : "expense"
                               }`}
                             >
                               {transaction.type === "income" ? "+" : "-"}
@@ -284,4 +343,3 @@ const AccountingManageScreen: React.FC = () => {
 };
 
 export default AccountingManageScreen;
-
