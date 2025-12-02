@@ -86,8 +86,7 @@ const ApplicationFormManageScreen: React.FC = () => {
                 className="application-form-modal-option"
                 onClick={() => {
                   setShowModal(false);
-                  // TODO: 구글폼 등록 페이지로 이동
-                  alert("구글폼 등록 기능은 준비 중입니다.");
+                  navigate("/myclub/manage/approvals/google-form/register");
                 }}
               >
                 <div className="application-form-modal-option-icon">

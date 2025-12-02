@@ -34,6 +34,7 @@ import PayoutManageScreen from "./components/PayoutManageScreen";
 import PayoutManageDetailScreen from "./components/PayoutManageDetailScreen";
 import ClubProfileEditScreen from "./components/ClubProfileEditScreen";
 import ApplicationFormManageScreen from "./components/ApplicationFormManageScreen";
+import GoogleFormRegisterScreen from "./components/GoogleFormRegisterScreen";
 import "./App.css";
 
 function App() {
@@ -143,6 +144,10 @@ function App() {
           <Route
             path="/myclub/manage/approvals"
             element={<ApplicationFormManageScreen />}
+          />
+          <Route
+            path="/myclub/manage/approvals/google-form/register"
+            element={<GoogleFormRegisterScreen />}
           />
           <Route
             path="/myclub/page/edit"
