@@ -110,19 +110,33 @@ const PayoutManageScreen: React.FC = () => {
             String(participant.club_personal_id) ===
             String(currentMemberId || "")
         );
-        const status = currentParticipant?.status || "pending";
+
+        // 모든 참가자의 지불 상태 확인
+        // 모든 사람이 지불 완료한 경우에만 "paid" 상태
+        const allParticipantsPaid =
+          participants.length > 0 &&
+          participants.every(
+            (participant: any) => participant.status === "paid"
+          );
+
+        // 전체 상태 결정: 모든 사람이 완료했는지 확인
+        let overallStatus: "pending" | "paid" | "unpaid";
+        if (allParticipantsPaid) {
+          overallStatus = "paid";
+        } else {
+          // 일부만 완료되었거나 미완료인 경우
+          const hasUnpaid = participants.some(
+            (participant: any) => participant.status === "unpaid"
+          );
+          overallStatus = hasUnpaid ? "unpaid" : "pending";
+        }
 
         return {
           id: payout.id,
           title: payout.title,
           totalMembers,
           requestDate,
-          userStatus:
-            status === "paid"
-              ? "paid"
-              : status === "unpaid"
-              ? "unpaid"
-              : "pending",
+          userStatus: overallStatus,
           userAmount: currentParticipant?.payout_amount,
         };
       });
