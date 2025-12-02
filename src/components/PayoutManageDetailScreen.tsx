@@ -425,7 +425,11 @@ const PayoutManageDetailScreen: React.FC = () => {
                 <button
                   className="payout-close-modal-btn payout-close-modal-btn-yes"
                   onClick={async () => {
-                    if (!payout || !selectedClub?.club_user_id || isProcessing) {
+                    if (
+                      !payout ||
+                      !selectedClub?.club_user_id ||
+                      isProcessing
+                    ) {
                       return;
                     }
 
@@ -489,15 +493,15 @@ const PayoutManageDetailScreen: React.FC = () => {
                         throw insertError;
                       }
 
-                      // 5. 정산 마감 처리 (closed_at 업데이트)
-                      const { error: updateError } = await supabase
+                      // 5. 정산 내역 삭제
+                      const { error: deleteError } = await supabase
                         .from("club_personal_payout")
-                        .update({ closed_at: new Date().toISOString() })
+                        .delete()
                         .eq("id", payout.id)
                         .eq("club_user_id", selectedClub.club_user_id);
 
-                      if (updateError) {
-                        throw updateError;
+                      if (deleteError) {
+                        throw deleteError;
                       }
 
                       alert("회계 시트에 적용되었습니다.");
@@ -516,8 +520,36 @@ const PayoutManageDetailScreen: React.FC = () => {
                 </button>
                 <button
                   className="payout-close-modal-btn payout-close-modal-btn-no"
-                  onClick={() => {
-                    setShowCloseModal(false);
+                  onClick={async () => {
+                    if (
+                      !payout ||
+                      !selectedClub?.club_user_id ||
+                      isProcessing
+                    ) {
+                      return;
+                    }
+
+                    setIsProcessing(true);
+                    try {
+                      // 정산 내역만 삭제 (회계 시트에는 반영 안됨)
+                      const { error: deleteError } = await supabase
+                        .from("club_personal_payout")
+                        .delete()
+                        .eq("id", payout.id)
+                        .eq("club_user_id", selectedClub.club_user_id);
+
+                      if (deleteError) {
+                        throw deleteError;
+                      }
+
+                      setShowCloseModal(false);
+                      navigate("/myclub/manage/payout");
+                    } catch (error) {
+                      console.error("정산 내역 삭제 오류:", error);
+                      alert("정산 내역 삭제 중 오류가 발생했습니다.");
+                    } finally {
+                      setIsProcessing(false);
+                    }
                   }}
                   disabled={isProcessing}
                 >
