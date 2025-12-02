@@ -15,6 +15,8 @@ interface ApplicationForm {
   id: number;
   name: string;
   createdAt: string;
+  googleFormUrl?: string;
+  formType: string;
 }
 
 const ApplicationFormManageScreen: React.FC = () => {
@@ -42,7 +44,7 @@ const ApplicationFormManageScreen: React.FC = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from("application_form")
-        .select("id, title, created_at")
+        .select("id, title, created_at, google_form_url, form_type")
         .eq("club_user_id", selectedClub.club_user_id)
         .order("created_at", { ascending: false });
 
@@ -65,6 +67,8 @@ const ApplicationFormManageScreen: React.FC = () => {
           id: form.id,
           name: form.title,
           createdAt: createdAt.replace(/\./g, "."),
+          googleFormUrl: form.google_form_url,
+          formType: form.form_type || "google",
         };
       });
 
@@ -114,7 +118,23 @@ const ApplicationFormManageScreen: React.FC = () => {
               </div>
             ) : (
               forms.map((form) => (
-                <div key={form.id} className="application-form-card">
+                <div
+                  key={form.id}
+                  className={`application-form-card ${
+                    form.googleFormUrl ? "application-form-card-clickable" : ""
+                  }`}
+                  onClick={() => {
+                    // 구글폼 URL이 있으면 새 탭에서 열기
+                    if (form.googleFormUrl) {
+                      window.open(form.googleFormUrl, "_blank", "noopener,noreferrer");
+                    } else if (form.formType === "custom") {
+                      // 직접 만든 폼은 추후 구현
+                      alert("직접 만든 폼은 아직 준비 중입니다.");
+                    } else {
+                      alert("구글폼 URL이 등록되지 않았습니다.");
+                    }
+                  }}
+                >
                   <div className="application-form-card-icon">
                     <div className="application-form-card-icon-circle">
                       <span role="img" aria-label="document">

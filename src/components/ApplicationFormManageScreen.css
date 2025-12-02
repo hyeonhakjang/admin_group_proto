@@ -120,6 +120,16 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
+.application-form-card-clickable {
+  cursor: pointer;
+}
+
+.application-form-card-clickable:hover {
+  border-color: #c34e00;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(195, 78, 0, 0.15);
+}
+
 .application-form-card-icon {
   flex: 1;
   display: flex;
