@@ -1,6 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 import "./ApplicationFormManageScreen.css";
+
+interface StoredClub {
+  id: number;
+  name: string;
+  club_user_id?: number;
+  club_personal_id?: number;
+  role?: string;
+}
 
 interface ApplicationForm {
   id: number;
@@ -8,16 +17,70 @@ interface ApplicationForm {
   createdAt: string;
 }
 
-const mockForms: ApplicationForm[] = [
-  { id: 1, name: "2025 상반기 신규 모집", createdAt: "2025.02.01" },
-  { id: 2, name: "스터디 참여 신청", createdAt: "2025.01.15" },
-  { id: 3, name: "신입 기획단 모집", createdAt: "2024.12.20" },
-  { id: 4, name: "오디션 신청서", createdAt: "2024.11.02" },
-];
-
 const ApplicationFormManageScreen: React.FC = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [selectedClub, setSelectedClub] = useState<StoredClub | null>(null);
+  const [forms, setForms] = useState<ApplicationForm[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const storedClub = sessionStorage.getItem("selectedClub");
+    if (storedClub) {
+      setSelectedClub(JSON.parse(storedClub));
+    }
+  }, []);
+
+  const loadForms = useCallback(async () => {
+    if (!selectedClub?.club_user_id) {
+      setForms([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("application_form")
+        .select("id, title, created_at")
+        .eq("club_user_id", selectedClub.club_user_id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("신청폼 데이터 로드 오류:", error);
+        setForms([]);
+        return;
+      }
+
+      const mapped: ApplicationForm[] = (data || []).map((form: any) => {
+        const createdAt = form.created_at
+          ? new Date(form.created_at).toLocaleDateString("ko-KR", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            })
+          : "";
+
+        return {
+          id: form.id,
+          name: form.title,
+          createdAt: createdAt.replace(/\./g, "."),
+        };
+      });
+
+      setForms(mapped);
+    } catch (error) {
+      console.error("신청폼 데이터 로드 중 오류:", error);
+      setForms([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedClub?.club_user_id]);
+
+  useEffect(() => {
+    if (!selectedClub?.club_user_id) return;
+    loadForms();
+  }, [selectedClub, loadForms]);
 
   return (
     <div className="application-form-manage-screen">
@@ -43,21 +106,29 @@ const ApplicationFormManageScreen: React.FC = () => {
           </section>
 
           <section className="application-form-grid">
-            {mockForms.map((form) => (
-              <div key={form.id} className="application-form-card">
-                <div className="application-form-card-icon">
-                  <div className="application-form-card-icon-circle">
-                    <span role="img" aria-label="document">
-                      📄
-                    </span>
+            {loading ? (
+              <div className="application-form-loading">로딩 중...</div>
+            ) : forms.length === 0 ? (
+              <div className="application-form-empty">
+                <p>등록된 신청폼이 없습니다.</p>
+              </div>
+            ) : (
+              forms.map((form) => (
+                <div key={form.id} className="application-form-card">
+                  <div className="application-form-card-icon">
+                    <div className="application-form-card-icon-circle">
+                      <span role="img" aria-label="document">
+                        📄
+                      </span>
+                    </div>
+                  </div>
+                  <div className="application-form-card-body">
+                    <h3>{form.name}</h3>
+                    <span>{form.createdAt}</span>
                   </div>
                 </div>
-                <div className="application-form-card-body">
-                  <h3>{form.name}</h3>
-                  <span>{form.createdAt}</span>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </section>
         </div>
       </main>

@@ -54,14 +54,11 @@ const GoogleFormRegisterScreen: React.FC = () => {
     try {
       setIsSubmitting(true);
 
-      // TODO: 실제 데이터베이스에 저장하는 로직 구현
-      // 현재는 임시로 alert만 표시
       const { error } = await supabase.from("application_form").insert({
         club_user_id: selectedClub.club_user_id,
         title: title.trim(),
         google_form_url: googleFormUrl.trim(),
         form_type: "google",
-        created_at: new Date().toISOString(),
       });
 
       if (error) {
@@ -72,13 +69,7 @@ const GoogleFormRegisterScreen: React.FC = () => {
       navigate("/myclub/manage/approvals");
     } catch (error: any) {
       console.error("구글폼 등록 오류:", error);
-      // 테이블이 없을 수 있으므로 일단 성공으로 처리
-      if (error.code === "42P01") {
-        alert("구글폼이 성공적으로 등록되었습니다. (임시 저장)");
-        navigate("/myclub/manage/approvals");
-      } else {
-        alert("구글폼 등록 중 오류가 발생했습니다.");
-      }
+      alert("구글폼 등록 중 오류가 발생했습니다: " + (error.message || "알 수 없는 오류"));
     } finally {
       setIsSubmitting(false);
     }
@@ -99,10 +90,7 @@ const GoogleFormRegisterScreen: React.FC = () => {
             <p>기존 구글폼을 연결하여 신청폼으로 사용하세요.</p>
           </section>
 
-          <form
-            className="google-form-register-form"
-            onSubmit={handleSubmit}
-          >
+          <form className="google-form-register-form" onSubmit={handleSubmit}>
             <div className="google-form-register-field">
               <label htmlFor="title" className="google-form-register-label">
                 제목
@@ -163,4 +151,3 @@ const GoogleFormRegisterScreen: React.FC = () => {
 };
 
 export default GoogleFormRegisterScreen;
-
