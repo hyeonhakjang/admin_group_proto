@@ -54,7 +54,9 @@ const AccountingEditScreen: React.FC = () => {
       const month = currentDate.getMonth() + 1;
       const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
       const lastDay = new Date(year, month, 0).getDate();
-      const monthEnd = `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+      const monthEnd = `${year}-${String(month).padStart(2, "0")}-${String(
+        lastDay
+      ).padStart(2, "0")}`;
 
       const { data, error } = await supabase
         .from("accounting_transaction")
@@ -135,7 +137,10 @@ const AccountingEditScreen: React.FC = () => {
     return timeString;
   };
 
-  const handleFieldClick = (transactionId: number, field: "name" | "amount" | "time" | "date") => {
+  const handleFieldClick = (
+    transactionId: number,
+    field: "name" | "amount" | "time" | "date"
+  ) => {
     setTransactions((prev) =>
       prev.map((t) =>
         t.id === transactionId
@@ -175,7 +180,7 @@ const AccountingEditScreen: React.FC = () => {
     setSaving(transaction.id);
     try {
       const updateData: any = {};
-      
+
       if (transaction.editingField === "name") {
         updateData.name = transaction.name;
       } else if (transaction.editingField === "amount") {
@@ -214,17 +219,14 @@ const AccountingEditScreen: React.FC = () => {
   };
 
   // 날짜별로 그룹화
-  const groupedTransactions = transactions.reduce(
-    (groups, transaction) => {
-      const date = transaction.date;
-      if (!groups[date]) {
-        groups[date] = [];
-      }
-      groups[date].push(transaction);
-      return groups;
-    },
-    {} as Record<string, EditableTransaction[]>
-  );
+  const groupedTransactions = transactions.reduce((groups, transaction) => {
+    const date = transaction.date;
+    if (!groups[date]) {
+      groups[date] = [];
+    }
+    groups[date].push(transaction);
+    return groups;
+  }, {} as Record<string, EditableTransaction[]>);
 
   const sortedDates = Object.keys(groupedTransactions).sort(
     (a, b) => new Date(b).getTime() - new Date(a).getTime()
@@ -402,4 +404,3 @@ const AccountingEditScreen: React.FC = () => {
 };
 
 export default AccountingEditScreen;
-

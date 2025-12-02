@@ -60,7 +60,10 @@ const GoogleFormRegisterScreen: React.FC = () => {
 
     // URL 형식 검증
     let normalizedUrl = googleFormUrl.trim();
-    if (!normalizedUrl.startsWith("http://") && !normalizedUrl.startsWith("https://")) {
+    if (
+      !normalizedUrl.startsWith("http://") &&
+      !normalizedUrl.startsWith("https://")
+    ) {
       normalizedUrl = "https://" + normalizedUrl;
     }
 
@@ -73,7 +76,9 @@ const GoogleFormRegisterScreen: React.FC = () => {
 
     // 구글폼 URL 검증
     if (!validateGoogleFormUrl(normalizedUrl)) {
-      alert("구글폼 URL 형식이 올바르지 않습니다.\n구글폼의 공유 링크를 입력해주세요.");
+      alert(
+        "구글폼 URL 형식이 올바르지 않습니다.\n구글폼의 공유 링크를 입력해주세요."
+      );
       return;
     }
 

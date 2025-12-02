@@ -124,7 +124,11 @@ const ApplicationFormManageScreen: React.FC = () => {
                   onClick={() => {
                     // 구글폼 URL이 있으면 새 탭에서 열기
                     if (form.googleFormUrl) {
-                      window.open(form.googleFormUrl, "_blank", "noopener,noreferrer");
+                      window.open(
+                        form.googleFormUrl,
+                        "_blank",
+                        "noopener,noreferrer"
+                      );
                     } else if (form.formType === "custom") {
                       // 직접 만든 폼은 추후 구현
                       alert("직접 만든 폼은 아직 지원되지 않습니다.");

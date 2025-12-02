@@ -2833,7 +2833,7 @@ const MyClubScreen: React.FC = () => {
                   navigate("/myclub/page/edit");
                 }}
               >
-                동아리 페이지 관리
+                동아리 설정
               </button>
             </div>
 

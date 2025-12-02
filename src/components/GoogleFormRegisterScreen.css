@@ -38,10 +38,10 @@
 
 .google-form-register-content-inner {
   width: 100%;
-  max-width: 960px;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
-  gap: clamp(16px, 4vw, 24px);
+  gap: clamp(24px, 6vw, 32px);
   box-sizing: border-box;
 }
 
@@ -49,7 +49,6 @@
   display: flex;
   flex-direction: column;
   gap: clamp(8px, 2vw, 12px);
-  width: 100%;
 }
 
 .google-form-register-title-section h1 {
@@ -69,14 +68,12 @@
 .google-form-register-form {
   background: white;
   border-radius: 16px;
-  padding: clamp(16px, 4vw, 24px);
+  padding: clamp(20px, 5vw, 24px);
   border: 1px solid #f1e9e3;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  gap: clamp(16px, 4vw, 24px);
-  width: 100%;
-  box-sizing: border-box;
+  gap: clamp(20px, 5vw, 24px);
 }
 
 .google-form-register-field {
@@ -172,59 +169,13 @@
   cursor: not-allowed;
 }
 
-/* 반응형 조정 */
-@media (max-width: 768px) {
-  .google-form-register-content-inner {
-    max-width: 100%;
-    gap: clamp(16px, 4vw, 20px);
-  }
-
-  .google-form-register-form {
-    padding: clamp(16px, 4vw, 20px);
-  }
-}
-
 @media (max-width: 480px) {
-  .google-form-register-content {
-    padding: 0 clamp(12px, 3vw, 16px) clamp(16px, 4vw, 24px);
-  }
-
-  .google-form-register-content-inner {
-    gap: clamp(12px, 3vw, 16px);
-  }
-
-  .google-form-register-title-section h1 {
-    font-size: clamp(20px, 5vw, 24px);
-  }
-
-  .google-form-register-form {
-    padding: clamp(12px, 3vw, 16px);
-    gap: clamp(12px, 3vw, 16px);
-  }
-
   .google-form-register-actions {
     flex-direction: column;
-    gap: clamp(8px, 2vw, 12px);
   }
 
   .google-form-register-cancel-btn,
   .google-form-register-submit-btn {
     flex: 1;
-    width: 100%;
-  }
-}
-
-@media (max-width: 360px) {
-  .google-form-register-content {
-    padding: 0 clamp(10px, 2.5vw, 12px) clamp(12px, 3vw, 16px);
-  }
-
-  .google-form-register-form {
-    padding: clamp(10px, 2.5vw, 12px);
-    gap: clamp(10px, 2.5vw, 12px);
-  }
-
-  .google-form-register-field {
-    gap: clamp(6px, 1.5vw, 8px);
   }
 }

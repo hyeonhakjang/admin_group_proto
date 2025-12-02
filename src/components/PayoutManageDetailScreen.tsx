@@ -504,7 +504,7 @@ const PayoutManageDetailScreen: React.FC = () => {
                         throw deleteError;
                       }
 
-                      alert("회계 시트에 적용되었습니다.");
+                      alert("정산이 마감됐습니다.");
                       setShowCloseModal(false);
                       navigate("/myclub/manage/payout");
                     } catch (error) {
@@ -553,7 +553,7 @@ const PayoutManageDetailScreen: React.FC = () => {
                   }}
                   disabled={isProcessing}
                 >
-                  아니요
+                  정산 마감만
                 </button>
               </div>
             </div>
