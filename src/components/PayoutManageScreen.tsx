@@ -218,7 +218,7 @@ const PayoutManageScreen: React.FC = () => {
           <div className="payout-manage-loading">로딩 중...</div>
         ) : monthlyGroups.length === 0 ? (
           <div className="payout-manage-empty">
-            <p>등록한 정산이 없습니다.</p>
+            <p>정산 내역이 없습니다.</p>
           </div>
         ) : (
           monthlyGroups.map((group) => (
