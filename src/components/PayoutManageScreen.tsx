@@ -120,12 +120,12 @@ const PayoutManageScreen: React.FC = () => {
           );
 
         // 전체 상태 결정: 모든 사람이 완료했는지 확인
-        // 완료가 아니면 모두 "미납"으로 통일
+        // pending과 unpaid 모두 미납으로 통일
         let overallStatus: "pending" | "paid" | "unpaid";
         if (allParticipantsPaid) {
           overallStatus = "paid";
         } else {
-          // 완료가 아닌 경우 모두 "미납"으로 통일
+          // 일부만 완료되었거나 미완료인 경우 모두 "unpaid"로 통일
           overallStatus = "unpaid";
         }
 
