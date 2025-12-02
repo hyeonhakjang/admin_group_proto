@@ -94,6 +94,7 @@ const PayoutManageScreen: React.FC = () => {
       if (error) {
         console.error("정산 데이터 로드 오류:", error);
         setPayouts([]);
+        setLoading(false);
         return;
       }
 
@@ -155,7 +156,15 @@ const PayoutManageScreen: React.FC = () => {
   }, [selectedClub]);
 
   useEffect(() => {
-    if (!selectedClub?.club_personal_id || !userData) return;
+    if (!userData) {
+      setLoading(false);
+      return;
+    }
+
+    if (!selectedClub?.club_personal_id) {
+      setLoading(false);
+      return;
+    }
 
     loadPayouts();
   }, [selectedClub, userData, loadPayouts]);
