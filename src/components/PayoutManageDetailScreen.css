@@ -279,6 +279,92 @@
   transform: translateY(0);
 }
 
+/* 회계 시트 적용 확인 모달 */
+.payout-close-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: clamp(16px, 4vw, 24px);
+}
+
+.payout-close-modal {
+  background: white;
+  border-radius: 16px;
+  padding: clamp(24px, 6vw, 32px);
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 5vw, 24px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.payout-close-modal-text {
+  font-size: clamp(16px, 4vw, 18px);
+  font-weight: 600;
+  color: #28201b;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.payout-close-modal-buttons {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.payout-close-modal-btn {
+  flex: 1;
+  padding: clamp(14px, 3.5vw, 16px);
+  border: none;
+  border-radius: 12px;
+  font-size: clamp(15px, 3.75vw, 17px);
+  font-weight: 600;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payout-close-modal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.payout-close-modal-btn-yes {
+  background: #c34e00;
+  color: white;
+}
+
+.payout-close-modal-btn-yes:hover:not(:disabled) {
+  background: #a03f00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(195, 78, 0, 0.3);
+}
+
+.payout-close-modal-btn-yes:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.payout-close-modal-btn-no {
+  background: #f5f5f5;
+  color: #666666;
+}
+
+.payout-close-modal-btn-no:hover:not(:disabled) {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.payout-close-modal-btn-no:active:not(:disabled) {
+  transform: translateY(0);
+}
+
 @media (max-width: 480px) {
   .payout-manage-participant-item {
     flex-direction: column;

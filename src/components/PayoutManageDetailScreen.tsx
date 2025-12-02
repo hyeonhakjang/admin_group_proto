@@ -40,6 +40,8 @@ const PayoutManageDetailScreen: React.FC = () => {
   const [payout, setPayout] = useState<PayoutManageDetail | null>(null);
   const [activeTab, setActiveTab] = useState<"pending" | "paid">("pending");
   const [loading, setLoading] = useState(true);
+  const [showCloseModal, setShowCloseModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const storedClub = sessionStorage.getItem("selectedClub");
@@ -403,41 +405,127 @@ const PayoutManageDetailScreen: React.FC = () => {
           <section className="payout-manage-detail-section payout-manage-detail-close">
             <button
               className="payout-manage-close-btn"
-              onClick={async () => {
-                if (!payout || !selectedClub?.club_user_id) {
-                  return;
-                }
-
-                if (
-                  !window.confirm(
-                    "정산을 마감하시겠습니까? 마감 후에는 수정할 수 없습니다."
-                  )
-                ) {
-                  return;
-                }
-
-                try {
-                  const { error } = await supabase
-                    .from("club_personal_payout")
-                    .update({ closed_at: new Date().toISOString() })
-                    .eq("id", payout.id)
-                    .eq("club_user_id", selectedClub.club_user_id);
-
-                  if (error) {
-                    throw error;
-                  }
-
-                  alert("정산이 마감되었습니다.");
-                  navigate("/myclub/manage/payout");
-                } catch (error) {
-                  console.error("정산 마감 오류:", error);
-                  alert("정산 마감 중 오류가 발생했습니다.");
-                }
+              onClick={() => {
+                setShowCloseModal(true);
               }}
             >
               정산 마감
             </button>
           </section>
+        )}
+
+        {/* 회계 시트 적용 확인 모달 */}
+        {showCloseModal && (
+          <div className="payout-close-modal-overlay">
+            <div className="payout-close-modal">
+              <p className="payout-close-modal-text">
+                회계 시트에 적용하시겠습니까?
+              </p>
+              <div className="payout-close-modal-buttons">
+                <button
+                  className="payout-close-modal-btn payout-close-modal-btn-yes"
+                  onClick={async () => {
+                    if (!payout || !selectedClub?.club_user_id || isProcessing) {
+                      return;
+                    }
+
+                    setIsProcessing(true);
+                    try {
+                      // 1. 가장 최근 거래의 balance 가져오기
+                      const { data: latestTransaction, error: balanceError } =
+                        await supabase
+                          .from("accounting_transaction")
+                          .select("balance")
+                          .eq("club_user_id", selectedClub.club_user_id)
+                          .order("transaction_date", { ascending: false })
+                          .order("transaction_time", { ascending: false })
+                          .limit(1)
+                          .single();
+
+                      let currentBalance = 0;
+                      if (latestTransaction && !balanceError) {
+                        currentBalance = latestTransaction.balance || 0;
+                      }
+
+                      // 2. 현재 날짜/시간 가져오기
+                      const now = new Date();
+                      const transactionDate = `${now.getFullYear()}-${String(
+                        now.getMonth() + 1
+                      ).padStart(2, "0")}-${String(now.getDate()).padStart(
+                        2,
+                        "0"
+                      )}`;
+                      const transactionTime = `${String(
+                        now.getHours()
+                      ).padStart(2, "0")}:${String(now.getMinutes()).padStart(
+                        2,
+                        "0"
+                      )}:${String(now.getSeconds()).padStart(2, "0")}`;
+
+                      // 3. 각 참가자별로 회계 내역에 등록
+                      // balance를 순차적으로 계산 (각 거래마다 누적)
+                      let runningBalance = currentBalance;
+                      const transactionsToInsert = completedParticipants.map(
+                        (participant) => {
+                          runningBalance += participant.amount;
+                          return {
+                            club_user_id: selectedClub.club_user_id,
+                            name: `${payout.title} ${participant.name}`,
+                            amount: participant.amount,
+                            type: "income",
+                            transaction_date: transactionDate,
+                            transaction_time: transactionTime,
+                            balance: runningBalance,
+                          };
+                        }
+                      );
+
+                      // 4. 회계 내역 일괄 등록
+                      const { error: insertError } = await supabase
+                        .from("accounting_transaction")
+                        .insert(transactionsToInsert);
+
+                      if (insertError) {
+                        throw insertError;
+                      }
+
+                      // 5. 정산 마감 처리 (closed_at 업데이트)
+                      const { error: updateError } = await supabase
+                        .from("club_personal_payout")
+                        .update({ closed_at: new Date().toISOString() })
+                        .eq("id", payout.id)
+                        .eq("club_user_id", selectedClub.club_user_id);
+
+                      if (updateError) {
+                        throw updateError;
+                      }
+
+                      alert("회계 시트에 적용되었습니다.");
+                      setShowCloseModal(false);
+                      navigate("/myclub/manage/payout");
+                    } catch (error) {
+                      console.error("회계 시트 적용 오류:", error);
+                      alert("회계 시트 적용 중 오류가 발생했습니다.");
+                    } finally {
+                      setIsProcessing(false);
+                    }
+                  }}
+                  disabled={isProcessing}
+                >
+                  네
+                </button>
+                <button
+                  className="payout-close-modal-btn payout-close-modal-btn-no"
+                  onClick={() => {
+                    setShowCloseModal(false);
+                  }}
+                  disabled={isProcessing}
+                >
+                  아니요
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
