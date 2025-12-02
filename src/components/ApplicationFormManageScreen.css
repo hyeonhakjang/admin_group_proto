@@ -113,21 +113,12 @@
   padding: clamp(12px, 3vw, 16px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
 
 .application-form-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-}
-
-.application-form-card-clickable {
-  cursor: pointer;
-}
-
-.application-form-card-clickable:hover {
-  border-color: #c34e00;
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(195, 78, 0, 0.15);
 }
 
 .application-form-card-icon {

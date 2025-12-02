@@ -67,7 +67,7 @@ const ApplicationFormManageScreen: React.FC = () => {
           id: form.id,
           name: form.title,
           createdAt: createdAt.replace(/\./g, "."),
-          googleFormUrl: form.google_form_url,
+          googleFormUrl: form.google_form_url || undefined,
           formType: form.form_type || "google",
         };
       });
@@ -120,18 +120,16 @@ const ApplicationFormManageScreen: React.FC = () => {
               forms.map((form) => (
                 <div
                   key={form.id}
-                  className={`application-form-card ${
-                    form.googleFormUrl ? "application-form-card-clickable" : ""
-                  }`}
+                  className="application-form-card"
                   onClick={() => {
                     // 구글폼 URL이 있으면 새 탭에서 열기
                     if (form.googleFormUrl) {
                       window.open(form.googleFormUrl, "_blank", "noopener,noreferrer");
                     } else if (form.formType === "custom") {
                       // 직접 만든 폼은 추후 구현
-                      alert("직접 만든 폼은 아직 준비 중입니다.");
+                      alert("직접 만든 폼은 아직 지원되지 않습니다.");
                     } else {
-                      alert("구글폼 URL이 등록되지 않았습니다.");
+                      alert("구글폼 URL이 없습니다.");
                     }
                   }}
                 >
