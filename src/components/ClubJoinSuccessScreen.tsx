@@ -30,7 +30,12 @@ const ClubJoinSuccessScreen: React.FC = () => {
 
   // 페이지 로드 시 자동으로 가입 신청 처리
   useEffect(() => {
-    if (userData && userData.type === "personal" && clubId && !hasAttemptedAutoJoin) {
+    if (
+      userData &&
+      userData.type === "personal" &&
+      clubId &&
+      !hasAttemptedAutoJoin
+    ) {
       setHasAttemptedAutoJoin(true);
       handleCompleteJoin(true);
     }
@@ -107,7 +112,7 @@ const ClubJoinSuccessScreen: React.FC = () => {
         {!isCompleted ? (
           <button
             className="club-join-success-btn"
-            onClick={handleCompleteJoin}
+            onClick={() => handleCompleteJoin(false)}
             disabled={isProcessing}
           >
             {isProcessing ? "처리 중..." : "가입 신청 완료"}
@@ -132,4 +137,3 @@ const ClubJoinSuccessScreen: React.FC = () => {
 };
 
 export default ClubJoinSuccessScreen;
-
