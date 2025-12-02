@@ -80,6 +80,9 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(12px, 3vw, 16px);
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .accounting-summary-item {
@@ -261,6 +264,9 @@
   display: flex;
   gap: clamp(12px, 3vw, 16px);
   padding-bottom: clamp(16px, 4vw, 24px);
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .accounting-action-btn {
@@ -309,10 +315,12 @@
 
   .accounting-summary-section {
     grid-template-columns: 1fr;
+    max-width: 100%;
   }
 
   .accounting-actions-section {
     flex-direction: column;
+    max-width: 100%;
   }
 }
 
@@ -325,4 +333,3 @@
     gap: clamp(8px, 2vw, 12px);
   }
 }
-
