@@ -435,14 +435,21 @@ const ClubDetailScreen: React.FC = () => {
     // 활성 신청폼이 있으면 구글폼으로 이동
     if (activeApplicationForm?.google_form_url) {
       const googleFormUrl = activeApplicationForm.google_form_url;
-      
+      const redirectUrl = `${window.location.origin}/community/club/${club.id}/join-success?club_id=${club.id}`;
+
+      // 구글폼 제출 후 리다이렉트 URL 설정 안내
+      alert(
+        `구글폼으로 이동합니다.\n\n` +
+        `구글폼 제출 후 자동으로 가입 신청이 완료되려면,\n` +
+        `구글폼 설정에서 "제출 후 리다이렉트" 옵션을 활성화하고\n` +
+        `리다이렉트 URL을 다음으로 설정해주세요:\n\n` +
+        `${redirectUrl}\n\n` +
+        `리다이렉트 URL을 설정하지 않으면,\n` +
+        `구글폼 제출 후 위 URL로 직접 이동해주세요.`
+      );
+
       // 구글폼으로 이동 (현재 창에서)
       window.location.href = googleFormUrl;
-      
-      // 참고: 구글폼 제출 후 리다이렉트 URL을 설정하려면
-      // 구글폼 설정에서 "제출 후 리다이렉트" 옵션을 활성화하고
-      // 리다이렉트 URL을 다음으로 설정해야 합니다:
-      // /community/club/{club.id}/join-success?club_id={club.id}
     } else {
       // 활성 신청폼이 없으면 기존 방식대로 처리
       try {

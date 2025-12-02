@@ -104,19 +104,27 @@ const ClubJoinSuccessScreen: React.FC = () => {
       <div className="club-join-success-container">
         <div className="club-join-success-icon">✅</div>
         <h1 className="club-join-success-title">구글폼 제출 완료</h1>
-        <p className="club-join-success-description">
-          구글폼 제출이 완료되었습니다.
-          <br />
-          아래 버튼을 눌러 동아리 가입 신청을 완료해주세요.
-        </p>
         {!isCompleted ? (
-          <button
-            className="club-join-success-btn"
-            onClick={() => handleCompleteJoin(false)}
-            disabled={isProcessing}
-          >
-            {isProcessing ? "처리 중..." : "가입 신청 완료"}
-          </button>
+          <>
+            <p className="club-join-success-description">
+              구글폼 제출이 완료되었습니다.
+              <br />
+              가입 신청을 자동으로 처리하고 있습니다...
+            </p>
+            {isProcessing && (
+              <div className="club-join-success-loading">
+                <div className="club-join-success-spinner"></div>
+              </div>
+            )}
+            {!isProcessing && (
+              <button
+                className="club-join-success-btn"
+                onClick={() => handleCompleteJoin(false)}
+              >
+                가입 신청 완료
+              </button>
+            )}
+          </>
         ) : (
           <div className="club-join-success-completed">
             <p>가입 신청이 완료되었습니다!</p>
