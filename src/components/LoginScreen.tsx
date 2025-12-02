@@ -151,14 +151,6 @@ const LoginScreen: React.FC = () => {
     }
   };
 
-  const handleSocialLogin = (provider: "kakao" | "naver" | "google") => {
-    console.log(`${provider} 로그인 시도`);
-    // 소셜 로그인 로직 구현 예정
-    // 미가입자인 경우 회원가입 페이지로 이동
-    // 임시로 미가입자로 가정하고 회원가입 페이지로 이동
-    navigate("/signup/social-personal");
-  };
-
   return (
     <div className="login-screen">
       {/* 섹션 A: 프로그램 로고 */}
@@ -215,28 +207,6 @@ const LoginScreen: React.FC = () => {
           onClick={() => navigate("/signup/selection")}
         >
           회원가입
-        </button>
-      </div>
-
-      {/* 섹션 D: 소셜 로그인 */}
-      <div className="social-login-section">
-        <button
-          className="social-btn kakao"
-          onClick={() => handleSocialLogin("kakao")}
-        >
-          카카오 로그인
-        </button>
-        <button
-          className="social-btn naver"
-          onClick={() => handleSocialLogin("naver")}
-        >
-          네이버 로그인
-        </button>
-        <button
-          className="social-btn google"
-          onClick={() => handleSocialLogin("google")}
-        >
-          구글 로그인
         </button>
       </div>
     </div>
