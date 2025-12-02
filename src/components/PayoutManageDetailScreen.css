@@ -249,6 +249,36 @@
   color: #888888;
 }
 
+.payout-manage-detail-close {
+  display: flex;
+  justify-content: center;
+  padding: clamp(20px, 5vw, 24px);
+}
+
+.payout-manage-close-btn {
+  width: 100%;
+  padding: clamp(14px, 3.5vw, 16px);
+  background: #c34e00;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: clamp(15px, 3.75vw, 17px);
+  font-weight: 600;
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payout-manage-close-btn:hover {
+  background: #a03f00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(195, 78, 0, 0.3);
+}
+
+.payout-manage-close-btn:active {
+  transform: translateY(0);
+}
+
 @media (max-width: 480px) {
   .payout-manage-participant-item {
     flex-direction: column;

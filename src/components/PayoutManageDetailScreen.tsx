@@ -175,6 +175,14 @@ const PayoutManageDetailScreen: React.FC = () => {
     [payout]
   );
 
+  // 모든 정산이 완료되었는지 확인
+  const isAllCompleted = useMemo(() => {
+    if (!payout || payout.participants.length === 0) return false;
+    return payout.participants.every(
+      (participant) => participant.status === "paid"
+    );
+  }, [payout]);
+
   const getDisplayDateTime = (timestamp: string) => {
     if (!timestamp) return "";
     const date = new Date(timestamp);
@@ -389,6 +397,48 @@ const PayoutManageDetailScreen: React.FC = () => {
                 )}
           </div>
         </section>
+
+        {/* 정산 마감 버튼 (모든 정산 완료 시에만 표시) */}
+        {isAllCompleted && (
+          <section className="payout-manage-detail-section payout-manage-detail-close">
+            <button
+              className="payout-manage-close-btn"
+              onClick={async () => {
+                if (!payout || !selectedClub?.club_user_id) {
+                  return;
+                }
+
+                if (
+                  !window.confirm(
+                    "정산을 마감하시겠습니까? 마감 후에는 수정할 수 없습니다."
+                  )
+                ) {
+                  return;
+                }
+
+                try {
+                  const { error } = await supabase
+                    .from("club_personal_payout")
+                    .update({ closed_at: new Date().toISOString() })
+                    .eq("id", payout.id)
+                    .eq("club_user_id", selectedClub.club_user_id);
+
+                  if (error) {
+                    throw error;
+                  }
+
+                  alert("정산이 마감되었습니다.");
+                  navigate("/myclub/manage/payout");
+                } catch (error) {
+                  console.error("정산 마감 오류:", error);
+                  alert("정산 마감 중 오류가 발생했습니다.");
+                }
+              }}
+            >
+              정산 마감
+            </button>
+          </section>
+        )}
       </div>
     </div>
   );
