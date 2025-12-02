@@ -2880,15 +2880,6 @@ const MyClubScreen: React.FC = () => {
                   className="side-nav-menu-item"
                   onClick={() => {
                     setShowSideNav(false);
-                    navigate("/myclub/manage/events");
-                  }}
-                >
-                  행사 관리
-                </button>
-                <button
-                  className="side-nav-menu-item"
-                  onClick={() => {
-                    setShowSideNav(false);
                     navigate("/myclub/manage/archive");
                   }}
                 >
