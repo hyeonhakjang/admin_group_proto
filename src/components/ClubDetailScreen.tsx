@@ -61,6 +61,11 @@ const ClubDetailScreen: React.FC = () => {
   const [isLoadingForms, setIsLoadingForms] = useState(false);
   const [isUpdatingApplicationForm, setIsUpdatingApplicationForm] =
     useState(false);
+  const [activeApplicationForm, setActiveApplicationForm] = useState<{
+    id: number;
+    title: string;
+    google_form_url: string;
+  } | null>(null);
 
   // 달력 관련 상태 (MyClubScreen에서 재사용)
   const [currentDate, setCurrentDate] = useState(() => {
@@ -356,14 +361,62 @@ const ClubDetailScreen: React.FC = () => {
     }
   }, []);
 
+  // 활성 신청폼 정보 로드
+  const loadActiveApplicationForm = useCallback(async () => {
+    if (!club?.id) {
+      setActiveApplicationForm(null);
+      return;
+    }
+
+    try {
+      const { data: clubUser, error } = await supabase
+        .from("club_user")
+        .select("active_application_form_id")
+        .eq("id", club.id)
+        .single();
+
+      if (error || !clubUser?.active_application_form_id) {
+        setActiveApplicationForm(null);
+        return;
+      }
+
+      const { data: formData, error: formError } = await supabase
+        .from("application_form")
+        .select("id, title, google_form_url")
+        .eq("id", clubUser.active_application_form_id)
+        .single();
+
+      if (formError || !formData) {
+        setActiveApplicationForm(null);
+        return;
+      }
+
+      setActiveApplicationForm({
+        id: formData.id,
+        title: formData.title,
+        google_form_url: formData.google_form_url,
+      });
+    } catch (error) {
+      console.error("활성 신청폼 로드 오류:", error);
+      setActiveApplicationForm(null);
+    }
+  }, [club?.id]);
+
+  // 동아리 데이터 로드 시 활성 신청폼도 로드
+  useEffect(() => {
+    if (club?.id) {
+      loadActiveApplicationForm();
+    }
+  }, [club?.id, loadActiveApplicationForm]);
+
   // 가입 신청 처리 함수
   const handleJoinRequest = async () => {
     if (!userData || userData.type !== "personal" || !club) {
       return;
     }
 
+    // 이미 가입 신청한 경우 확인
     try {
-      // 이미 가입 신청한 경우 확인
       const { data: existingMembership } = await supabase
         .from("club_personal")
         .select("id")
@@ -375,28 +428,44 @@ const ClubDetailScreen: React.FC = () => {
         alert("이미 가입 신청하셨습니다.");
         return;
       }
-
-      // club_personal 테이블에 추가
-      const { error: insertError } = await supabase
-        .from("club_personal")
-        .insert({
-          personal_user_id: userData.id,
-          club_user_id: club.id,
-          role: "member",
-          approved: false,
-        });
-
-      if (insertError) {
-        console.error("가입 신청 오류:", insertError);
-        alert("가입 신청 중 오류가 발생했습니다.");
-        return;
-      }
-
-      // 성공 메시지 표시
-      setShowJoinSuccess(true);
     } catch (error) {
-      console.error("가입 신청 처리 중 오류:", error);
-      alert("가입 신청 중 오류가 발생했습니다.");
+      // 기존 멤버십이 없는 경우 계속 진행
+    }
+
+    // 활성 신청폼이 있으면 구글폼으로 이동
+    if (activeApplicationForm?.google_form_url) {
+      const googleFormUrl = activeApplicationForm.google_form_url;
+      
+      // 구글폼으로 이동 (현재 창에서)
+      window.location.href = googleFormUrl;
+      
+      // 참고: 구글폼 제출 후 리다이렉트 URL을 설정하려면
+      // 구글폼 설정에서 "제출 후 리다이렉트" 옵션을 활성화하고
+      // 리다이렉트 URL을 다음으로 설정해야 합니다:
+      // /community/club/{club.id}/join-success?club_id={club.id}
+    } else {
+      // 활성 신청폼이 없으면 기존 방식대로 처리
+      try {
+        const { error: insertError } = await supabase
+          .from("club_personal")
+          .insert({
+            personal_user_id: userData.id,
+            club_user_id: club.id,
+            role: "member",
+            approved: false,
+          });
+
+        if (insertError) {
+          console.error("가입 신청 오류:", insertError);
+          alert("가입 신청 중 오류가 발생했습니다.");
+          return;
+        }
+
+        setShowJoinSuccess(true);
+      } catch (error) {
+        console.error("가입 신청 처리 중 오류:", error);
+        alert("가입 신청 중 오류가 발생했습니다.");
+      }
     }
   };
 
@@ -651,7 +720,11 @@ const ClubDetailScreen: React.FC = () => {
       loadApplicationForms();
       loadActiveApplicationFormId();
     }
-  }, [showJoinSettingsModal, loadApplicationForms, loadActiveApplicationFormId]);
+  }, [
+    showJoinSettingsModal,
+    loadApplicationForms,
+    loadActiveApplicationFormId,
+  ]);
 
   // 신청폼 선택 및 등록
   const handleSelectApplicationForm = async () => {
@@ -675,7 +748,9 @@ const ClubDetailScreen: React.FC = () => {
         (form) => form.id === selectedApplicationFormId
       );
       alert(
-        `"${selectedForm?.title || "신청폼"}"이(가) 활성 신청폼으로 등록되었습니다.`
+        `"${
+          selectedForm?.title || "신청폼"
+        }"이(가) 활성 신청폼으로 등록되었습니다.`
       );
       setShowJoinSettingsModal(false);
     } catch (error: any) {
@@ -1327,7 +1402,9 @@ const ClubDetailScreen: React.FC = () => {
                       <label
                         key={form.id}
                         className={`join-settings-form-item ${
-                          selectedApplicationFormId === form.id ? "selected" : ""
+                          selectedApplicationFormId === form.id
+                            ? "selected"
+                            : ""
                         }`}
                       >
                         <input
@@ -1370,9 +1447,7 @@ const ClubDetailScreen: React.FC = () => {
                         selectedApplicationFormId === null
                       }
                     >
-                      {isUpdatingApplicationForm
-                        ? "등록 중..."
-                        : "신청폼 등록"}
+                      {isUpdatingApplicationForm ? "등록 중..." : "신청폼 등록"}
                     </button>
                     <button
                       className="join-settings-form-link-btn"

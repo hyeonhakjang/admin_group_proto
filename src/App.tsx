@@ -37,6 +37,7 @@ import ApplicationFormManageScreen from "./components/ApplicationFormManageScree
 import GoogleFormRegisterScreen from "./components/GoogleFormRegisterScreen";
 import AccountingManageScreen from "./components/AccountingManageScreen";
 import AccountingEditScreen from "./components/AccountingEditScreen";
+import ClubJoinSuccessScreen from "./components/ClubJoinSuccessScreen";
 import "./App.css";
 
 function App() {
@@ -48,6 +49,10 @@ function App() {
           <Route path="/community" element={<CommunityScreen />} />
           <Route path="/myclub" element={<MyClubScreen />} />
           <Route path="/community/club/:id" element={<ClubDetailScreen />} />
+          <Route
+            path="/community/club/:id/join-success"
+            element={<ClubJoinSuccessScreen />}
+          />
           <Route
             path="/community/explore/domestic"
             element={<ExploreDomesticScreen />}
