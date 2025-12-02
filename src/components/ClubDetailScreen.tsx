@@ -409,74 +409,92 @@ const ClubDetailScreen: React.FC = () => {
     }
   }, [club?.id, loadActiveApplicationForm]);
 
-  // 구글폼 제출 후 돌아왔을 때 자동 가입 신청 처리
+  // 구글폼 제출 대기 상태 확인
+  const [hasPendingJoin, setHasPendingJoin] = useState(false);
+
   useEffect(() => {
-    const checkPendingJoin = async () => {
-      if (!club?.id || !userData || userData.type !== "personal") {
-        return;
-      }
+    if (!club?.id) {
+      setHasPendingJoin(false);
+      return;
+    }
 
-      const pendingJoinKey = `pending_join_${club.id}`;
-      const pendingJoinData = sessionStorage.getItem(pendingJoinKey);
+    const pendingJoinKey = `pending_join_${club.id}`;
+    const pendingJoinData = sessionStorage.getItem(pendingJoinKey);
 
-      if (!pendingJoinData) {
-        return;
-      }
-
+    if (pendingJoinData) {
       try {
         const pendingData = JSON.parse(pendingJoinData);
         const timeDiff = Date.now() - pendingData.timestamp;
 
-        // 5분 이내에 구글폼으로 이동한 경우에만 처리
-        if (timeDiff > 5 * 60 * 1000) {
+        // 30분 이내에 구글폼으로 이동한 경우에만 표시
+        if (timeDiff <= 30 * 60 * 1000) {
+          setHasPendingJoin(true);
+        } else {
           sessionStorage.removeItem(pendingJoinKey);
-          return;
-        }
-
-        // 이미 가입 신청한 경우 확인
-        const { data: existingMembership } = await supabase
-          .from("club_personal")
-          .select("id")
-          .eq("personal_user_id", userData.id)
-          .eq("club_user_id", club.id)
-          .single();
-
-        if (existingMembership) {
-          sessionStorage.removeItem(pendingJoinKey);
-          return;
-        }
-
-        // 가입 신청 처리
-        const { error: insertError } = await supabase
-          .from("club_personal")
-          .insert({
-            personal_user_id: userData.id,
-            club_user_id: club.id,
-            role: "member",
-            approved: false,
-          });
-
-        if (!insertError) {
-          sessionStorage.removeItem(pendingJoinKey);
-          setShowJoinSuccess(true);
+          setHasPendingJoin(false);
         }
       } catch (error) {
-        console.error("자동 가입 신청 처리 오류:", error);
+        setHasPendingJoin(false);
       }
-    };
+    } else {
+      setHasPendingJoin(false);
+    }
+  }, [club?.id]);
 
-    // 페이지 포커스 시 확인 (구글폼에서 돌아왔을 때)
-    const handleFocus = () => {
-      checkPendingJoin();
-    };
+  // 구글폼 제출 완료 처리
+  const handleCompleteFormSubmission = async () => {
+    if (!club?.id || !userData || userData.type !== "personal") {
+      return;
+    }
 
-    window.addEventListener("focus", handleFocus);
-    checkPendingJoin(); // 초기 로드 시에도 확인
+    const pendingJoinKey = `pending_join_${club.id}`;
+    const pendingJoinData = sessionStorage.getItem(pendingJoinKey);
 
-    return () => {
-      window.removeEventListener("focus", handleFocus);
-    };
-  }, [club?.id, userData]);
+    if (!pendingJoinData) {
+      alert("구글폼 제출 대기 상태가 없습니다.");
+      return;
+    }
+
+    try {
+      // 이미 가입 신청한 경우 확인
+      const { data: existingMembership } = await supabase
+        .from("club_personal")
+        .select("id")
+        .eq("personal_user_id", userData.id)
+        .eq("club_user_id", club.id)
+        .single();
+
+      if (existingMembership) {
+        alert("이미 가입 신청하셨습니다.");
+        sessionStorage.removeItem(pendingJoinKey);
+        setHasPendingJoin(false);
+        return;
+      }
+
+      // 가입 신청 처리
+      const { error: insertError } = await supabase
+        .from("club_personal")
+        .insert({
+          personal_user_id: userData.id,
+          club_user_id: club.id,
+          role: "member",
+          approved: false,
+        });
+
+      if (insertError) {
+        console.error("가입 신청 오류:", insertError);
+        alert("가입 신청 중 오류가 발생했습니다.");
+        return;
+      }
+
+      sessionStorage.removeItem(pendingJoinKey);
+      setHasPendingJoin(false);
+      setShowJoinSuccess(true);
+    } catch (error) {
+      console.error("가입 신청 처리 오류:", error);
+      alert("가입 신청 중 오류가 발생했습니다.");
+    }
+  };
 
   // 가입 신청 처리 함수
   const handleJoinRequest = async () => {
@@ -523,9 +541,11 @@ const ClubDetailScreen: React.FC = () => {
       alert(
         `구글폼이 새 탭에서 열렸습니다.\n\n` +
         `구글폼을 작성하고 제출한 후,\n` +
-        `앱으로 돌아와서 동아리 페이지를 새로고침하시면\n` +
-        `자동으로 가입 신청이 완료됩니다.`
+        `앱으로 돌아와서 "구글폼 제출 완료" 버튼을 눌러주세요.`
       );
+      
+      // 대기 상태 표시를 위해 상태 업데이트
+      setHasPendingJoin(true);
     } else {
       // 활성 신청폼이 없으면 기존 방식대로 처리
       try {
@@ -1107,6 +1127,13 @@ const ClubDetailScreen: React.FC = () => {
           {isOwnClub ? (
             <button className="join-btn" onClick={handleJoinSettingsClick}>
               가입 설정
+            </button>
+          ) : hasPendingJoin ? (
+            <button
+              className="join-btn join-btn-complete"
+              onClick={handleCompleteFormSubmission}
+            >
+              구글폼 제출 완료
             </button>
           ) : (
             <button

@@ -355,6 +355,14 @@
   background: #a03d00;
 }
 
+.join-btn-complete {
+  background: #28a745 !important;
+}
+
+.join-btn-complete:hover {
+  background: #218838 !important;
+}
+
 .chat-btn {
   background: white;
   color: #c34e00;
