@@ -120,15 +120,13 @@ const PayoutManageScreen: React.FC = () => {
           );
 
         // 전체 상태 결정: 모든 사람이 완료했는지 확인
+        // 완료가 아니면 모두 "미납"으로 통일
         let overallStatus: "pending" | "paid" | "unpaid";
         if (allParticipantsPaid) {
           overallStatus = "paid";
         } else {
-          // 일부만 완료되었거나 미완료인 경우
-          const hasUnpaid = participants.some(
-            (participant: any) => participant.status === "unpaid"
-          );
-          overallStatus = hasUnpaid ? "unpaid" : "pending";
+          // 완료가 아닌 경우 모두 "미납"으로 통일
+          overallStatus = "unpaid";
         }
 
         return {
@@ -262,16 +260,10 @@ const PayoutManageScreen: React.FC = () => {
                           className={`payout-item-status ${
                             payout.userStatus === "paid"
                               ? "status-paid"
-                              : payout.userStatus === "pending"
-                              ? "status-pending"
                               : "status-unpaid"
                           }`}
                         >
-                          {payout.userStatus === "paid"
-                            ? "완료"
-                            : payout.userStatus === "pending"
-                            ? "대기"
-                            : "미납"}
+                          {payout.userStatus === "paid" ? "완료" : "미납"}
                         </span>
                       </div>
                     </div>
